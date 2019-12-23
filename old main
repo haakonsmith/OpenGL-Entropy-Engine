@@ -1,0 +1,296 @@
+// Include standard headers
+#include <stdio.h>
+#include <stdlib.h>
+
+// #include <tuple>
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <math.h>
+#include <cstring>
+
+#define PI 3.1415926535897932384626433832795028841971693993
+
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#include <OpenGL/gl3ext.h>
+
+#else
+#include <GL/glew.h>
+#endif
+
+
+// Include GLM
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+// Include GLFW
+#include <GLFW/glfw3.h>
+
+// include shader loader
+#include <main/shader.hpp>
+
+// include 3d model loader
+#include <main/objloader.hpp>
+
+
+// #include <GLUT/glut.h>
+
+// declare window must go before initializers load
+GLFWwindow *window;
+
+
+// the order in which these are included does matter
+// Include custom initializers
+#include <main/initializers.hpp>
+
+// include enumurator for shapes: main, factory and GameObject use this
+#include <game/shapes/ShapesEnumuration.hpp>
+
+// #include <game/Collison.hpp>
+
+// include shapes all use these and shape base is requrired
+#include <game/shapes/ShapeBase.hpp>
+#include <game/shapes/Triangle.hpp>
+#include <game/shapes/RightTriangle.hpp>
+#include <game/shapes/Obj.hpp>
+
+
+
+// include factory GameObject uses this
+#include <game/Factory/Factory.hpp>
+
+// include GameObject: player and main uses this
+#include <game/GameObject.hpp>
+
+// include player: main uses this
+#include <game/Player.hpp>
+
+#include <game/Room.hpp>
+
+
+
+
+using namespace glm;
+
+double to_the(double item, int power = 2){
+    double number = 1;
+    for(size_t i = 0; i <= power; i++)
+    {
+        number = number * item;
+    }
+    return number;
+}
+
+double distance(double x_1, double y_1, double x_2, double y_2)
+{
+    double distance = sqrt(to_the(x_1 - x_2, 2) + to_the(y_1 - y_2, 2));
+    return distance;
+}
+
+double vec_length(glm::vec2 vector){
+    return sqrt(glm::dot(vector,vector));
+}
+
+
+
+double to_positive_angle(double angle)
+{
+    angle = fmod(angle, 360);
+    if (angle < 0)
+        angle += 360;
+    return angle;
+}
+
+
+
+
+bool done = false;
+
+int main(void)
+{
+    // init GLEW
+    init_main();
+
+    // init windows
+    GLFWwindow *window = init_window();
+
+    glfwMakeContextCurrent(window);
+    int state = glfwGetKey(window, GLFW_KEY_E);
+
+    // Ensure we can capture the escape key being pressed below
+    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
+    // Dark blue background
+    glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+
+    GLuint VertexArrayID;
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
+
+    GLuint programID = LoadShaders("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader");
+
+    // create GameObject for models
+
+
+    // load models
+    // {
+        // std::unique_ptr<Obj> cube(new Obj(programID, GL_STATIC_DRAW));
+
+        // bool res = loadOBJ("cube.obj", &cube->vertices, &cube->uvs, &cube->normals);
+
+    //     if (!res) {
+    //         std::cout << "a object wouldn't load";
+    //     }
+    
+    // }
+    // std::unique_ptr<Triangle> triangle(new Triangle(programID, GL_STATIC_DRAW));
+    std::unique_ptr<RightTriangle> triangle2(new RightTriangle(programID, GL_STATIC_DRAW));
+
+
+
+    
+
+    std::unique_ptr<GameObject> box(new GameObject(glm::vec3(1, 1, 1), 0, 0));
+
+    box->add_shape("tri", TRIANGLE, programID, GL_STATIC_DRAW);
+
+    std::unique_ptr<Room> room(new Room(SCREEN_WIDTH, SCREEN_HEIGHT ));
+
+    room->add("tri", std::move(box));
+
+
+
+
+    std::unique_ptr<GameObject> objk(new GameObject(glm::vec3(1,1,1)));
+
+    objk->add_shape("tri", TRIANGLE, programID, GL_STATIC_DRAW);
+    std::unique_ptr<Player>
+    player(new Player(std::move(objk)));
+    // player->x = SCREEN_WIDTH/2;
+    // player->y = SCREEN_HEIGHT/2;
+
+    double player_rotation = 30 * PI / 180;
+
+    // triangle->buffer();
+    triangle2->buffer();
+
+    auto t_start = std::chrono::high_resolution_clock::now();
+
+    
+    // loop if not close event
+    while (!glfwWindowShouldClose(window))
+    {
+        // Clear the screen to black
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // Calculate transformation
+        auto t_now = std::chrono::high_resolution_clock::now();
+        float my_time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
+
+        // triangle->transform(player->rotation, glm::vec3(player->x, player->y, 1));
+        // triangle->draw();
+
+        // room->transform("__all", 100, glm::vec3(10, 0.0f, 0.0f));
+        // room->transform("tri", 0, glm::vec3(1.0f, 1.0f, 1.0f));
+        // room->draw();    
+
+        player->transform(player->rotation, glm::vec3(player->x, player->y, 1), glm::vec3(0.4f, 0.4f, 0.5f));
+        player->draw();
+
+        // triangle2->transform(my_time * 100, glm::vec3(my_time, 0.0f, 0.0f));
+        // triangle2->draw();
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+
+        double xMousePos, yMousePos;
+        glfwGetCursorPos(window, &xMousePos, &yMousePos);
+
+        glm::vec2 player_point = glm::vec2(player->x, player->y);
+        glm::vec2 mouse_point = glm::vec2(xMousePos, (yMousePos - 480) * -1);
+
+        glm::vec2 mouse_vector = {
+            player_point[1] - player_point[0],
+            mouse_point[1] - mouse_point[0]
+        };
+
+        glm::vec2 player_trig = glm::vec2(
+            cos(player_rotation) + player_point.x,
+            sin(player_rotation) + player_point.y);
+
+        glm::vec2 player_vector = glm::vec2(
+                player_point[1] - player_point[0], 
+                player_trig[1] - player_trig[0]
+        );
+
+
+        player->rotation = (acos(glm::dot(mouse_vector, player_vector) / (glm::length(mouse_vector) * glm::length(player_vector))) + player_rotation);
+
+     
+
+        std::cout << player->x << "     " << player->y << "\n";
+
+        std::cout << xMousePos << "     " << yMousePos << "\n";
+        // std::cout << "player vector     (" << player->vec_rotation[0] << "," << player->vec_rotation[1] << ")\n";
+        std::cout << (player->rotation) << "<< player rotation\n";
+        // std::cout << to_positive_angle(player->rotation) << "\n";
+
+        GLuint state;
+        // keys:
+            state = glfwGetKey(window, GLFW_KEY_W);
+
+            if (state == GLFW_PRESS && player->boundary(MOVE::UP) < room->boundary(MOVE::UP))
+            {
+            player->move(MOVE::UP);
+            }
+
+            state = glfwGetKey(window, GLFW_KEY_S);
+
+            if (state == GLFW_PRESS && player->boundary(MOVE::DOWN) > room->boundary(MOVE::DOWN)* -1)
+            {
+                player->move(MOVE::DOWN);
+            }
+
+            state = glfwGetKey(window, GLFW_KEY_A);
+
+            if (state == GLFW_PRESS && player->boundary(MOVE::LEFT) > room->boundary(MOVE::LEFT) )
+            {
+                player->move(MOVE::LEFT);
+            }
+
+            state = glfwGetKey(window, GLFW_KEY_D);
+
+            if (state == GLFW_PRESS && player->boundary(MOVE::RIGHT) < room->boundary(MOVE::RIGHT))
+            {
+                player->move(MOVE::RIGHT);
+            }
+
+            state = glfwGetKey(window, GLFW_KEY_E);
+
+            if (state == GLFW_PRESS)
+            {
+                player->move(MOVE::ROTATE);
+            }
+
+                // get state of escape key
+                state = glfwGetKey(window, GLFW_KEY_ESCAPE);
+
+                // if escape key is pressed down quit
+                if (state == GLFW_PRESS)
+                {
+                    glfwSetWindowShouldClose(window, GLFW_TRUE);
+            }
+    } 
+
+    // Close OpenGL window and terminate GLFW
+    glfwTerminate();
+
+    return 0;
+}
