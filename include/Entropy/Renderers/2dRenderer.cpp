@@ -2,29 +2,37 @@
 
 namespace Entropy
 {
-void m_2dRenderer::add_renderable(Renderable* _renderable)
+void m_2dRenderer::add_renderable(Renderable *_renderable)
 {
-  
+  // renderables don't come prepackaged with MVP, so it needs to be created
+  transform(_renderable);
+
+  // Create a buffer object for our Renderable
   glGenBuffers(1, &_renderable->bufferobject);
 
   GL_LOG("add renderable, gen buffer " << _renderable->bufferobject);
 
   glBindBuffer(GL_ARRAY_BUFFER, _renderable->bufferobject);
 
+  // std::vector<GLfloat> vertices = {
+  //     -1.0f, -1.0f, 0.0f, // x,y,z vertex 1
+  //     1.0f, -1.0f, 0.0f,  // x,y,z vertex 2
+  //     1.0f, 1.0f, 0.0f,   // x,y,z vertex 3
+  // };
 
-  static const GLfloat constexpr vertices[] = {
-      -1.0f, -1.0f, 0.0f, // x,y,z vertex 1
-      1.0f, -1.0f, 0.0f,  // x,y,z vertex 2
-      1.0f, 1.0f, 0.0f,   // x,y,z vertex 3
-  };
+  // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  glBufferData(
+   GL_ARRAY_BUFFER,
+   _renderable->vertices.size() * sizeof(GLfloat),
+   &_renderable->vertices.front(),
+   GL_STATIC_DRAW
+);
 
   GL_LOG("add buffer data ");
 
   objects.push_back(_renderable);
-
-  getchar();
 }
 
 void m_2dRenderer::renderFrame()
@@ -35,16 +43,9 @@ void m_2dRenderer::renderFrame()
   }
 }
 
-void m_2dRenderer::render(Renderable* obj)
+void m_2dRenderer::transform(Renderable *obj)
 {
-  // glBindBuffer(GL_ARRAY_BUFFER, obj.bufferobject);
-
-  GL_LOG("bind buffer ");
-
   glm::mat4 MVP;
-
-  // Get a handle for our "MVP" uniform
-  GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
   // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
   glm::mat4 Projection = glm::perspective(glm::degrees(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
@@ -69,14 +70,14 @@ void m_2dRenderer::render(Renderable* obj)
   // Model matrix : an identity matrix (model will be at the origin)
   glm::mat4 model = glm::mat4(1.0f);
 
-  glm::vec3 position = glm::vec3(0.0f, 0.0f, 1.0f);
-
   glm::mat4 model_rotation = glm::rotate(
       model,
-      (0) * glm::radians(1.0f), 
+      (0) * glm::radians(1.0f),
       glm::vec3(0.0f, 0.0f, 1.0f));
 
-  glm::mat4 model_translation = glm::translate(model, glm::vec3(1, 1, 1));
+  glm::mat4 model_translation = glm::translate(model, coordinate_transform(obj->Position));
+
+  LOG(coordinate_transform(obj->Position).y);
 
   glm::mat4 model_scale = glm::scale(model, glm::vec3(10, 10, 10));
   model = model_translation * model_rotation * model_scale;
@@ -84,7 +85,19 @@ void m_2dRenderer::render(Renderable* obj)
   // Our ModelViewProjection : multiplication of our 3 matrices
   MVP = Projection * View * model; // Remember, matrix multiplication is the other way around
 
-  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, glm::value_ptr(MVP));
+  obj->MVP = MVP;
+}
+
+void m_2dRenderer::render(Renderable *obj)
+{
+  // glBindBuffer(GL_ARRAY_BUFFER, obj.bufferobject);
+
+  GL_LOG("bind buffer ");
+
+  // Get a handle for our "MVP" uniform
+  GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, glm::value_ptr(obj->MVP));
 
   GL_LOG("bind uniform ");
 
@@ -117,8 +130,11 @@ void m_2dRenderer::render(Renderable* obj)
   GL_LOG("Render");
 }
 
-m_2dRenderer::m_2dRenderer(/* args */)
+m_2dRenderer::m_2dRenderer(unsigned int width, unsigned int height)
 {
+  SCREEN_HEIGHT = height;
+  SCREEN_WIDTH = width;
+
   glGenVertexArrays(1, &VertexArrayID);
   glBindVertexArray(VertexArrayID);
 
@@ -142,6 +158,35 @@ m_2dRenderer::~m_2dRenderer()
 
   objects.clear();
 
-  std:: cout << "Cleaning up renderer" << std::endl;
+  std::cout << "Cleaning up renderer" << std::endl;
 }
+
+float m_2dRenderer::coordinate_transform(float coord, int dire) {
+
+    switch (dire)
+    {
+      case x:
+        coord = coord - (SCREEN_WIDTH / 2);
+        break;
+    
+      case y:
+        coord = coord - ((SCREEN_HEIGHT) / 2);
+        break;
+      case z:
+
+      break;
+    }
+    
+    return coord / coordinateSpace;
+  }
+
+glm::vec3 m_2dRenderer::coordinate_transform(glm::vec3 coords) {
+
+     
+    coords.x = coords.x - SCREEN_WIDTH / 2;
+    coords.y = coords.y - SCREEN_HEIGHT / 2;
+    
+    return coords / (float) coordinateSpace;
+  }
+
 } // namespace Entropy

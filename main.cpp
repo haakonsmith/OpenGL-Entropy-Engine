@@ -121,12 +121,18 @@ class Trespass : public Entropy::BaseApplication
             // Ensure we can capture the escape key being pressed below
             glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
-            renderer = new Entropy::m_2dRenderer();
+            renderer = new Entropy::m_2dRenderer(640, 480);
+
+            std::vector<GLfloat> vertices = {
+                -1.0f, -1.0f, 1.0f, // x,y,z vertex 1
+                1.0f, -1.0f, 0.0f,  // x,y,z vertex 2
+                1.0f, 1.0f, 0.0f,   // x,y,z vertex 3
+            };
 
 
 
-            renderer->add_renderable(new Renderable());
-            renderer->add_renderable(new Renderable());
+            renderer->add_renderable(new Renderable(vertices));
+            renderer->add_renderable(new Renderable(vertices, glm::vec3(100,100,-10)));
         }
 
         void loop() {

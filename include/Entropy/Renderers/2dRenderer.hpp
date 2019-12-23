@@ -20,6 +20,17 @@
 #define NDEBUG
 #define SUPRESS
 
+#ifndef COORDINATES
+#define COORDINATES
+
+enum Coordinates 
+{
+  x,
+  y,
+  z
+};
+
+#endif
 
 #ifdef NDEBUG
 #define GL_LOG(LOCATION) if(auto error = glGetError()) std::cout << "OpenGL error " << error << " at " << LOCATION << " " << __LINE__ << std::endl
@@ -27,24 +38,56 @@
 #define GL_LOG() do { } while(0)
 #endif
 
+#ifdef NDEBUG
+#define LOG(MESSAGE) std::cout << MESSAGE << " at line:" << __LINE__ << std::endl
+#else
+#define LOG() do { } while(0)
+#endif
+
 namespace Entropy
 {
   class m_2dRenderer
   {
     private:
+      unsigned int SCREEN_WIDTH, SCREEN_HEIGHT;
+
       GLuint VertexArrayID;
       GLuint programID;
       std::vector<Renderable*> objects = std::vector<Renderable*>();
 
       void render(Renderable* obj);
 
-      
+
+      /**
+       * Scaling factor for render space coordinates
+       */
+      int coordinateSpace = 20;
+
+      /**
+       * Converts coordinate space coordinate to OpenGL float space
+       */
+      float coordinate_transform(float coord, int dire);
+
+      /**
+       * Converts coordinate vector coordinate to OpenGL float space
+       */
+      glm::vec3 coordinate_transform(glm::vec3 coords);
+  
 
     public:
-    
+      /**
+        * Add renderable object to objects.
+        * 
+        * Required for some renderer optimizations
+        */
       void add_renderable(Renderable* _renderable);
       void renderFrame();
-      m_2dRenderer(/* args */);
+      /**
+       * Update renderable model view matrix
+       */
+      void transform(Renderable* obj);
+
+      m_2dRenderer(unsigned int width, unsigned int height);
       ~m_2dRenderer();
     };
 } // namespace Entropy
