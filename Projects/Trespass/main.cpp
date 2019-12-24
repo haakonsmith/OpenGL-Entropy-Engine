@@ -103,7 +103,8 @@ double distance(double x_1, double y_1, double x_2, double y_2)
 // #include <Entropy/2dRenderer.hpp>
 
 #define NDEBUG
-#include <Entropy/Entropy.hpp>
+#include <Entropy.hpp>
+#include "src/Player.hpp"
 
 
 using namespace Entropy;
@@ -117,15 +118,21 @@ class Trespass : public Entropy::BaseApplication
 
         Renderable* tri;
 
+        Entropy::PhysicsEngine* world;
+
+        Player* player;
+
         int i = 0;
 
     public:
-        static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-            // if (key == GLFW_KEY_W && action == GLFW_PRESS)
+        // static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        //     if (key == GLFW_KEY_W && action == GLFW_PRESS)
+        //         player->velocity += 
 
-        }
+        // }
 
         void init() override {
+            player = new Player();
 
             // Ensure we can capture the escape key being pressed below
             glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -140,21 +147,26 @@ class Trespass : public Entropy::BaseApplication
 
             tri = new Renderable(vertices);
 
-            renderer->add_renderable(tri);
-            renderer->add_renderable(new Renderable(vertices, glm::vec3(100,100,-10)));
+            // renderer->add_renderable(tri);
+            renderer->add_renderable(player);
+            // renderer->add_renderable(new Renderable(vertices, glm::vec3(100,100,-10)));
 
-            glfwSetKeyCallback(window, &keyCallback);
+            world = new Entropy::PhysicsEngine();
+
+            world->addObject(player);
         }
 
-        void loop() {
+        void loop() override {
             glfwSetTime(0);
 
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            tri->Position.x = i;
+            tri->position.x = i;
 
-            renderer->transform(tri);
+            // renderer->transform(tri);
+
+            renderer->transform(player);
 
             renderer->renderFrame();
 
@@ -166,6 +178,16 @@ class Trespass : public Entropy::BaseApplication
                 usleep((0.016 - time) * 1000000);
 
             i++;
+
+            int state = glfwGetKey(window, GLFW_KEY_W);
+            if (state == GLFW_PRESS)
+            {
+                std::cout << "got here";
+                std::cout << player->getPosition().y;
+                player->velocity.y += 100;
+            }
+
+            world->timeStep(glfwGetTime());
         }
 
         Trespass() : Entropy::BaseApplication() {
@@ -176,6 +198,8 @@ class Trespass : public Entropy::BaseApplication
             mainLoop();
         }
         ~Trespass() {
+            delete player;
+            delete world;
             delete renderer;
         }
 };
