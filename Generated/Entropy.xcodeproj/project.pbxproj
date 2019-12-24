@@ -1,0 +1,189 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		CB7993C0CC2C90B2400E6200 /* libEntropy.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libEntropy.a; path = libEntropy.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8877A930B71DFD22105F5770 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A6C936B49B3FADE6EA134CF4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CB7993C0CC2C90B2400E6200 /* libEntropy.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E3616ED1766CC7C3BEA1BD11 /* Entropy */ = {
+			isa = PBXGroup;
+			children = (
+				A6C936B49B3FADE6EA134CF4 /* Products */,
+			);
+			name = Entropy;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E17DF3A6846C1A581391F9E6 /* Entropy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 76B2F18FA5594581FE9A9FCF /* Build configuration list for PBXNativeTarget "Entropy" */;
+			buildPhases = (
+				F85F29D027057DC28046D810 /* Resources */,
+				620C432790B29719E9F3F167 /* Sources */,
+				8877A930B71DFD22105F5770 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Entropy;
+			productName = Entropy;
+			productReference = CB7993C0CC2C90B2400E6200 /* libEntropy.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "Entropy" */;
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 1;
+			mainGroup = E3616ED1766CC7C3BEA1BD11 /* Entropy */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E17DF3A6846C1A581391F9E6 /* libEntropy.a */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F85F29D027057DC28046D810 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		620C432790B29719E9F3F167 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		277ED4D55710A3C7321DE315 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../Build/Bin/Entropy/Debug;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_DYNAMIC_NO_PIC = NO;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = Entropy;
+			};
+			name = Debug;
+		};
+		494A790FA48BCC8177E6174F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../Build/Bin/Entropy/Release;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_DYNAMIC_NO_PIC = NO;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = Entropy;
+			};
+			name = Release;
+		};
+		CE9B1A8071E6A3B28CB770C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OBJROOT = ../Build/Obj/Entropy/Debug;
+				ONLY_ACTIVE_ARCH = YES;
+				SYMROOT = ../Build/Bin/Entropy/Debug;
+				USER_HEADER_SEARCH_PATHS = (
+					../Libraries/GLFW/Include,
+				);
+			};
+			name = Debug;
+		};
+		D63394BA7A86326C8CBE7AFA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OBJROOT = ../Build/Obj/Entropy/Release;
+				ONLY_ACTIVE_ARCH = NO;
+				SYMROOT = ../Build/Bin/Entropy/Release;
+				USER_HEADER_SEARCH_PATHS = (
+					../Libraries/GLFW/Include,
+				);
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "Entropy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE9B1A8071E6A3B28CB770C0 /* Debug */,
+				D63394BA7A86326C8CBE7AFA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		76B2F18FA5594581FE9A9FCF /* Build configuration list for PBXNativeTarget "libEntropy.a" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				277ED4D55710A3C7321DE315 /* Debug */,
+				494A790FA48BCC8177E6174F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+};
+rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
