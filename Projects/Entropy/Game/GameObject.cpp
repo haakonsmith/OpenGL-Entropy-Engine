@@ -3,7 +3,7 @@
 namespace Entropy
 {
     
-GameObject::GameObject() : Renderable(){
+GameObject::GameObject() : Renderable(), PhysicsObject() {
 
 }
 

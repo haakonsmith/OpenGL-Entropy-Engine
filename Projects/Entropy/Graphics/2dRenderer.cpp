@@ -64,7 +64,7 @@ void m_2dRenderer::transform(Renderable *obj)
   glm::mat4 View = glm::lookAt(
       glm::vec3(0, 0, 6), // Camera is at (2,3,3), in World Space
       glm::vec3(0, 0, 0), // and looks at the origin
-      glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+      glm::vec3(0, -1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
   );
 
   // Model matrix : an identity matrix (model will be at the origin)
@@ -72,15 +72,13 @@ void m_2dRenderer::transform(Renderable *obj)
 
   glm::mat4 model_rotation = glm::rotate(
       model,
-      (0) * glm::radians(1.0f),
-      glm::vec3(0.0f, 1.0f, 0.0f));
+      glm::radians((float) obj->rotation),
+      glm::vec3(0.0f, 0.0f, 1.0f));
 
   glm::mat4 model_translation = glm::translate(model, coordinate_transform(obj->position));
 
-  LOG(coordinate_transform(obj->position).y);
-
-  glm::mat4 model_scale = glm::scale(model, glm::vec3(10, 10, 10));
-  model = model_rotation * model_translation * model_scale;
+  glm::mat4 model_scale = glm::scale(model, obj->scale);
+  model = model_translation * model_rotation * model_scale;
 
   // Our ModelViewProjection : multiplication of our 3 matrices
   MVP = Projection * View * model; // Remember, matrix multiplication is the other way around
@@ -91,18 +89,21 @@ void m_2dRenderer::transform(Renderable *obj)
 void m_2dRenderer::render(Renderable *obj)
 {
   // glBindBuffer(GL_ARRAY_BUFFER, obj.bufferobject);
-
-  GL_LOG("bind buffer ");
+  glUseProgram(programID);
+  GL_LOG("bind shader ");
 
   // Get a handle for our "MVP" uniform
   GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
+  GL_LOG("get uniform ");
+
   glUniformMatrix4fv(MatrixID, 1, GL_FALSE, glm::value_ptr(obj->MVP));
 
   GL_LOG("bind uniform ");
+  // LOG(glm::to_string(obj->MVP));
 
-  glUseProgram(programID);
-  GL_LOG("bind shader ");
+
+  
   // 1st attribute buffer : vertices
   glEnableVertexAttribArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, obj->bufferobject);

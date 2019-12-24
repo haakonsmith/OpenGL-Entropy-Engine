@@ -113,6 +113,10 @@ bool done = false;
 
 class Trespass : public Entropy::BaseApplication
 {
+
+        double MouseXPos, MouseYPos;
+
+        int state;
     
         Entropy::m_2dRenderer* renderer;
 
@@ -134,6 +138,11 @@ class Trespass : public Entropy::BaseApplication
         void init() override {
             player = new Player();
 
+            player->setPosition(vec3(320,240,0));
+
+            player->scale = vec3(3,3,3);
+
+
             // Ensure we can capture the escape key being pressed below
             glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
@@ -147,9 +156,9 @@ class Trespass : public Entropy::BaseApplication
 
             tri = new Renderable(vertices);
 
-            // renderer->add_renderable(tri);
+            renderer->add_renderable(tri);
             renderer->add_renderable(player);
-            // renderer->add_renderable(new Renderable(vertices, glm::vec3(100,100,-10)));
+            renderer->add_renderable(new Renderable(vertices, glm::vec3(100,100,-10)));
 
             world = new Entropy::PhysicsEngine();
 
@@ -179,13 +188,21 @@ class Trespass : public Entropy::BaseApplication
 
             i++;
 
-            int state = glfwGetKey(window, GLFW_KEY_W);
+            glfwGetCursorPos(window, &MouseXPos, &MouseYPos);
+
+            player->rotation = glm::degrees(atan2((MouseYPos - player->getPosition().y), (MouseXPos - player->getPosition().x)) * -1) + 180 + 45;
+            
+            state = glfwGetKey(window, GLFW_KEY_W);
             if (state == GLFW_PRESS)
             {
-                std::cout << "got here";
-                std::cout << player->getPosition().y;
                 player->velocity.y += 100;
             }
+            state = glfwGetKey(window, GLFW_KEY_S);
+            if (state == GLFW_PRESS)
+            {
+                player->velocity.y -= 100;
+            }
+
 
             world->timeStep(glfwGetTime());
         }
@@ -199,8 +216,8 @@ class Trespass : public Entropy::BaseApplication
         }
         ~Trespass() {
             delete player;
-            delete world;
-            delete renderer;
+            // delete world;
+            // delete renderer;
         }
 };
 
