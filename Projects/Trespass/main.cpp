@@ -140,7 +140,7 @@ class Trespass : public Entropy::BaseApplication
 
             player->setPosition(vec3(320,240,0));
 
-            player->scale = vec3(3,3,3);
+            player->scale = vec3(1,1,1);
 
 
             // Ensure we can capture the escape key being pressed below
@@ -156,9 +156,9 @@ class Trespass : public Entropy::BaseApplication
 
             tri = new Renderable(vertices);
 
-            renderer->add_renderable(tri);
+            // renderer->add_renderable(tri);
             renderer->add_renderable(player);
-            renderer->add_renderable(new Renderable(vertices, glm::vec3(100,100,-10)));
+            // renderer->add_renderable(new Renderable(vertices, glm::vec3(100,100,-10)));
 
             world = new Entropy::PhysicsEngine();
 
@@ -190,19 +190,31 @@ class Trespass : public Entropy::BaseApplication
 
             glfwGetCursorPos(window, &MouseXPos, &MouseYPos);
 
-            player->rotation = glm::degrees(atan2((MouseYPos - player->getPosition().y), (MouseXPos - player->getPosition().x)) * -1) + 180 + 45;
+
+            MouseYPos = (MouseYPos - 480) * -1;
+
+            player->rotation = glm::degrees(atan2((MouseYPos - player->getPosition().y), (MouseXPos - player->getPosition().x)) * -1) * -1 + 45 + 2;
             
             state = glfwGetKey(window, GLFW_KEY_W);
             if (state == GLFW_PRESS)
             {
-                player->velocity.y += 100;
+                player->velocity.y = 1000;
             }
             state = glfwGetKey(window, GLFW_KEY_S);
             if (state == GLFW_PRESS)
             {
-                player->velocity.y -= 100;
+                player->velocity.y = -1000;
             }
-
+            state = glfwGetKey(window, GLFW_KEY_A);
+            if (state == GLFW_PRESS)
+            {
+                player->velocity.x = -1000;
+            }
+            state = glfwGetKey(window, GLFW_KEY_D);
+            if (state == GLFW_PRESS)
+            {
+                player->velocity.x = 1000;
+            }
 
             world->timeStep(glfwGetTime());
         }

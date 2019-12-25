@@ -7,7 +7,9 @@ namespace Entropy
 void PhysicsEngine::timeStep(float timeStep)
 {
     for (auto obj : objects) {
-        obj->setPosition(obj->position + obj->velocity * timeStep);
+        obj->velocity = obj->velocity -  ((obj->velocity * (float) (obj->friction * 10)) * timeStep);
+
+        obj->setPosition(obj->position + (obj->velocity) * timeStep);
     }
 }
 
