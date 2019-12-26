@@ -5,6 +5,7 @@
 #include <random>
 #include <string>
 
+#define GL_SILENCE_DEPRECATION
 
 
 #include <vector>
@@ -106,8 +107,14 @@ double distance(double x_1, double y_1, double x_2, double y_2)
 #include <Entropy.hpp>
 #include "src/Player.hpp"
 
+#include <type_traits> 
+
 
 using namespace Entropy;
+using namespace std;
+
+
+
 
 bool done = false;
 
@@ -124,19 +131,14 @@ class Trespass : public Entropy::BaseApplication
 
         Entropy::PhysicsEngine* world;
 
-        Player* player;
+        shared_ptr<Player> player;
 
         int i = 0;
 
     public:
-        // static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        //     if (key == GLFW_KEY_W && action == GLFW_PRESS)
-        //         player->velocity += 
-
-        // }
 
         void init() override {
-            player = new Player();
+            player = make_shared<Player>();
 
             player->setPosition(vec3(320,240,0));
 
@@ -156,13 +158,15 @@ class Trespass : public Entropy::BaseApplication
 
             tri = new Renderable(vertices);
 
+            
+
             // renderer->add_renderable(tri);
-            renderer->add_renderable(player);
+            renderer->add_renderable(player.get());
             // renderer->add_renderable(new Renderable(vertices, glm::vec3(100,100,-10)));
 
             world = new Entropy::PhysicsEngine();
 
-            world->addObject(player);
+            world->addObject(player.get());
         }
 
         void loop() override {
@@ -175,7 +179,7 @@ class Trespass : public Entropy::BaseApplication
 
             // renderer->transform(tri);
 
-            renderer->transform(player);
+            renderer->transform(player.get());
 
             renderer->renderFrame();
 
@@ -227,17 +231,20 @@ class Trespass : public Entropy::BaseApplication
             mainLoop();
         }
         ~Trespass() {
-            delete player;
-            // delete world;
-            // delete renderer;
+            // delete player;
+            // delete tri;
+            delete world;
+            delete renderer;
         }
 };
 
 
 int main() {
+
     Trespass* app = new Trespass();
     delete app;
 }
+
 
 // int oldmain(void)
 // {

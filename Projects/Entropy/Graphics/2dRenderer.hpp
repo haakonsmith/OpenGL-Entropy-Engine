@@ -1,4 +1,5 @@
 #ifndef M_2DRENDERER
+  #define GL_SILENCE_DEPRECATION
   #define M_2DRENDERER
   #include <GLFW/glfw3.h>
   #include <OpenGL/gl3.h>
@@ -8,12 +9,14 @@
   #include <vector>
   #include "Renderable.hpp"
   #include "shader.hpp"
-  #define GLM_ENABLE_EXPERIMENTAL
+  // #define GLM_ENABLE_EXPERIMENTAL
   #include <glm/glm.hpp>
-  #include <glm/gtx/string_cast.hpp>
+  // #include <glm/gtx/string_cast.hpp>
   #include <glm/gtc/matrix_transform.hpp>
   #include <glm/gtc/type_ptr.hpp>
 
+  #define STB_IMAGE_IMPLEMENTATION
+  #include <stb/stb_image.h>
   
 #else
 #error "2d renderer included twice"
@@ -53,8 +56,11 @@ namespace Entropy
     private:
       unsigned int SCREEN_WIDTH, SCREEN_HEIGHT;
 
+      bool debugOutline = false, debugCenter = false;
+
       GLuint VertexArrayID;
       GLuint programID;
+      GLuint debugCenterShader;
       std::vector<Renderable*> objects = std::vector<Renderable*>();
 
 
@@ -74,6 +80,21 @@ namespace Entropy
        */
       glm::vec3 coordinate_transform(glm::vec3 coords);
   
+      /**
+       * Converts coordinate vector coordinate to OpenGL float space
+       */
+      void renderCenter(Renderable* _renderable);
+  
+      /**
+       * Converts coordinate vector coordinate to OpenGL float space
+       */
+      void renderOutline(Renderable* _renderable);
+  
+      GLuint loadTexture(std::string path);
+
+      void genVertexBuffer(Renderable* _renderable);
+      void genUVBuffer(Renderable* _renderable);
+
 
     public:
       /**
@@ -82,8 +103,36 @@ namespace Entropy
         * Required for some renderer optimizations
         */
       void add_renderable(Renderable* _renderable);
+
+      /**
+       * Render a renderable without adding to the renderer.
+       */ 
       void render(Renderable* obj);
+
+      /**
+       * Generate all buffers for a renderables.
+       */ 
+      void buffer(Renderable* _renderable);
+
+      /**
+       * Render all renderables in renderer.
+       */ 
       void renderFrame();
+
+
+      /**
+       * Enables drawing of the center of graphics, for debugging.
+       * !!!!BROKEN!!!!
+       */
+      void drawCenter(bool val) {debugCenter = val;};
+
+      /**
+       * Enables drawing of the outline of graphics, for debugging.
+       * Different to collision outline debug.
+       * !!!!BROKEN!!!!
+       */
+      void drawOutline(bool val) {debugOutline = val;};
+
       /**
        * Update renderable model view matrix
        */

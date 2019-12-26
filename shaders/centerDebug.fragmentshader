@@ -1,0 +1,14 @@
+#version 330 core
+
+in vec4 vertex;
+
+// Output data
+out vec3 color;
+
+void main()
+{
+
+	// Output color = blue 
+	color = vec3(0,0,1) * distance(gl_FragCoord.xyz, vertex.xyz);
+
+}

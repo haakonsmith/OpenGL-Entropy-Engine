@@ -138,47 +138,42 @@ Build/Obj/Entropy/Debug/2dRenderer.o: \
   Libraries/glm/integer.hpp Libraries/glm/detail/func_integer.inl \
   Libraries/glm/detail/func_integer_simd.inl \
   Libraries/glm/detail/../simd/integer.h \
-  Projects/Entropy/Graphics/shader.hpp Libraries/glm/gtx/string_cast.hpp \
-  Libraries/glm/gtx/../glm.hpp \
-  Libraries/glm/gtx/../gtc/type_precision.hpp \
-  Libraries/glm/gtx/../gtc/../gtc/quaternion.hpp \
-  Libraries/glm/gtx/../gtc/../gtc/constants.hpp \
-  Libraries/glm/gtx/../gtc/../ext/scalar_constants.hpp \
-  Libraries/glm/./ext/scalar_constants.inl \
-  Libraries/glm/gtx/../gtc/constants.inl \
-  Libraries/glm/gtx/../gtc/../gtc/matrix_transform.hpp \
-  Libraries/glm/gtx/../gtc/../mat4x4.hpp \
-  Libraries/glm/gtx/../gtc/../vec2.hpp \
-  Libraries/glm/gtx/../gtc/../vec3.hpp \
-  Libraries/glm/gtx/../gtc/../vec4.hpp \
-  Libraries/glm/gtx/../gtc/../ext/matrix_projection.hpp \
+  Projects/Entropy/Graphics/shader.hpp \
+  Libraries/glm/gtc/matrix_transform.hpp Libraries/glm/gtc/../mat4x4.hpp \
+  Libraries/glm/gtc/../vec2.hpp Libraries/glm/gtc/../vec3.hpp \
+  Libraries/glm/gtc/../vec4.hpp \
+  Libraries/glm/gtc/../ext/matrix_projection.hpp \
   Libraries/glm/./ext/../gtc/constants.hpp \
-  Libraries/glm/./ext/../geometric.hpp \
+  Libraries/glm/gtc/../ext/scalar_constants.hpp \
+  Libraries/glm/./ext/scalar_constants.inl \
+  Libraries/glm/gtc/constants.inl Libraries/glm/./ext/../geometric.hpp \
   Libraries/glm/./ext/../trigonometric.hpp \
   Libraries/glm/./ext/../matrix.hpp \
   Libraries/glm/./ext/matrix_projection.inl \
-  Libraries/glm/gtx/../gtc/../ext/matrix_clip_space.hpp \
+  Libraries/glm/gtc/../ext/matrix_clip_space.hpp \
   Libraries/glm/./ext/../ext/scalar_constants.hpp \
   Libraries/glm/./ext/matrix_clip_space.inl \
-  Libraries/glm/gtx/../gtc/../ext/matrix_transform.hpp \
+  Libraries/glm/gtc/../ext/matrix_transform.hpp \
   Libraries/glm/./ext/matrix_transform.inl \
-  Libraries/glm/gtx/../gtc/matrix_transform.inl \
-  Libraries/glm/gtx/../gtc/../geometric.hpp \
-  Libraries/glm/gtx/../gtc/../trigonometric.hpp \
-  Libraries/glm/gtx/../gtc/../matrix.hpp \
-  Libraries/glm/gtx/../gtc/../ext/vector_relational.hpp \
+  Libraries/glm/gtc/matrix_transform.inl \
+  Libraries/glm/gtc/../geometric.hpp \
+  Libraries/glm/gtc/../trigonometric.hpp Libraries/glm/gtc/../matrix.hpp \
+  Libraries/glm/gtc/type_ptr.hpp Libraries/glm/gtc/../gtc/quaternion.hpp \
+  Libraries/glm/gtc/../gtc/constants.hpp \
+  Libraries/glm/gtc/../gtc/matrix_transform.hpp \
+  Libraries/glm/gtc/../ext/vector_relational.hpp \
   Libraries/glm/./ext/../detail/qualifier.hpp \
   Libraries/glm/./ext/vector_relational.inl \
   Libraries/glm/./ext/../vector_relational.hpp \
   Libraries/glm/./ext/../common.hpp \
-  Libraries/glm/gtx/../gtc/../ext/quaternion_common.hpp \
+  Libraries/glm/gtc/../ext/quaternion_common.hpp \
   Libraries/glm/./ext/../ext/quaternion_geometric.hpp \
   Libraries/glm/./ext/../exponential.hpp \
   Libraries/glm/./ext/../ext/vector_relational.hpp \
   Libraries/glm/./ext/quaternion_geometric.inl \
   Libraries/glm/./ext/quaternion_common.inl \
   Libraries/glm/./ext/quaternion_common_simd.inl \
-  Libraries/glm/gtx/../gtc/../ext/quaternion_float.hpp \
+  Libraries/glm/gtc/../ext/quaternion_float.hpp \
   Libraries/glm/./ext/../detail/type_quat.hpp \
   Libraries/glm/detail/../detail/type_mat3x3.hpp \
   Libraries/glm/detail/../detail/type_mat4x4.hpp \
@@ -193,69 +188,44 @@ Build/Obj/Entropy/Debug/2dRenderer.o: \
   Libraries/glm/detail/../trigonometric.hpp \
   Libraries/glm/detail/../ext/quaternion_geometric.hpp \
   Libraries/glm/detail/type_quat_simd.inl \
-  Libraries/glm/gtx/../gtc/../ext/quaternion_float_precision.hpp \
-  Libraries/glm/gtx/../gtc/../ext/quaternion_double.hpp \
-  Libraries/glm/gtx/../gtc/../ext/quaternion_double_precision.hpp \
-  Libraries/glm/gtx/../gtc/../ext/quaternion_relational.hpp \
-  Libraries/glm/gtx/../gtc/../ext/quaternion_geometric.hpp \
-  Libraries/glm/gtx/../gtc/../ext/quaternion_trigonometric.hpp \
+  Libraries/glm/gtc/../ext/quaternion_float_precision.hpp \
+  Libraries/glm/gtc/../ext/quaternion_double.hpp \
+  Libraries/glm/gtc/../ext/quaternion_double_precision.hpp \
+  Libraries/glm/gtc/../ext/quaternion_relational.hpp \
+  Libraries/glm/gtc/../ext/quaternion_geometric.hpp \
+  Libraries/glm/gtc/../ext/quaternion_trigonometric.hpp \
   Libraries/glm/./ext/scalar_constants.hpp \
   Libraries/glm/./ext/vector_relational.hpp \
   Libraries/glm/./ext/quaternion_trigonometric.inl \
-  Libraries/glm/gtx/../gtc/../ext/quaternion_transform.hpp \
+  Libraries/glm/gtc/../ext/quaternion_transform.hpp \
   Libraries/glm/./ext/quaternion_transform.inl \
-  Libraries/glm/gtx/../gtc/../detail/type_mat3x3.hpp \
-  Libraries/glm/gtx/../gtc/../detail/type_mat4x4.hpp \
-  Libraries/glm/gtx/../gtc/../detail/type_vec3.hpp \
-  Libraries/glm/gtx/../gtc/../detail/type_vec4.hpp \
-  Libraries/glm/gtx/../gtc/quaternion.inl \
-  Libraries/glm/gtx/../gtc/../exponential.hpp \
-  Libraries/glm/gtx/../gtc/epsilon.hpp \
-  Libraries/glm/gtx/../gtc/../detail/setup.hpp \
-  Libraries/glm/gtx/../gtc/../detail/qualifier.hpp \
-  Libraries/glm/gtx/../gtc/epsilon.inl \
-  Libraries/glm/gtx/../gtc/../vector_relational.hpp \
-  Libraries/glm/gtx/../gtc/../common.hpp \
-  Libraries/glm/gtx/../gtc/quaternion_simd.inl \
-  Libraries/glm/gtx/../gtc/../gtc/vec1.hpp \
-  Libraries/glm/gtx/../gtc/../ext/vector_bool1.hpp \
+  Libraries/glm/gtc/../detail/type_mat3x3.hpp \
+  Libraries/glm/gtc/../detail/type_mat4x4.hpp \
+  Libraries/glm/gtc/../detail/type_vec3.hpp \
+  Libraries/glm/gtc/../detail/type_vec4.hpp \
+  Libraries/glm/gtc/quaternion.inl Libraries/glm/gtc/../exponential.hpp \
+  Libraries/glm/gtc/epsilon.hpp Libraries/glm/gtc/../detail/setup.hpp \
+  Libraries/glm/gtc/../detail/qualifier.hpp \
+  Libraries/glm/gtc/epsilon.inl \
+  Libraries/glm/gtc/../vector_relational.hpp \
+  Libraries/glm/gtc/../common.hpp Libraries/glm/gtc/quaternion_simd.inl \
+  Libraries/glm/gtc/../gtc/vec1.hpp \
+  Libraries/glm/gtc/../ext/vector_bool1.hpp \
   Libraries/glm/./ext/../detail/type_vec1.hpp \
-  Libraries/glm/gtx/../gtc/../ext/vector_bool1_precision.hpp \
-  Libraries/glm/gtx/../gtc/../ext/vector_float1.hpp \
-  Libraries/glm/gtx/../gtc/../ext/vector_float1_precision.hpp \
-  Libraries/glm/gtx/../gtc/../ext/vector_double1.hpp \
-  Libraries/glm/gtx/../gtc/../ext/vector_double1_precision.hpp \
-  Libraries/glm/gtx/../gtc/../ext/vector_int1.hpp \
-  Libraries/glm/gtx/../gtc/../ext/vector_int1_precision.hpp \
-  Libraries/glm/gtx/../gtc/../ext/vector_uint1.hpp \
-  Libraries/glm/gtx/../gtc/../ext/vector_uint1_precision.hpp \
-  Libraries/glm/gtx/../gtc/../ext/scalar_float_sized.hpp \
-  Libraries/glm/gtx/../gtc/../ext/scalar_int_sized.hpp \
-  Libraries/glm/gtx/../gtc/../ext/scalar_uint_sized.hpp \
-  Libraries/glm/gtx/../gtc/../detail/type_vec2.hpp \
-  Libraries/glm/gtx/../gtc/../detail/type_mat2x2.hpp \
-  Libraries/glm/gtx/../gtc/../detail/type_mat2x3.hpp \
-  Libraries/glm/gtx/../gtc/../detail/type_mat2x4.hpp \
-  Libraries/glm/gtx/../gtc/../detail/type_mat3x2.hpp \
-  Libraries/glm/gtx/../gtc/../detail/type_mat3x4.hpp \
-  Libraries/glm/gtx/../gtc/../detail/type_mat4x2.hpp \
-  Libraries/glm/gtx/../gtc/../detail/type_mat4x3.hpp \
-  Libraries/glm/gtx/../gtc/type_precision.inl \
-  Libraries/glm/gtx/../gtc/quaternion.hpp \
-  Libraries/glm/gtx/../gtx/dual_quaternion.hpp \
-  Libraries/glm/gtx/../gtc/constants.hpp \
-  Libraries/glm/gtx/dual_quaternion.inl \
-  Libraries/glm/gtx/../geometric.hpp Libraries/glm/gtx/string_cast.inl \
-  Libraries/glm/gtc/matrix_transform.hpp Libraries/glm/gtc/type_ptr.hpp \
-  Libraries/glm/gtx/../gtc/../mat2x2.hpp \
-  Libraries/glm/gtx/../gtc/../mat2x3.hpp \
-  Libraries/glm/gtx/../gtc/../mat2x4.hpp \
-  Libraries/glm/gtx/../gtc/../mat3x2.hpp \
-  Libraries/glm/gtx/../gtc/../mat3x3.hpp \
-  Libraries/glm/gtx/../gtc/../mat3x4.hpp \
-  Libraries/glm/gtx/../gtc/../mat4x2.hpp \
-  Libraries/glm/gtx/../gtc/../mat4x3.hpp \
-  Libraries/glm/gtx/../gtc/type_ptr.inl
+  Libraries/glm/gtc/../ext/vector_bool1_precision.hpp \
+  Libraries/glm/gtc/../ext/vector_float1.hpp \
+  Libraries/glm/gtc/../ext/vector_float1_precision.hpp \
+  Libraries/glm/gtc/../ext/vector_double1.hpp \
+  Libraries/glm/gtc/../ext/vector_double1_precision.hpp \
+  Libraries/glm/gtc/../ext/vector_int1.hpp \
+  Libraries/glm/gtc/../ext/vector_int1_precision.hpp \
+  Libraries/glm/gtc/../ext/vector_uint1.hpp \
+  Libraries/glm/gtc/../ext/vector_uint1_precision.hpp \
+  Libraries/glm/gtc/../mat2x2.hpp Libraries/glm/gtc/../mat2x3.hpp \
+  Libraries/glm/gtc/../mat2x4.hpp Libraries/glm/gtc/../mat3x2.hpp \
+  Libraries/glm/gtc/../mat3x3.hpp Libraries/glm/gtc/../mat3x4.hpp \
+  Libraries/glm/gtc/../mat4x2.hpp Libraries/glm/gtc/../mat4x3.hpp \
+  Libraries/glm/gtc/type_ptr.inl Libraries/stb/stb_image.h
 
 Projects/Entropy/Graphics/2dRenderer.hpp:
 
@@ -579,35 +549,25 @@ Libraries/glm/detail/../simd/integer.h:
 
 Projects/Entropy/Graphics/shader.hpp:
 
-Libraries/glm/gtx/string_cast.hpp:
+Libraries/glm/gtc/matrix_transform.hpp:
 
-Libraries/glm/gtx/../glm.hpp:
+Libraries/glm/gtc/../mat4x4.hpp:
 
-Libraries/glm/gtx/../gtc/type_precision.hpp:
+Libraries/glm/gtc/../vec2.hpp:
 
-Libraries/glm/gtx/../gtc/../gtc/quaternion.hpp:
+Libraries/glm/gtc/../vec3.hpp:
 
-Libraries/glm/gtx/../gtc/../gtc/constants.hpp:
+Libraries/glm/gtc/../vec4.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/scalar_constants.hpp:
+Libraries/glm/gtc/../ext/matrix_projection.hpp:
+
+Libraries/glm/./ext/../gtc/constants.hpp:
+
+Libraries/glm/gtc/../ext/scalar_constants.hpp:
 
 Libraries/glm/./ext/scalar_constants.inl:
 
-Libraries/glm/gtx/../gtc/constants.inl:
-
-Libraries/glm/gtx/../gtc/../gtc/matrix_transform.hpp:
-
-Libraries/glm/gtx/../gtc/../mat4x4.hpp:
-
-Libraries/glm/gtx/../gtc/../vec2.hpp:
-
-Libraries/glm/gtx/../gtc/../vec3.hpp:
-
-Libraries/glm/gtx/../gtc/../vec4.hpp:
-
-Libraries/glm/gtx/../gtc/../ext/matrix_projection.hpp:
-
-Libraries/glm/./ext/../gtc/constants.hpp:
+Libraries/glm/gtc/constants.inl:
 
 Libraries/glm/./ext/../geometric.hpp:
 
@@ -617,25 +577,33 @@ Libraries/glm/./ext/../matrix.hpp:
 
 Libraries/glm/./ext/matrix_projection.inl:
 
-Libraries/glm/gtx/../gtc/../ext/matrix_clip_space.hpp:
+Libraries/glm/gtc/../ext/matrix_clip_space.hpp:
 
 Libraries/glm/./ext/../ext/scalar_constants.hpp:
 
 Libraries/glm/./ext/matrix_clip_space.inl:
 
-Libraries/glm/gtx/../gtc/../ext/matrix_transform.hpp:
+Libraries/glm/gtc/../ext/matrix_transform.hpp:
 
 Libraries/glm/./ext/matrix_transform.inl:
 
-Libraries/glm/gtx/../gtc/matrix_transform.inl:
+Libraries/glm/gtc/matrix_transform.inl:
 
-Libraries/glm/gtx/../gtc/../geometric.hpp:
+Libraries/glm/gtc/../geometric.hpp:
 
-Libraries/glm/gtx/../gtc/../trigonometric.hpp:
+Libraries/glm/gtc/../trigonometric.hpp:
 
-Libraries/glm/gtx/../gtc/../matrix.hpp:
+Libraries/glm/gtc/../matrix.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/vector_relational.hpp:
+Libraries/glm/gtc/type_ptr.hpp:
+
+Libraries/glm/gtc/../gtc/quaternion.hpp:
+
+Libraries/glm/gtc/../gtc/constants.hpp:
+
+Libraries/glm/gtc/../gtc/matrix_transform.hpp:
+
+Libraries/glm/gtc/../ext/vector_relational.hpp:
 
 Libraries/glm/./ext/../detail/qualifier.hpp:
 
@@ -645,7 +613,7 @@ Libraries/glm/./ext/../vector_relational.hpp:
 
 Libraries/glm/./ext/../common.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/quaternion_common.hpp:
+Libraries/glm/gtc/../ext/quaternion_common.hpp:
 
 Libraries/glm/./ext/../ext/quaternion_geometric.hpp:
 
@@ -659,7 +627,7 @@ Libraries/glm/./ext/quaternion_common.inl:
 
 Libraries/glm/./ext/quaternion_common_simd.inl:
 
-Libraries/glm/gtx/../gtc/../ext/quaternion_float.hpp:
+Libraries/glm/gtc/../ext/quaternion_float.hpp:
 
 Libraries/glm/./ext/../detail/type_quat.hpp:
 
@@ -689,17 +657,17 @@ Libraries/glm/detail/../ext/quaternion_geometric.hpp:
 
 Libraries/glm/detail/type_quat_simd.inl:
 
-Libraries/glm/gtx/../gtc/../ext/quaternion_float_precision.hpp:
+Libraries/glm/gtc/../ext/quaternion_float_precision.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/quaternion_double.hpp:
+Libraries/glm/gtc/../ext/quaternion_double.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/quaternion_double_precision.hpp:
+Libraries/glm/gtc/../ext/quaternion_double_precision.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/quaternion_relational.hpp:
+Libraries/glm/gtc/../ext/quaternion_relational.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/quaternion_geometric.hpp:
+Libraries/glm/gtc/../ext/quaternion_geometric.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/quaternion_trigonometric.hpp:
+Libraries/glm/gtc/../ext/quaternion_trigonometric.hpp:
 
 Libraries/glm/./ext/scalar_constants.hpp:
 
@@ -707,114 +675,76 @@ Libraries/glm/./ext/vector_relational.hpp:
 
 Libraries/glm/./ext/quaternion_trigonometric.inl:
 
-Libraries/glm/gtx/../gtc/../ext/quaternion_transform.hpp:
+Libraries/glm/gtc/../ext/quaternion_transform.hpp:
 
 Libraries/glm/./ext/quaternion_transform.inl:
 
-Libraries/glm/gtx/../gtc/../detail/type_mat3x3.hpp:
+Libraries/glm/gtc/../detail/type_mat3x3.hpp:
 
-Libraries/glm/gtx/../gtc/../detail/type_mat4x4.hpp:
+Libraries/glm/gtc/../detail/type_mat4x4.hpp:
 
-Libraries/glm/gtx/../gtc/../detail/type_vec3.hpp:
+Libraries/glm/gtc/../detail/type_vec3.hpp:
 
-Libraries/glm/gtx/../gtc/../detail/type_vec4.hpp:
+Libraries/glm/gtc/../detail/type_vec4.hpp:
 
-Libraries/glm/gtx/../gtc/quaternion.inl:
+Libraries/glm/gtc/quaternion.inl:
 
-Libraries/glm/gtx/../gtc/../exponential.hpp:
+Libraries/glm/gtc/../exponential.hpp:
 
-Libraries/glm/gtx/../gtc/epsilon.hpp:
+Libraries/glm/gtc/epsilon.hpp:
 
-Libraries/glm/gtx/../gtc/../detail/setup.hpp:
+Libraries/glm/gtc/../detail/setup.hpp:
 
-Libraries/glm/gtx/../gtc/../detail/qualifier.hpp:
+Libraries/glm/gtc/../detail/qualifier.hpp:
 
-Libraries/glm/gtx/../gtc/epsilon.inl:
+Libraries/glm/gtc/epsilon.inl:
 
-Libraries/glm/gtx/../gtc/../vector_relational.hpp:
+Libraries/glm/gtc/../vector_relational.hpp:
 
-Libraries/glm/gtx/../gtc/../common.hpp:
+Libraries/glm/gtc/../common.hpp:
 
-Libraries/glm/gtx/../gtc/quaternion_simd.inl:
+Libraries/glm/gtc/quaternion_simd.inl:
 
-Libraries/glm/gtx/../gtc/../gtc/vec1.hpp:
+Libraries/glm/gtc/../gtc/vec1.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/vector_bool1.hpp:
+Libraries/glm/gtc/../ext/vector_bool1.hpp:
 
 Libraries/glm/./ext/../detail/type_vec1.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/vector_bool1_precision.hpp:
+Libraries/glm/gtc/../ext/vector_bool1_precision.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/vector_float1.hpp:
+Libraries/glm/gtc/../ext/vector_float1.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/vector_float1_precision.hpp:
+Libraries/glm/gtc/../ext/vector_float1_precision.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/vector_double1.hpp:
+Libraries/glm/gtc/../ext/vector_double1.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/vector_double1_precision.hpp:
+Libraries/glm/gtc/../ext/vector_double1_precision.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/vector_int1.hpp:
+Libraries/glm/gtc/../ext/vector_int1.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/vector_int1_precision.hpp:
+Libraries/glm/gtc/../ext/vector_int1_precision.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/vector_uint1.hpp:
+Libraries/glm/gtc/../ext/vector_uint1.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/vector_uint1_precision.hpp:
+Libraries/glm/gtc/../ext/vector_uint1_precision.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/scalar_float_sized.hpp:
+Libraries/glm/gtc/../mat2x2.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/scalar_int_sized.hpp:
+Libraries/glm/gtc/../mat2x3.hpp:
 
-Libraries/glm/gtx/../gtc/../ext/scalar_uint_sized.hpp:
+Libraries/glm/gtc/../mat2x4.hpp:
 
-Libraries/glm/gtx/../gtc/../detail/type_vec2.hpp:
+Libraries/glm/gtc/../mat3x2.hpp:
 
-Libraries/glm/gtx/../gtc/../detail/type_mat2x2.hpp:
+Libraries/glm/gtc/../mat3x3.hpp:
 
-Libraries/glm/gtx/../gtc/../detail/type_mat2x3.hpp:
+Libraries/glm/gtc/../mat3x4.hpp:
 
-Libraries/glm/gtx/../gtc/../detail/type_mat2x4.hpp:
+Libraries/glm/gtc/../mat4x2.hpp:
 
-Libraries/glm/gtx/../gtc/../detail/type_mat3x2.hpp:
+Libraries/glm/gtc/../mat4x3.hpp:
 
-Libraries/glm/gtx/../gtc/../detail/type_mat3x4.hpp:
+Libraries/glm/gtc/type_ptr.inl:
 
-Libraries/glm/gtx/../gtc/../detail/type_mat4x2.hpp:
-
-Libraries/glm/gtx/../gtc/../detail/type_mat4x3.hpp:
-
-Libraries/glm/gtx/../gtc/type_precision.inl:
-
-Libraries/glm/gtx/../gtc/quaternion.hpp:
-
-Libraries/glm/gtx/../gtx/dual_quaternion.hpp:
-
-Libraries/glm/gtx/../gtc/constants.hpp:
-
-Libraries/glm/gtx/dual_quaternion.inl:
-
-Libraries/glm/gtx/../geometric.hpp:
-
-Libraries/glm/gtx/string_cast.inl:
-
-Libraries/glm/gtc/matrix_transform.hpp:
-
-Libraries/glm/gtc/type_ptr.hpp:
-
-Libraries/glm/gtx/../gtc/../mat2x2.hpp:
-
-Libraries/glm/gtx/../gtc/../mat2x3.hpp:
-
-Libraries/glm/gtx/../gtc/../mat2x4.hpp:
-
-Libraries/glm/gtx/../gtc/../mat3x2.hpp:
-
-Libraries/glm/gtx/../gtc/../mat3x3.hpp:
-
-Libraries/glm/gtx/../gtc/../mat3x4.hpp:
-
-Libraries/glm/gtx/../gtc/../mat4x2.hpp:
-
-Libraries/glm/gtx/../gtc/../mat4x3.hpp:
-
-Libraries/glm/gtx/../gtc/type_ptr.inl:
+Libraries/stb/stb_image.h:

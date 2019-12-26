@@ -17,7 +17,7 @@ public:
     /**
      * list of objects
      */
-    std::vector<PhysicsObject*> objects;
+    std::vector<PhysicsObject*> objects = std::vector<PhysicsObject*>();
 
     /**
      * Takes time step seconds.

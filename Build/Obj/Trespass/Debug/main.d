@@ -224,26 +224,7 @@ Build/Obj/Trespass/Debug/main.o: Projects/Trespass/main.cpp \
   Projects/Entropy/Entropy.hpp Projects/Entropy/Application.hpp \
   Projects/Entropy/Graphics/Renderable.hpp \
   Projects/Entropy/Graphics/2dRenderer.hpp \
-  Projects/Entropy/Graphics/shader.hpp Libraries/glm/gtx/string_cast.hpp \
-  Libraries/glm/gtx/../glm.hpp \
-  Libraries/glm/gtx/../gtc/type_precision.hpp \
-  Libraries/glm/gtc/../ext/scalar_float_sized.hpp \
-  Libraries/glm/gtc/../ext/scalar_int_sized.hpp \
-  Libraries/glm/gtc/../ext/scalar_uint_sized.hpp \
-  Libraries/glm/gtc/../detail/type_vec2.hpp \
-  Libraries/glm/gtc/../detail/type_mat2x2.hpp \
-  Libraries/glm/gtc/../detail/type_mat2x3.hpp \
-  Libraries/glm/gtc/../detail/type_mat2x4.hpp \
-  Libraries/glm/gtc/../detail/type_mat3x2.hpp \
-  Libraries/glm/gtc/../detail/type_mat3x4.hpp \
-  Libraries/glm/gtc/../detail/type_mat4x2.hpp \
-  Libraries/glm/gtc/../detail/type_mat4x3.hpp \
-  Libraries/glm/gtc/type_precision.inl \
-  Libraries/glm/gtx/../gtc/quaternion.hpp \
-  Libraries/glm/gtx/../gtx/dual_quaternion.hpp \
-  Libraries/glm/gtx/../gtc/constants.hpp \
-  Libraries/glm/gtx/dual_quaternion.inl \
-  Libraries/glm/gtx/../geometric.hpp Libraries/glm/gtx/string_cast.inl \
+  Projects/Entropy/Graphics/shader.hpp Libraries/stb/stb_image.h \
   Projects/Entropy/Physics/PhysicsEngine.hpp \
   Projects/Entropy/Physics/PhysicsObject.hpp \
   Projects/Trespass/src/Player.hpp Projects/Entropy/Game/GameObject.hpp \
@@ -774,47 +755,7 @@ Projects/Entropy/Graphics/2dRenderer.hpp:
 
 Projects/Entropy/Graphics/shader.hpp:
 
-Libraries/glm/gtx/string_cast.hpp:
-
-Libraries/glm/gtx/../glm.hpp:
-
-Libraries/glm/gtx/../gtc/type_precision.hpp:
-
-Libraries/glm/gtc/../ext/scalar_float_sized.hpp:
-
-Libraries/glm/gtc/../ext/scalar_int_sized.hpp:
-
-Libraries/glm/gtc/../ext/scalar_uint_sized.hpp:
-
-Libraries/glm/gtc/../detail/type_vec2.hpp:
-
-Libraries/glm/gtc/../detail/type_mat2x2.hpp:
-
-Libraries/glm/gtc/../detail/type_mat2x3.hpp:
-
-Libraries/glm/gtc/../detail/type_mat2x4.hpp:
-
-Libraries/glm/gtc/../detail/type_mat3x2.hpp:
-
-Libraries/glm/gtc/../detail/type_mat3x4.hpp:
-
-Libraries/glm/gtc/../detail/type_mat4x2.hpp:
-
-Libraries/glm/gtc/../detail/type_mat4x3.hpp:
-
-Libraries/glm/gtc/type_precision.inl:
-
-Libraries/glm/gtx/../gtc/quaternion.hpp:
-
-Libraries/glm/gtx/../gtx/dual_quaternion.hpp:
-
-Libraries/glm/gtx/../gtc/constants.hpp:
-
-Libraries/glm/gtx/dual_quaternion.inl:
-
-Libraries/glm/gtx/../geometric.hpp:
-
-Libraries/glm/gtx/string_cast.inl:
+Libraries/stb/stb_image.h:
 
 Projects/Entropy/Physics/PhysicsEngine.hpp:
 
