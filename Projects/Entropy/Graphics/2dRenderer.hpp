@@ -61,6 +61,7 @@ namespace Entropy
       GLuint VertexArrayID;
       GLuint programID;
       GLuint debugCenterShader;
+      GLuint debugShaderID;
       std::vector<Renderable*> objects = std::vector<Renderable*>();
 
 

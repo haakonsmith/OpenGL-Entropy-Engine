@@ -220,7 +220,7 @@ void m_2dRenderer::render(Renderable* obj)
   );
 
   // Draw the triangle !
-  glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total . 1 RightTriangle
+  glDrawArrays(GL_TRIANGLES, 0, obj->vertices.size()/3); // Starting from vertex 0; 3 vertices total . 1 RightTriangle
 
   GL_LOG("draw arrays ");
 
@@ -244,7 +244,7 @@ void m_2dRenderer::renderOutline(Renderable* _renderable)
   GL_LOG("bind uniform ");
   // LOG(glm::to_string(obj.MVP));
 
-
+  glUseProgram(debugShaderID);
   
   // 1st attribute buffer : vertices
   glEnableVertexAttribArray(0);
@@ -266,7 +266,7 @@ void m_2dRenderer::renderOutline(Renderable* _renderable)
   // glColor3i(2, 1, 1);
   // GL_LOG("assign colour");
 
-  glDrawArrays(GL_LINE_LOOP, 0, 3); // Starting from vertex 0; 3 vertices total . 1 RightTriangle
+  glDrawArrays(GL_LINE_LOOP, 0, _renderable->vertices.size()/3); // Starting from vertex 0; 3 vertices total . 1 RightTriangle
   GL_LOG("draw arrays ");
   glDisableVertexAttribArray(0);
 
@@ -335,6 +335,8 @@ m_2dRenderer::m_2dRenderer(unsigned int width, unsigned int height)
   programID = LoadShaders("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader");
 
   debugCenterShader = LoadShaders("shaders/centerDebug.vertexshader", "shaders/centerDebug.fragmentshader");
+
+  debugShaderID = LoadShaders("shaders/debug/red.vertexshader", "shaders/debug/red.fragmentshader");
 
   GL_LOG("Renderer init");
 }

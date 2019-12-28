@@ -158,6 +158,8 @@ class Trespass : public Entropy::BaseApplication
 
             tri = new Renderable(vertices);
 
+            renderer->drawCenter(true);
+
             
 
             // renderer->add_renderable(tri);
@@ -167,12 +169,13 @@ class Trespass : public Entropy::BaseApplication
             world = new Entropy::PhysicsEngine();
 
             world->addObject(player.get());
+            
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         }
 
         void loop() override {
             glfwSetTime(0);
 
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
             tri->position.x = i;
