@@ -22,9 +22,9 @@ workspace "Premake"
 	-- We use filters to set options, a new feature of Premake5.
 	
 	-- We now only set settings for the Debug configuration
+	symbols "On"
 	filter { "configurations:Debug" }
 		-- We want debug symbols in our debug config
-		symbols "On"
 	
 	-- We now only set settings for Release
 	filter { "configurations:Release" }

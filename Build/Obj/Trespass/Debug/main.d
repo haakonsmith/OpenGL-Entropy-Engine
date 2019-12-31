@@ -223,6 +223,7 @@ Build/Obj/Trespass/Debug/main.o: Projects/Trespass/main.cpp \
   Libraries/glm/gtc/type_ptr.inl /usr/local/include/GLFW/glfw3.h \
   Projects/Entropy/Entropy.hpp Projects/Entropy/Application.hpp \
   Projects/Entropy/Graphics/Renderable.hpp \
+  Projects/Entropy/Graphics/Shapes/Shape.hpp \
   Projects/Entropy/Graphics/2dRenderer.hpp \
   Projects/Entropy/Graphics/shader.hpp Libraries/stb/stb_image.h \
   Projects/Entropy/Physics/PhysicsEngine.hpp \
@@ -750,6 +751,8 @@ Projects/Entropy/Entropy.hpp:
 Projects/Entropy/Application.hpp:
 
 Projects/Entropy/Graphics/Renderable.hpp:
+
+Projects/Entropy/Graphics/Shapes/Shape.hpp:
 
 Projects/Entropy/Graphics/2dRenderer.hpp:
 

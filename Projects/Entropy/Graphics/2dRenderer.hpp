@@ -62,6 +62,7 @@ namespace Entropy
       GLuint programID;
       GLuint debugCenterShader;
       GLuint debugShaderID;
+      GLuint debugLineShaderID;
       std::vector<Renderable*> objects = std::vector<Renderable*>();
 
 
@@ -79,7 +80,8 @@ namespace Entropy
       /**
        * Converts coordinate vector coordinate to OpenGL float space
        */
-      glm::vec3 coordinate_transform(glm::vec3 coords);
+      glm::vec3 modelSpace(glm::vec3 coords);
+      
   
       /**
        * Converts coordinate vector coordinate to OpenGL float space
@@ -91,13 +93,18 @@ namespace Entropy
        */
       void renderOutline(Renderable* _renderable);
   
-      GLuint loadTexture(std::string path);
 
       void genVertexBuffer(Renderable* _renderable);
       void genUVBuffer(Renderable* _renderable);
 
 
     public:
+      /**
+        * Draw line between two world space points
+        */
+      void renderLine(glm::vec3 p1, glm::vec3 p2);
+
+      GLuint loadTexture(std::string path);
       /**
         * Add renderable object to objects.
         * 

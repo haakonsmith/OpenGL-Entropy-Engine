@@ -138,6 +138,7 @@ Build/Obj/Entropy/Debug/2dRenderer.o: \
   Libraries/glm/integer.hpp Libraries/glm/detail/func_integer.inl \
   Libraries/glm/detail/func_integer_simd.inl \
   Libraries/glm/detail/../simd/integer.h \
+  Projects/Entropy/Graphics/Shapes/Shape.hpp \
   Projects/Entropy/Graphics/shader.hpp \
   Libraries/glm/gtc/matrix_transform.hpp Libraries/glm/gtc/../mat4x4.hpp \
   Libraries/glm/gtc/../vec2.hpp Libraries/glm/gtc/../vec3.hpp \
@@ -546,6 +547,8 @@ Libraries/glm/detail/func_integer.inl:
 Libraries/glm/detail/func_integer_simd.inl:
 
 Libraries/glm/detail/../simd/integer.h:
+
+Projects/Entropy/Graphics/Shapes/Shape.hpp:
 
 Projects/Entropy/Graphics/shader.hpp:
 

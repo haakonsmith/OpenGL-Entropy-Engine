@@ -136,6 +136,7 @@ Build/Obj/Trespass/Debug/Player.o: Projects/Trespass/src/Player.cpp \
   Libraries/glm/integer.hpp Libraries/glm/detail/func_integer.inl \
   Libraries/glm/detail/func_integer_simd.inl \
   Libraries/glm/detail/../simd/integer.h \
+  Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp \
   Projects/Entropy/Game/../Physics/PhysicsObject.hpp
 
 Projects/Trespass/src/Player.hpp:
@@ -457,5 +458,7 @@ Libraries/glm/detail/func_integer.inl:
 Libraries/glm/detail/func_integer_simd.inl:
 
 Libraries/glm/detail/../simd/integer.h:
+
+Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp:
 
 Projects/Entropy/Game/../Physics/PhysicsObject.hpp:
