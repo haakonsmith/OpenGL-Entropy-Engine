@@ -33,6 +33,10 @@ public:
   vector<GLfloat> UVs;
   virtual void setPosition(vec3 v) {position = v;}
   virtual vec3 getPosition() {return position;}
+  virtual void setMVP(mat4 mvp) {MVP = mvp;}
+  virtual mat4 getMVP() {return MVP;}
+
+
 
   void setTexture(GLuint tex) {texture = tex; TextureINIT = true;}
 

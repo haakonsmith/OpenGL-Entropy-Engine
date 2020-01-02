@@ -1,6 +1,7 @@
 #include "../Graphics/Renderable.hpp"
 #include "../Physics/PhysicsObject.hpp"
 #include <glm/glm.hpp>
+#include "../Graphics/Shapes/Shape.hpp"
 
 #pragma once
 
@@ -16,6 +17,7 @@ public:
     vec3 getPosition() {return GameObject::Renderable::position;}
 
     GameObject();
+    GameObject(Shape shape);
     ~GameObject();
 };
 

@@ -75,7 +75,7 @@ void m_2dRenderer::transform(Renderable* obj)
   // Our ModelViewProjection : multiplication of our 3 matrices
   MVP = Projection * View * model; // Remember, matrix multiplication is the other way around
 
-  obj->MVP = MVP;
+  obj->setMVP(MVP);
 }
 
 void m_2dRenderer::genVertexBuffer(Renderable* _renderable)
@@ -165,7 +165,7 @@ GLuint m_2dRenderer::loadTexture(std::string path) {
   return textureID;
 }
 
-void m_2dRenderer::render(Renderable* obj)
+void m_2dRenderer::render(Renderable* _renderable)
 {
   // glBindBuffer(GL_ARRAY_BUFFER, obj.bufferobject);
   glUseProgram(programID);
@@ -181,14 +181,14 @@ void m_2dRenderer::render(Renderable* obj)
 
 
 
-  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, glm::value_ptr(obj->MVP));
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, glm::value_ptr(_renderable->getMVP()));
 
   GL_LOG("bind uniform ");
   // LOG(glm::to_string(obj.MVP));
 
   // Bind our texture in Texture Unit 0
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, obj->texture);
+  glBindTexture(GL_TEXTURE_2D, _renderable->texture);
   // Set our "myTextureSampler" sampler to use Texture Unit 0
   glUniform1i(TextureID, 0);
 
@@ -196,8 +196,8 @@ void m_2dRenderer::render(Renderable* obj)
   
   // 1st attribute buffer : vertices
   glEnableVertexAttribArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, obj->vertexBufferID);
-  GL_LOG("bind buffer " << obj->vertexBufferID);
+  glBindBuffer(GL_ARRAY_BUFFER, _renderable->vertexBufferID);
+  GL_LOG("bind buffer " << _renderable->vertexBufferID);
 
   glVertexAttribPointer(
       0,        // attribute 0. No particular reason for 0, but must match the layout in the shader.
@@ -211,7 +211,7 @@ void m_2dRenderer::render(Renderable* obj)
   GL_LOG("Atrib pointer");
   // 2nd attribute buffer : UVs
   glEnableVertexAttribArray(1);
-  glBindBuffer(GL_ARRAY_BUFFER, obj->UVBufferID);
+  glBindBuffer(GL_ARRAY_BUFFER, _renderable->UVBufferID);
   glVertexAttribPointer(
     1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
     2,                                // size : U+V => 2
@@ -222,7 +222,7 @@ void m_2dRenderer::render(Renderable* obj)
   );
 
   // Draw the triangle !
-  glDrawArrays(GL_TRIANGLES, 0, obj->vertices.size()/3); // Starting from vertex 0; 3 vertices total . 1 RightTriangle
+  glDrawArrays(GL_TRIANGLES, 0, _renderable->vertices.size()/3); // Starting from vertex 0; 3 vertices total . 1 RightTriangle
 
   GL_LOG("draw arrays ");
 
@@ -302,7 +302,7 @@ void m_2dRenderer::renderOutline(Renderable* _renderable)
 
   GL_LOG("get uniform ");
 
-  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, glm::value_ptr(_renderable->MVP));
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, glm::value_ptr(_renderable->getMVP()));
 
   GL_LOG("bind uniform ");
   // LOG(glm::to_string(obj.MVP));
@@ -346,7 +346,7 @@ void m_2dRenderer::renderCenter(Renderable* _renderable)
 
   GL_LOG("get uniform ");
 
-  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, glm::value_ptr(_renderable->MVP));
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, glm::value_ptr(_renderable->getMVP()));
 
   glUniform3f(centerID, 0.5,0.5,0.5);
 

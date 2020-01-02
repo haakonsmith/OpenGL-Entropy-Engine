@@ -163,6 +163,8 @@ class Trespass : public Entropy::BaseApplication
             tri->setPosition(vec3(320.0f, 240.0f, 0.0f));
             tri->setTexture(renderer->loadTexture("floor.png"));
 
+            shard_ptr<GameObject> quad = make_shared<GameObject>(); 
+
             // renderer->drawOutline(true);
 
             

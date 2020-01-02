@@ -7,6 +7,10 @@ GameObject::GameObject() : Renderable(), PhysicsObject() {
 
 }
 
+GameObject::GameObject(Shape shape) : Renderable(shape), PhysicsObject(shape) {
+
+}
+
 GameObject::~GameObject() {
 
 }
