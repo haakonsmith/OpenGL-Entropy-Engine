@@ -135,7 +135,8 @@ Build/Obj/Entropy/Debug/PhysicsObject.o: \
   Libraries/glm/matrix.hpp Libraries/glm/vector_relational.hpp \
   Libraries/glm/integer.hpp Libraries/glm/detail/func_integer.inl \
   Libraries/glm/detail/func_integer_simd.inl \
-  Libraries/glm/detail/../simd/integer.h
+  Libraries/glm/detail/../simd/integer.h \
+  Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp
 
 Projects/Entropy/Physics/PhysicsObject.hpp:
 
@@ -452,3 +453,5 @@ Libraries/glm/detail/func_integer.inl:
 Libraries/glm/detail/func_integer_simd.inl:
 
 Libraries/glm/detail/../simd/integer.h:
+
+Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp:

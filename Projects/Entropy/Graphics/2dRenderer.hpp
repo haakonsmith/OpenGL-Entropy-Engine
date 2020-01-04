@@ -10,17 +10,19 @@
   #include "Renderable.hpp"
   #include "shader.hpp"
   // #define GLM_ENABLE_EXPERIMENTAL
-  #include <glm/glm.hpp>
+#include "glm/glm.hpp"
   // #include <glm/gtx/string_cast.hpp>
-  #include <glm/gtc/matrix_transform.hpp>
-  #include <glm/gtc/type_ptr.hpp>
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
-  #define STB_IMAGE_IMPLEMENTATION
-  #include <stb/stb_image.h>
+  
+  
   
 #else
 #error "2d renderer included twice"
 #endif
+
+#pragma once
 
 #define NDEBUG
 #define SUPRESS
@@ -67,20 +69,6 @@ namespace Entropy
 
 
 
-      /**
-       * Scaling factor for render space coordinates
-       */
-      int coordinateSpace = 20;
-
-      /**
-       * Converts coordinate space coordinate to OpenGL float space
-       */
-      float coordinate_transform(float coord, int dire);
-
-      /**
-       * Converts coordinate vector coordinate to OpenGL float space
-       */
-      glm::vec3 modelSpace(glm::vec3 coords);
       
   
       /**
@@ -100,6 +88,12 @@ namespace Entropy
 
     public:
       /**
+       * Converts coordinate vector coordinate to OpenGL float space
+       */
+      glm::vec3 modelSpace(glm::vec3 coords);
+
+      glm::vec3 worldSpace(glm::vec3 coords);
+      /**
         * Draw line between two world space points
         */
       void renderLine(glm::vec3 p1, glm::vec3 p2);
@@ -110,7 +104,7 @@ namespace Entropy
         * 
         * Required for some renderer optimizations
         */
-      void add_renderable(Renderable* _renderable);
+      void addRenderable(Renderable* _renderable);
 
       /**
        * Render a renderable without adding to the renderer.

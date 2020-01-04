@@ -1,7 +1,8 @@
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 #include <vector>
 #include "PhysicsObject.hpp"
 #include <iostream>
+#include "../Graphics/2dRenderer.hpp"
 
 #pragma once
 
@@ -14,6 +15,8 @@ class PhysicsEngine
 private:
     /* data */
 public:
+    m_2dRenderer& renderer;
+
     /**
      * list of objects
      */
@@ -29,7 +32,7 @@ public:
      */
     void addObject(PhysicsObject* obj) {objects.push_back(obj);}
 
-    PhysicsEngine(/* args */);
+    PhysicsEngine(m_2dRenderer & _renderer);
     ~PhysicsEngine();
 };
 

@@ -133,6 +133,10 @@ class Trespass : public Entropy::BaseApplication
 
         shared_ptr<Player> player;
 
+        shared_ptr<GameObject> quad;
+
+        double previousFrameTime;
+
         int i = 0;
 
     public:
@@ -141,8 +145,6 @@ class Trespass : public Entropy::BaseApplication
             player = make_shared<Player>();
 
             player->setPosition(vec3(320,240,0));
-
-            player->scale = vec3(1,1,1);
 
 
             // Ensure we can capture the escape key being pressed below
@@ -163,25 +165,43 @@ class Trespass : public Entropy::BaseApplication
             tri->setPosition(vec3(320.0f, 240.0f, 0.0f));
             tri->setTexture(renderer->loadTexture("floor.png"));
 
-            shard_ptr<GameObject> quad = make_shared<GameObject>(); 
+            quad = make_shared<GameObject>(Rectangle()); 
+
+            quad->setPosition(vec3(320,240,0));
+
+            quad->scale = vec3(1,1,1);
 
             // renderer->drawOutline(true);
 
             
 
-            renderer->add_renderable(tri);
-            player->scale =  vec3(0.1f,0.1f,0.1f);
-            renderer->add_renderable(player.get());
-            // renderer->add_renderable(new Renderable(vertices, glm::vec3(100,100,-10)));
 
-            world = new Entropy::PhysicsEngine();
+            renderer->addRenderable(tri);
+            quad->scale =  vec3(0.1f,0.1f,0.1f);
+            renderer->addRenderable(quad.get());
+            player->scale =  vec3(0.1f,0.1f,0.1f);
+            renderer->addRenderable(player.get());
+
+            // quad->setMVP( quad->Renderable::MVP);
+            // renderer->addRenderable(new Renderable(vertices, glm::vec3(100,100,-10)));
+
+            world = new Entropy::PhysicsEngine(*renderer);
 
             world->addObject(player.get());
+            world->addObject(quad.get());
+
+            LOG(quad->Renderable::MVP[0].x);
+            LOG(quad->PhysicsObject::MVP[0].x);
+            
             
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         }
 
         void loop() override {
+
+            previousFrameTime = glfwGetTime();
+            
+
             glfwSetTime(0);
 
             glClear(GL_COLOR_BUFFER_BIT);
@@ -191,7 +211,6 @@ class Trespass : public Entropy::BaseApplication
 
             renderer->transform(player.get());
 
-            renderer->renderFrame();
 
             
 
@@ -202,7 +221,11 @@ class Trespass : public Entropy::BaseApplication
 
             MouseYPos = (MouseYPos - 480) * -1;
 
-            
+
+            renderer->renderFrame();
+
+            world->timeStep(previousFrameTime);
+            renderer->renderLine(( player->velocity)  + player->getPosition(), player->getPosition());
 
             player->rotation = glm::degrees(atan2((MouseYPos - player->getPosition().y), (MouseXPos - player->getPosition().x)) * -1) * -1 + 45;
             
@@ -236,14 +259,21 @@ class Trespass : public Entropy::BaseApplication
 
             
 
-            renderer->renderLine(( player->velocity)  + player->getPosition(), player->getPosition());
-            renderer->renderLine(vec3(0,0,0), player->getPosition());
+            
 
+            // renderer->renderLine(vec3(0,0,0), player->getPosition());
+            // glm::mat4 myMatrix = glm::translate(glm::mat4(), glm::vec3(10.0f, 0.0f, 0.0f));
+
+            renderer->renderLine(vec3(0),  vec3(player->getModelMatrix()* vec4(0.0f,1.0f,0.0f, 1.0f)));
+            // LOG((quad->getModelMatrix() * vec4(1,1,1, 1.0f)).x);
+            // LOG((glm::translate(glm::mat4(), glm::vec3(10.0f, 1.0f, 1.0f)) * vec4(1.0f,0.0f,0.0f, 1.0f)).x);
+            // LOG(renderer->worldSpace(vec3(player->translationMatrix * vec4(0.0f,1.0f,0.0f, 1.0f))).x);
+
+            
             glfwSwapBuffers(window);
             glfwPollEvents();
 
 
-            world->timeStep(glfwGetTime());
 
             auto time = glfwGetTime();
             if (time < 0.016)

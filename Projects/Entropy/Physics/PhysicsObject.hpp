@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 #include <vector>
 #include "../Graphics/Shapes/Shape.hpp"
 
@@ -12,10 +12,17 @@ namespace Entropy
 
 class PhysicsObject
 {
+protected:
+    mat4 modelMatrix;
 
 public:
     virtual void setPosition(vec3 v) {position = v;}
     virtual vec3 getPosition() {return position;}
+
+    virtual void setMVP(mat4 mvp) {MVP = mvp;}
+    virtual void setModelMatrix(mat4 m) {modelMatrix = m;}
+
+    virtual mat4 getModelMatrix() {return modelMatrix;}
 
     glm::mat4 MVP;
 

@@ -1,6 +1,6 @@
 #define GL_SILENCE_DEPRECATION
 #include <OpenGL/gl3.h>
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 #include "Shapes/Shape.hpp"
 #include <vector>
 
@@ -21,6 +21,8 @@ public:
   vec3 scale;
   double rotation;
   mat4 MVP;
+  mat4 modelMatrix, viewMatrix, projectionMatrix;
+  mat4 scaleMatrix, translationMatrix, rotationMatrix;
 
   GLuint vertexBufferID;
   GLuint UVBufferID;
@@ -28,6 +30,8 @@ public:
   GLuint texture;
 
   bool TextureINIT = false, UVBufferINIT = false, vertexBufferINIT = false;
+
+  bool isLight = false;
   
   vector<GLfloat> vertices;
   vector<GLfloat> UVs;
@@ -35,11 +39,14 @@ public:
   virtual vec3 getPosition() {return position;}
   virtual void setMVP(mat4 mvp) {MVP = mvp;}
   virtual mat4 getMVP() {return MVP;}
+  virtual void setModelMatrix(mat4 m) {modelMatrix = m;}
+
+  virtual mat4 getModelMatrix() {return modelMatrix;}
+
 
 
 
   void setTexture(GLuint tex) {texture = tex; TextureINIT = true;}
-
 
 
   // create default Renderable

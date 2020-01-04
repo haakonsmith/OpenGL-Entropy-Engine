@@ -1,7 +1,7 @@
 
 #ifndef BASEAPPLICATION
   #define BASEAPPLICATION
-  #include <GLFW/glfw3.h>
+#include <GLFW/glfw3.h>
   #include <iostream>
 #else
 #error "BaseApplication included twice"

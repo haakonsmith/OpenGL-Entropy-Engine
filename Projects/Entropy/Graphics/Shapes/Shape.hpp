@@ -1,7 +1,7 @@
 
 #include <vector>
 #define GL_SILENCE_DEPRECATION
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 #include <OpenGL/gl3.h>
 
 #pragma once
