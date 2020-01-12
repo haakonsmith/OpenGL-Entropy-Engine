@@ -21,7 +21,7 @@ public:
   vec3 scale;
   double rotation;
   mat4 MVP;
-  mat4 modelMatrix, viewMatrix, projectionMatrix;
+  mat4 modelMatrix;
   mat4 scaleMatrix, translationMatrix, rotationMatrix;
 
   GLuint vertexBufferID;
@@ -35,12 +35,24 @@ public:
   
   vector<GLfloat> vertices;
   vector<GLfloat> UVs;
+
+  // Getters and Setters
   virtual void setPosition(vec3 v) {position = v;}
+  inline virtual void setPosition(vec2 v) {setPosition(vec3(v, position.z));}
+  inline virtual void setPosition(float x, float y) {setPosition(vec3(x, y, position.z));}
+  inline virtual void setPosition(float x, float y, float z) {setPosition(vec3(x, y, z));}
   virtual vec3 getPosition() {return position;}
+
+  virtual  void setScale(vec3 v) {scale = v;}
+  inline virtual void setScale(float x, float y) {setScale(vec3(x, y, scale.z));}
+  inline virtual void setScale(float x, float y, float z) {setScale(vec3(x, y, z));}
+  inline virtual void setScale(vec2 v) {setScale(vec3(v, scale.z));}
+  virtual vec3 getScale() {return scale;}
+
   virtual void setMVP(mat4 mvp) {MVP = mvp;}
   virtual mat4 getMVP() {return MVP;}
-  virtual void setModelMatrix(mat4 m) {modelMatrix = m;}
 
+  virtual void setModelMatrix(mat4 m) {modelMatrix = m;}
   virtual mat4 getModelMatrix() {return modelMatrix;}
 
 

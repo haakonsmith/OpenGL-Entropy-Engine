@@ -60,6 +60,9 @@ namespace Entropy
 
       bool debugOutline = false, debugCenter = false;
 
+  
+      mat4 viewMatrix, projectionMatrix;
+
       GLuint VertexArrayID;
       GLuint programID;
       GLuint debugCenterShader;

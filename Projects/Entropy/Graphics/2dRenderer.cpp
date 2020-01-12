@@ -35,9 +35,10 @@ void m_2dRenderer::renderFrame()
           // LOG(worldSpace(vec3(obj->getModelMatrix() * vec4(obj->vertices[i], obj->vertices[i + 1], obj->vertices[i + 2], 1.0f))).x);
           LOG(i);
           // renderer.renderLine(vec3(glm::vec4(glm::vec3(obj->vertices[i],obj->vertices[i+1],obj->vertices[i+2]), 1.0) * obj->MVP), obj->getPosition());
-          renderLine(
-              worldSpace(vec3(lightObj->getModelMatrix() * vec4(lightObj->vertices[i], lightObj->vertices[i + 1], lightObj->vertices[i + 2], 1.0f))),
-              obj->getPosition());
+          // renderLine(
+          //     worldSpace(vec3(lightObj->getModelMatrix() * vec4(lightObj->vertices[i], lightObj->vertices[i + 1], lightObj->vertices[i + 2], 1.0f))),
+          //     obj->getPosition());
+          // renderLine
         }
       }
     }
@@ -68,20 +69,6 @@ void m_2dRenderer::transform(Renderable *_renderable)
   // // Or, for an ortho camera :
   // glm::mat4 Projection = glm::ortho((float)-(SCREEN_WIDTH/20)/2, (float)(SCREEN_WIDTH/20)/2, (float)-(SCREEN_HEIGHT/20)/2, (float)(SCREEN_HEIGHT/20)/2, 0.0f, 100.0f); // In world coordinates
 
-  _renderable->projectionMatrix = glm::ortho(-1.0f, // left
-                                             1.0f,  // right
-                                             -1.0f, // bottom
-                                             1.0f,  // top
-                                             0.0f,  // zNear
-                                             100.0f // zFar
-  );
-
-  // Camera matrix
-  _renderable->viewMatrix = glm::lookAt(
-      glm::vec3(0, 0, 6), // Camera is at (2,3,3), in World Space
-      glm::vec3(0, 0, 0), // and looks at the origin
-      glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-  );
 
   // Model matrix : an identity matrix (model will be at the origin)
   glm::mat4 model = glm::mat4(1.0f);
@@ -91,14 +78,14 @@ void m_2dRenderer::transform(Renderable *_renderable)
       glm::radians((float)_renderable->rotation),
       glm::vec3(0.0f, 0.0f, 1.0f));
 
-  _renderable->translationMatrix = glm::translate(model, modelSpace(_renderable->getPosition()));
+  _renderable->translationMatrix = glm::translate(model, (_renderable->getPosition()));
 
   _renderable->scaleMatrix = glm::scale(model, _renderable->scale);
 
   _renderable->setModelMatrix(_renderable->translationMatrix * _renderable->rotationMatrix * _renderable->scaleMatrix);
 
   // Our ModelViewProjection : multiplication of our 3 matrices
-  MVP = _renderable->projectionMatrix * _renderable->viewMatrix * _renderable->modelMatrix; // Remember, matrix multiplication is the other way around
+  MVP = projectionMatrix * viewMatrix * _renderable->modelMatrix; // Remember, matrix multiplication is the other way around
 
   _renderable->setMVP(MVP);
 }
@@ -404,6 +391,24 @@ m_2dRenderer::m_2dRenderer(unsigned int width, unsigned int height)
 {
   SCREEN_HEIGHT = height;
   SCREEN_WIDTH = width;
+
+  projectionMatrix = glm::ortho(0.0f, // left
+                                             (float) SCREEN_WIDTH,  // right
+                                             0.0f, // bottom
+                                             (float) SCREEN_HEIGHT,  // top
+                                             0.0f,  // zNear
+                                             100.0f // zFar
+  );
+
+  // Camera matrix
+  viewMatrix = glm::lookAt(
+      glm::vec3(0, 0, 6), // Camera is at (2,3,3), in World Space
+      glm::vec3(0, 0, 0), // and looks at the origin
+      glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+  );
+
+
+
 
   glGenVertexArrays(1, &VertexArrayID);
   glBindVertexArray(VertexArrayID);

@@ -13,12 +13,12 @@ namespace Entropy
 class GameObject : public Renderable, public PhysicsObject {
 
 public:
-    void setPosition(vec3 v) {GameObject::PhysicsObject::position = v; GameObject::Renderable::position = v;}
-    vec3 getPosition() {return GameObject::Renderable::position;}
+    void setPosition(vec3 v) override {GameObject::PhysicsObject::position = v; GameObject::Renderable::position = v;}
+    vec3 getPosition() override {return GameObject::Renderable::position;}
 
-    virtual void setModelMatrix(mat4 m) {Renderable::modelMatrix = m; PhysicsObject::modelMatrix = m;}
+    virtual void setModelMatrix(mat4 m) override {Renderable::modelMatrix = m; PhysicsObject::modelMatrix = m;}
 
-    virtual mat4 getModelMatrix() {return Renderable::modelMatrix;}
+    virtual mat4 getModelMatrix() override {return Renderable::modelMatrix;}
 
     void setMVP(mat4 mvp) override {GameObject::PhysicsObject::setMVP(mvp); GameObject::Renderable::setMVP(mvp);}
 

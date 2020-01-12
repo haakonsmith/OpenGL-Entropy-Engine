@@ -33,7 +33,7 @@ namespace Entropy
     }
 
     glClearColor(0.0, 0.0, 0.0, 0.0);            //Set the cleared screen colour to black
-    glViewport(0, 0, 1000, 1000); //This sets up the viewport so that the coordinates (0, 0) are at the top left of the window
+    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT); //This sets up the viewport so that the coordinates (0, 0) are at the top left of the window
 
     //Set up the orthographic projection so that coordinates (0, 0) are in the top left
     //and the minimum and maximum depth is -10 and 10. To enable depth just put in

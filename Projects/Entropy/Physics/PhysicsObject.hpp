@@ -32,6 +32,11 @@ public:
     vec3 position;
     vec3 velocity;
 
+    // std::function<void> customPhysicsStep;
+    // void (*customPhysicsStep) (double) = nullptr;
+    virtual void customPrePhysicsStep (double deltaTime) {};
+
+
     PhysicsObject();
     PhysicsObject(Shape shape) {vertices = shape.vertices;};
     ~PhysicsObject();

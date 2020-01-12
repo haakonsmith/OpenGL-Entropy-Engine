@@ -16,11 +16,21 @@ void PhysicsEngine::timeStep(float timeStep)
     for (auto obj : objects) {
       
 
-        
+        if (obj->velocity != vec3(0)) {
 
-        obj->velocity = obj->velocity -  ((obj->velocity * (float) (obj->friction * 10)) * timeStep);
+          // cout << obj->velocity.x << endl;
+          // cout << obj->velocity.y << endl;
+          // cout << obj->velocity.z << endl;
 
-        obj->setPosition(obj->position + (obj->velocity) * timeStep);
+          obj->customPrePhysicsStep((float) timeStep);
+
+          obj->velocity = obj->velocity -  ((obj->velocity * (float) (obj->friction * 10)) * timeStep);
+          
+
+          obj->setPosition(obj->position + (obj->velocity) * timeStep);
+        }
+
+        // if (obj->customPhysicsStep)
     }
 }
 

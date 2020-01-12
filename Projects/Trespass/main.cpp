@@ -15,6 +15,7 @@
 #include <cstring>
 #include <chrono>
 #include <thread>
+#include <functional>
 #include <unistd.h>
 
 #define PI 3.1415926535897932384626433832795028841971693993
@@ -163,6 +164,7 @@ class Trespass : public Entropy::BaseApplication
             tri = new Renderable(Rectangle());
 
             tri->setPosition(vec3(320.0f, 240.0f, 0.0f));
+            tri->setScale(320,240);
             tri->setTexture(renderer->loadTexture("floor.png"));
 
             quad = make_shared<GameObject>(Rectangle()); 
@@ -177,10 +179,11 @@ class Trespass : public Entropy::BaseApplication
 
 
             renderer->addRenderable(tri);
-            quad->scale =  vec3(0.1f,0.1f,0.1f);
+            quad->setScale(10.0f,10.0f,0.1f);
             renderer->addRenderable(quad.get());
-            player->scale =  vec3(0.1f,0.1f,0.1f);
+            player->setScale(10.0f,10.0f,0.1f);
             renderer->addRenderable(player.get());
+
 
             // quad->setMVP( quad->Renderable::MVP);
             // renderer->addRenderable(new Renderable(vertices, glm::vec3(100,100,-10)));
@@ -264,7 +267,7 @@ class Trespass : public Entropy::BaseApplication
             // renderer->renderLine(vec3(0,0,0), player->getPosition());
             // glm::mat4 myMatrix = glm::translate(glm::mat4(), glm::vec3(10.0f, 0.0f, 0.0f));
 
-            renderer->renderLine(vec3(0),  vec3(player->getModelMatrix()* vec4(0.0f,1.0f,0.0f, 1.0f)));
+            renderer->renderLine(vec3(0),  player->getPosition());
             // LOG((quad->getModelMatrix() * vec4(1,1,1, 1.0f)).x);
             // LOG((glm::translate(glm::mat4(), glm::vec3(10.0f, 1.0f, 1.0f)) * vec4(1.0f,0.0f,0.0f, 1.0f)).x);
             // LOG(renderer->worldSpace(vec3(player->translationMatrix * vec4(0.0f,1.0f,0.0f, 1.0f))).x);
