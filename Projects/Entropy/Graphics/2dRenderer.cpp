@@ -5,6 +5,7 @@
 
 namespace Entropy
 {
+
 void m_2dRenderer::addRenderable(Renderable *_renderable)
 {
   // renderables don't come prepackaged with MVP, so it needs to be created
@@ -13,36 +14,76 @@ void m_2dRenderer::addRenderable(Renderable *_renderable)
   objects.push_back(_renderable);
 }
 
+void m_2dRenderer::removeRenderable(Renderable* renderable) 
+{
+  // LOG(objects.size());
+  // objects.erase(find(objects.begin(), objects.end(), renderable));
+  // LOG(objects.size());
+
+  // auto const to_be_removed = std::partition(begin(v), end(v), [](auto p){ return *p % 2 != 0; });
+  //   std::for_each(to_be_removed, end(v), [](auto p) {
+  //       std::cout << "Deleting value " << *p << "...\n";
+  //       delete p;
+  //   });
+  //   v.erase(to_be_removed, end(v));
+
+  // auto const to_be_removed = std::partition(objects.begin(), objects.end(), [ renderable](auto p){ return p == renderable; });
+  //   std::for_each(to_be_removed, objects.end(), [](auto p) {
+  //       // std::cout << "Deleting value " << *p << "...\n";
+  //       // delete p;
+  //   });
+  //   objects.erase(to_be_removed, objects.end());
+for_each(objects.begin(), objects.end(), [](Renderable* r){ LOG(r->vertexBufferID);});
+
+  objects.erase (
+  std::remove_if (
+    objects.begin(), 
+    objects.end(), 
+    //here comes the C++11 lambda:
+    [renderable](Renderable* node) {
+      return node == renderable;
+    }
+  ), 
+  objects.end()
+);   
+for_each(objects.begin(), objects.end(), [](Renderable* r){ LOG(r->vertexBufferID);});
+// cin.get();
+
+
+
+}
+
 void m_2dRenderer::renderFrame()
 {
   for (auto obj : objects)
   {
+    LOG(obj->name);
     render(obj);
   }
 
-  for (auto obj : objects)
-  {
+  // for (auto obj : objects)
+  // {
 
-    if (obj->isLight)
-    {
-      for (auto lightObj : objects)
-      {
+  //   if (obj->isLight)
+  //   {
+  //     for (auto lightObj : objects)
+  //     {
 
-        for (auto i = 0; i < lightObj->vertices.size(); i += 3)
-        {
+  //       for (auto i = 0; i < lightObj->vertices.size(); i += 3)
+  //       {
 
-          // {
-          // LOG(worldSpace(vec3(obj->getModelMatrix() * vec4(obj->vertices[i], obj->vertices[i + 1], obj->vertices[i + 2], 1.0f))).x);
-          LOG(i);
-          // renderer.renderLine(vec3(glm::vec4(glm::vec3(obj->vertices[i],obj->vertices[i+1],obj->vertices[i+2]), 1.0) * obj->MVP), obj->getPosition());
-          // renderLine(
-          //     worldSpace(vec3(lightObj->getModelMatrix() * vec4(lightObj->vertices[i], lightObj->vertices[i + 1], lightObj->vertices[i + 2], 1.0f))),
-          //     obj->getPosition());
-          // renderLine
-        }
-      }
-    }
-  }
+  //         // {
+  //         // LOG(worldSpace(vec3(obj->getModelMatrix() * vec4(obj->vertices[i], obj->vertices[i + 1], obj->vertices[i + 2], 1.0f))).x);
+  //         LOG(i);
+  //         // renderer.renderLine(vec3(glm::vec4(glm::vec3(obj->vertices[i],obj->vertices[i+1],obj->vertices[i+2]), 1.0) * obj->MVP), obj->getPosition());
+  //         // renderLine(
+  //         //     worldSpace(vec3(lightObj->getModelMatrix() * vec4(lightObj->vertices[i], lightObj->vertices[i + 1], lightObj->vertices[i + 2], 1.0f))),
+  //         //     obj->getPosition());
+  //         // renderLine
+  //       }
+  //     }
+  //   }
+  // }
 
   glUseProgram(programID);
 
@@ -63,11 +104,6 @@ void m_2dRenderer::renderFrame()
 void m_2dRenderer::transform(Renderable *_renderable)
 {
   glm::mat4 MVP;
-
-  // Projection matrix : 45� Field of View, 4:3 ratio, display range : 0.1 unit <. 100 units
-  // glm::mat4 Projection = glm::perspective(glm::degrees(45.0f), 4.0f / 3.0f, 0.1f, 100.0f);
-  // // Or, for an ortho camera :
-  // glm::mat4 Projection = glm::ortho((float)-(SCREEN_WIDTH/20)/2, (float)(SCREEN_WIDTH/20)/2, (float)-(SCREEN_HEIGHT/20)/2, (float)(SCREEN_HEIGHT/20)/2, 0.0f, 100.0f); // In world coordinates
 
 
   // Model matrix : an identity matrix (model will be at the origin)
@@ -138,6 +174,67 @@ void m_2dRenderer::buffer(Renderable *_renderable)
     _renderable->texture = loadTexture("img_test.png");
 
   GL_LOG("finish buffer ");
+}
+
+float m_2dRenderer::distToNearestPoint(vec3 point) {
+
+  vector<float> distances;
+
+  distances.reserve(objects.size() * 3);
+
+  for (auto obj : objects)
+  {
+    for (size_t i = 0; i < obj->vertices.size(); i += 3)
+    {
+      vec3 point2 = vec3(obj->getModelMatrix() * vec4(vec3(obj->vertices[i], obj->vertices[i + 1], obj->vertices[i + 2]), 1));
+
+      distances.emplace_back(distance(point, point2));
+    }
+    
+  }
+  
+  return *min_element(distances.begin(), distances.end());
+}
+
+float m_2dRenderer::distToNearestPoint(vec3 point, Renderable* renderable) {
+
+  vector<float> distances;
+
+  distances.reserve(objects.size() * 3);
+
+  for (auto obj : objects)
+  {
+    if (obj != renderable) {
+
+      for (size_t i = 0; i < obj->vertices.size(); i += 3)
+      {
+        vec3 point2 = vec3(obj->getModelMatrix() * vec4(vec3(obj->vertices[i], obj->vertices[i + 1], obj->vertices[i + 2]), 1));
+
+        distances.emplace_back(distance(point, point2));
+      }
+    }
+  }
+  
+  return *min_element(distances.begin(), distances.end());
+}
+
+float m_2dRenderer::distToNearestPoint(Renderable* _renderable) {
+  // float distances[_renderable->vertices.size()/3];
+  vector<float> distances;
+
+
+  for (size_t i = 0; i < _renderable->vertices.size(); i += 3)
+    {
+      vec3 point = vec3(_renderable->getModelMatrix() * vec4(vec3(_renderable->vertices[i], _renderable->vertices[i + 1], _renderable->vertices[i + 2]), 1));
+
+
+      // distances[i] = distToNearestPoint(point, _renderable);
+      distances.emplace_back(distToNearestPoint(point, _renderable));
+    }
+  
+  // return *min_element(distances, distances + 3);
+    return *min_element(distances.begin(), distances.end());
+
 }
 
 GLuint m_2dRenderer::loadTexture(std::string path)
@@ -309,16 +406,19 @@ void m_2dRenderer::renderOutline(Renderable *_renderable)
 
   GL_LOG("get uniform ");
 
+  glUseProgram(debugShaderID);
+
   glUniformMatrix4fv(MatrixID, 1, GL_FALSE, glm::value_ptr(_renderable->MVP));
+  glUniform3f(glGetUniformLocation(debugShaderID, "inColor"), 1, 0, 0);
 
   GL_LOG("bind uniform ");
   // LOG(glm::to_string(obj.MVP));
 
-  glUseProgram(debugShaderID);
 
   // 1st attribute buffer : vertices
   glEnableVertexAttribArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, _renderable->vertexBufferID);
+  // LOG(_renderable->name);
   GL_LOG("bind buffer " << _renderable->vertexBufferID);
 
   glVertexAttribPointer(
@@ -387,11 +487,42 @@ void m_2dRenderer::renderCenter(Renderable *_renderable)
   GL_LOG("Render");
 }
 
+void m_2dRenderer::renderQuad(vec3 position, float width, float height, bool hollow, vec3 colour) {
+  
+  GLuint MatrixID = glGetUniformLocation(debugShaderID, "MVP");
+
+  GL_LOG("get uniform ");
+
+  mat4 MVP = projectionMatrix * viewMatrix * (glm::translate(mat4(1.0f), (position)) * glm::scale(mat4(1.0f), vec3(width, height, 1)));
+
+  glUseProgram(debugShaderID);
+  
+  glUniformMatrix4fv(MatrixID, 1, GL_FALSE, glm::value_ptr(MVP));
+  glUniform3f(glGetUniformLocation(debugShaderID, "inColor"), colour.x, colour.y, colour.z);
+
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, debugQuad.vertexBufferID);
+   glVertexAttribPointer(
+      0,        // attribute 0. No particular reason for 0, but must match the layout in the shader.
+      3,        // size
+      GL_FLOAT, // type
+      GL_FALSE, // normalized?
+      0,        // stride
+      (void *)0 // array buffer offset
+  );
+  glDrawArrays(hollow ? GL_LINE_LOOP : GL_TRIANGLES, 0, debugQuad.vertices.size() / 3);
+  glDisableVertexAttribArray(0);
+}
+
 m_2dRenderer::m_2dRenderer(unsigned int width, unsigned int height)
 {
   SCREEN_HEIGHT = height;
   SCREEN_WIDTH = width;
 
+
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   projectionMatrix = glm::ortho(0.0f, // left
                                              (float) SCREEN_WIDTH,  // right
                                              0.0f, // bottom
@@ -406,6 +537,10 @@ m_2dRenderer::m_2dRenderer(unsigned int width, unsigned int height)
       glm::vec3(0, 0, 0), // and looks at the origin
       glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
   );
+
+  debugQuad = Renderable(Rectangle());
+
+  buffer(&debugQuad);
 
 
 
@@ -439,6 +574,9 @@ m_2dRenderer::~m_2dRenderer()
 {
 
   glDeleteProgram(programID);
+  glDeleteProgram(debugLineShaderID);
+  glDeleteProgram(debugShaderID);
+  glDeleteProgram(debugCenterShader);
   glDeleteVertexArrays(1, &VertexArrayID);
 
   // for (auto v : objects)

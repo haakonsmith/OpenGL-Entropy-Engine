@@ -1,6 +1,6 @@
-Build/Obj/Entropy/Debug/PhysicsObject.o: \
-  Projects/Entropy/Physics/PhysicsObject.cpp \
-  Projects/Entropy/Physics/PhysicsObject.hpp Libraries/glm/glm.hpp \
+Build/Obj/Trespass/Debug/Bullet.o: Projects/Trespass/src/Bullet.cpp \
+  Projects/Trespass/src/Bullet.hpp Projects/Entropy/Game/GameObject.hpp \
+  Projects/Entropy/Game/../Graphics/Renderable.hpp Libraries/glm/glm.hpp \
   Libraries/glm/detail/_fixes.hpp Libraries/glm/detail/setup.hpp \
   Libraries/glm/detail/../simd/platform.h Libraries/glm/fwd.hpp \
   Libraries/glm/detail/qualifier.hpp Libraries/glm/vec2.hpp \
@@ -136,10 +136,17 @@ Build/Obj/Entropy/Debug/PhysicsObject.o: \
   Libraries/glm/integer.hpp Libraries/glm/detail/func_integer.inl \
   Libraries/glm/detail/func_integer_simd.inl \
   Libraries/glm/detail/../simd/integer.h \
-  Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp \
-  Projects/Entropy/Physics/collisionData.hpp
+  Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp \
+  Projects/Entropy/Game/../Physics/PhysicsObject.hpp \
+  Projects/Entropy/Game/../Physics/../Graphics/Shapes/Shape.hpp \
+  Projects/Entropy/Game/../Physics/collisionData.hpp \
+  Projects/Entropy/Physics/CollisionData.hpp
 
-Projects/Entropy/Physics/PhysicsObject.hpp:
+Projects/Trespass/src/Bullet.hpp:
+
+Projects/Entropy/Game/GameObject.hpp:
+
+Projects/Entropy/Game/../Graphics/Renderable.hpp:
 
 Libraries/glm/glm.hpp:
 
@@ -455,6 +462,12 @@ Libraries/glm/detail/func_integer_simd.inl:
 
 Libraries/glm/detail/../simd/integer.h:
 
-Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp:
+Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp:
 
-Projects/Entropy/Physics/collisionData.hpp:
+Projects/Entropy/Game/../Physics/PhysicsObject.hpp:
+
+Projects/Entropy/Game/../Physics/../Graphics/Shapes/Shape.hpp:
+
+Projects/Entropy/Game/../Physics/collisionData.hpp:
+
+Projects/Entropy/Physics/CollisionData.hpp:

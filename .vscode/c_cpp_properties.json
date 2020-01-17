@@ -11,6 +11,7 @@
                 "/Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk/System/Library/Frameworks"
             ],
             "compilerPath": "/usr/bin/clang",
+            "miDebuggerPath": "/usr/bin/lldb",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64"

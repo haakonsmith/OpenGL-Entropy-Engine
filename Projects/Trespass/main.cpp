@@ -106,7 +106,9 @@ double distance(double x_1, double y_1, double x_2, double y_2)
 
 #define NDEBUG
 #include <Entropy.hpp>
+#include "src/Bullet.hpp"
 #include "src/Player.hpp"
+
 
 #include <type_traits> 
 
@@ -152,11 +154,12 @@ class Trespass : public Entropy::BaseApplication
             glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
             renderer = new Entropy::m_2dRenderer(640, 480);
-
+            renderer->drawOutline(true);
             std::vector<GLfloat> vertices = {
                 -1.0f, -1.0f, 0.0f, // x,y,z vertex 1
                 1.0f, -1.0f, 0.0f,  // x,y,z vertex 2
                 1.0f, 1.0f, 0.0f,   // x,y,z vertex 3
+                -1.0f, 1.0f, 0.0f,  // x,y,z vertex 3
             };
 
         
@@ -169,7 +172,17 @@ class Trespass : public Entropy::BaseApplication
 
             quad = make_shared<GameObject>(Rectangle()); 
 
-            quad->setPosition(vec3(320,240,0));
+            quad->setPosition(vec3(320,280,0));
+
+            quad->PhysicsObject::vertices = vertices;
+
+            quad->boundingBox.width = 10;
+            quad->boundingBox.height = 10;
+
+            player->boundingBox.width = 10;
+            player->boundingBox.height = 10;
+
+            player->physicsType = ACTIVE;
 
             quad->scale = vec3(1,1,1);
 
@@ -185,6 +198,9 @@ class Trespass : public Entropy::BaseApplication
             renderer->addRenderable(player.get());
 
 
+    
+
+
             // quad->setMVP( quad->Renderable::MVP);
             // renderer->addRenderable(new Renderable(vertices, glm::vec3(100,100,-10)));
 
@@ -192,9 +208,13 @@ class Trespass : public Entropy::BaseApplication
 
             world->addObject(player.get());
             world->addObject(quad.get());
+            world->debug = true;
 
-            LOG(quad->Renderable::MVP[0].x);
-            LOG(quad->PhysicsObject::MVP[0].x);
+            player->renderer = renderer;
+            player->world = world;
+
+            // LOG(quad->Renderable::MVP[0].x);
+            // LOG(quad->PhysicsObject::MVP[0].x);
             
             
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -204,10 +224,12 @@ class Trespass : public Entropy::BaseApplication
 
             previousFrameTime = glfwGetTime();
             
-
             glfwSetTime(0);
 
+            glfwGetCursorPos(window, &MouseXPos, &MouseYPos);
+
             glClear(GL_COLOR_BUFFER_BIT);
+            glClearColor(0.0, 0.0, 0.0, 0.0); 
 
 
             // renderer->transform(tri);
@@ -215,17 +237,17 @@ class Trespass : public Entropy::BaseApplication
             renderer->transform(player.get());
 
 
-            
 
-            
 
-            glfwGetCursorPos(window, &MouseXPos, &MouseYPos);
 
 
             MouseYPos = (MouseYPos - 480) * -1;
 
 
+
             renderer->renderFrame();
+            // renderer->renderQuad(player->getPosition(), 10,10);
+            // renderer->renderQuad(quad->getPosition(), 10,10);
 
             world->timeStep(previousFrameTime);
             renderer->renderLine(( player->velocity)  + player->getPosition(), player->getPosition());
@@ -253,6 +275,19 @@ class Trespass : public Entropy::BaseApplication
                 player->velocity.x = 100;
             }
 
+            bool pressed = false;
+
+            state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1);
+            if (state == GLFW_PRESS && !pressed)
+            {
+                usleep(50000);
+                pressed = true;
+                LOG(pressed);
+                player->shootBullet();
+            }
+
+            player->update();
+            // glfwSwapBuffers(window);
             
 
             // LOG(
@@ -267,6 +302,8 @@ class Trespass : public Entropy::BaseApplication
             // renderer->renderLine(vec3(0,0,0), player->getPosition());
             // glm::mat4 myMatrix = glm::translate(glm::mat4(), glm::vec3(10.0f, 0.0f, 0.0f));
 
+
+            // LOG(renderer->distToNearestPoint(player.get()));
             renderer->renderLine(vec3(0),  player->getPosition());
             // LOG((quad->getModelMatrix() * vec4(1,1,1, 1.0f)).x);
             // LOG((glm::translate(glm::mat4(), glm::vec3(10.0f, 1.0f, 1.0f)) * vec4(1.0f,0.0f,0.0f, 1.0f)).x);
@@ -281,8 +318,6 @@ class Trespass : public Entropy::BaseApplication
             auto time = glfwGetTime();
             if (time < 0.016)
                 usleep((0.016 - time) * 100000);
-
-            i++;
         }
 
         Trespass() : Entropy::BaseApplication() {

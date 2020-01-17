@@ -63,6 +63,8 @@ namespace Entropy
   
       mat4 viewMatrix, projectionMatrix;
 
+
+      Renderable debugQuad;
       GLuint VertexArrayID;
       GLuint programID;
       GLuint debugCenterShader;
@@ -96,18 +98,27 @@ namespace Entropy
       glm::vec3 modelSpace(glm::vec3 coords);
 
       glm::vec3 worldSpace(glm::vec3 coords);
-      /**
-        * Draw line between two world space points
-        */
-      void renderLine(glm::vec3 p1, glm::vec3 p2);
 
-      GLuint loadTexture(std::string path);
+      void removeRenderable(Renderable* renderable);
       /**
         * Add renderable object to objects.
         * 
         * Required for some renderer optimizations
         */
       void addRenderable(Renderable* _renderable);
+
+      float distToNearestPoint(vec3 point);
+      float distToNearestPoint(vec3 point, Renderable* renderable);
+      float distToNearestPoint(Renderable* _renderable);
+
+      void renderQuad(vec3 position, float width, float height, bool hollow = false, vec3 color = vec3(1,0,0));
+
+      /**
+        * Draw line between two world space points
+        */
+      void renderLine(glm::vec3 p1, glm::vec3 p2);
+
+      GLuint loadTexture(std::string path);
 
       /**
        * Render a renderable without adding to the renderer.

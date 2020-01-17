@@ -88,6 +88,7 @@ endif
 
 OBJECTS := \
 	$(OBJDIR)/main.o \
+	$(OBJDIR)/Bullet.o \
 	$(OBJDIR)/Player.o \
 
 RESOURCES := \
@@ -148,6 +149,9 @@ $(OBJECTS): | $(OBJDIR)
 endif
 
 $(OBJDIR)/main.o: Projects/Trespass/main.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Bullet.o: Projects/Trespass/src/Bullet.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Player.o: Projects/Trespass/src/Player.cpp

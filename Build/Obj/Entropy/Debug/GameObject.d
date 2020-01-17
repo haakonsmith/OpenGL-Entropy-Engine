@@ -139,7 +139,8 @@ Build/Obj/Entropy/Debug/GameObject.o: \
   Libraries/glm/detail/../simd/integer.h \
   Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp \
   Projects/Entropy/Game/../Physics/PhysicsObject.hpp \
-  Projects/Entropy/Game/../Physics/../Graphics/Shapes/Shape.hpp
+  Projects/Entropy/Game/../Physics/../Graphics/Shapes/Shape.hpp \
+  Projects/Entropy/Game/../Physics/collisionData.hpp
 
 Projects/Entropy/Game/GameObject.hpp:
 
@@ -464,3 +465,5 @@ Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp:
 Projects/Entropy/Game/../Physics/PhysicsObject.hpp:
 
 Projects/Entropy/Game/../Physics/../Graphics/Shapes/Shape.hpp:
+
+Projects/Entropy/Game/../Physics/collisionData.hpp:

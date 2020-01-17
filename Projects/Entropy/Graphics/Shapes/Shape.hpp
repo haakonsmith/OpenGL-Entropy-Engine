@@ -78,5 +78,11 @@ struct Line : Shape
     }
 };
 
+struct BoundingBox {
+  float width, height;
+
+  BoundingBox() : width(), height() {}
+};
+
 } // namespace Entropy
 

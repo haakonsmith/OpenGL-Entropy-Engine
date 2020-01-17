@@ -1,6 +1,7 @@
 #include "glm/glm.hpp"
 #include <vector>
 #include "PhysicsObject.hpp"
+#include "collisionData.hpp"
 #include <iostream>
 
 #include "../Graphics/2dRenderer.hpp"
@@ -18,6 +19,17 @@ private:
 public:
     m_2dRenderer& renderer;
 
+    float distToNearestPoint(vec3 point);
+    float distToNearestPoint(vec3 point, PhysicsObject* obj);
+    float distToNearestPoint(PhysicsObject* obj);
+
+    float distToObject(vec3 point, PhysicsObject* _obj);
+    float distToNearestObject(PhysicsObject* _obj);
+
+    bool debug = false;
+
+    static bool AABBIntersectionTest(PhysicsObject* obj1, PhysicsObject* obj2);
+    static CollisionData AABBCollisionTest(PhysicsObject* obj1, PhysicsObject* obj2);
     /**
      * list of objects
      */
@@ -31,7 +43,11 @@ public:
     /**
      * Adds object to engine
      */
-    void addObject(PhysicsObject* obj) {objects.push_back(obj);}
+    inline void addObject(PhysicsObject* obj) {objects.push_back(obj);}
+    inline void removeObject(PhysicsObject* obj) 
+    {
+        objects.erase(find(objects.begin(), objects.end(), obj));
+    }
 
     PhysicsEngine(m_2dRenderer & _renderer);
     ~PhysicsEngine();

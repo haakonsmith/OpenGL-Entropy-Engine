@@ -2,6 +2,7 @@
 #include <OpenGL/gl3.h>
 #include "glm/glm.hpp"
 #include "Shapes/Shape.hpp"
+#include <string>
 #include <vector>
 
 
@@ -11,12 +12,14 @@ using namespace std;
 #pragma once
 namespace Entropy
 {
-  
 
 class Renderable
 {
 
+protected:
+
 public:
+  string name; 
   vec3 position;
   vec3 scale;
   double rotation;
@@ -35,6 +38,8 @@ public:
   
   vector<GLfloat> vertices;
   vector<GLfloat> UVs;
+
+  short id;
 
   // Getters and Setters
   virtual void setPosition(vec3 v) {position = v;}
@@ -55,9 +60,6 @@ public:
   virtual void setModelMatrix(mat4 m) {modelMatrix = m;}
   virtual mat4 getModelMatrix() {return modelMatrix;}
 
-
-
-
   void setTexture(GLuint tex) {texture = tex; TextureINIT = true;}
 
 
@@ -74,11 +76,13 @@ public:
       1, 0,
       1, 1
     };
+    name = "Renderable";
   }
 
   Renderable(Shape shape) : position(0,0,0), scale(1,1,1), rotation(0){
     vertices = shape.vertices;
     UVs = shape.UVs;
+    name = "Renderable";
   }
 
   Renderable(vector<GLfloat> _vertices) : position(0,0,0), scale(1,1,1), rotation(0) {
@@ -88,12 +92,14 @@ public:
       1, 0,
       1, 1
     };
+    name = "Renderable";
   }
 
   // change Renderable Position
   Renderable(vector<GLfloat> _vertices, vec3 _position) : scale(1,1,1), rotation(0) {
     vertices = _vertices;
     position = _position;
+    name = "Renderable";
   }
   
   ~Renderable() {

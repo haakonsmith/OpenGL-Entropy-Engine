@@ -20,8 +20,6 @@ public:
 
     virtual mat4 getModelMatrix() override {return Renderable::modelMatrix;}
 
-    void setMVP(mat4 mvp) override {GameObject::PhysicsObject::setMVP(mvp); GameObject::Renderable::setMVP(mvp);}
-
     GameObject();
     GameObject(Shape shape);
     ~GameObject();
