@@ -139,7 +139,7 @@ Build/Obj/Trespass/Debug/Bullet.o: Projects/Trespass/src/Bullet.cpp \
   Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp \
   Projects/Entropy/Game/../Physics/PhysicsObject.hpp \
   Projects/Entropy/Game/../Physics/../Graphics/Shapes/Shape.hpp \
-  Projects/Entropy/Game/../Physics/collisionData.hpp \
+  Projects/Entropy/Game/../Physics/CollisionData.hpp \
   Projects/Entropy/Physics/CollisionData.hpp
 
 Projects/Trespass/src/Bullet.hpp:
@@ -468,6 +468,6 @@ Projects/Entropy/Game/../Physics/PhysicsObject.hpp:
 
 Projects/Entropy/Game/../Physics/../Graphics/Shapes/Shape.hpp:
 
-Projects/Entropy/Game/../Physics/collisionData.hpp:
+Projects/Entropy/Game/../Physics/CollisionData.hpp:
 
 Projects/Entropy/Physics/CollisionData.hpp:

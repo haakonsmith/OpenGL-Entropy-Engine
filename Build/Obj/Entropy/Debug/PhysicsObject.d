@@ -137,7 +137,7 @@ Build/Obj/Entropy/Debug/PhysicsObject.o: \
   Libraries/glm/detail/func_integer_simd.inl \
   Libraries/glm/detail/../simd/integer.h \
   Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp \
-  Projects/Entropy/Physics/collisionData.hpp
+  Projects/Entropy/Physics/CollisionData.hpp
 
 Projects/Entropy/Physics/PhysicsObject.hpp:
 
@@ -457,4 +457,4 @@ Libraries/glm/detail/../simd/integer.h:
 
 Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp:
 
-Projects/Entropy/Physics/collisionData.hpp:
+Projects/Entropy/Physics/CollisionData.hpp:

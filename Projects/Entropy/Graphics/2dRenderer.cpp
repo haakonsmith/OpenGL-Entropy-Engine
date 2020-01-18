@@ -57,33 +57,9 @@ void m_2dRenderer::renderFrame()
 {
   for (auto obj : objects)
   {
-    LOG(obj->name);
     render(obj);
   }
 
-  // for (auto obj : objects)
-  // {
-
-  //   if (obj->isLight)
-  //   {
-  //     for (auto lightObj : objects)
-  //     {
-
-  //       for (auto i = 0; i < lightObj->vertices.size(); i += 3)
-  //       {
-
-  //         // {
-  //         // LOG(worldSpace(vec3(obj->getModelMatrix() * vec4(obj->vertices[i], obj->vertices[i + 1], obj->vertices[i + 2], 1.0f))).x);
-  //         LOG(i);
-  //         // renderer.renderLine(vec3(glm::vec4(glm::vec3(obj->vertices[i],obj->vertices[i+1],obj->vertices[i+2]), 1.0) * obj->MVP), obj->getPosition());
-  //         // renderLine(
-  //         //     worldSpace(vec3(lightObj->getModelMatrix() * vec4(lightObj->vertices[i], lightObj->vertices[i + 1], lightObj->vertices[i + 2], 1.0f))),
-  //         //     obj->getPosition());
-  //         // renderLine
-  //       }
-  //     }
-  //   }
-  // }
 
   glUseProgram(programID);
 
@@ -93,12 +69,7 @@ void m_2dRenderer::renderFrame()
       renderOutline(obj);
   }
 
-  // glUseProgram(programID);
-
-  // if (debugCenter) {
-  //   for (size_t i = 0; i < objects.size(); i++)
-  //     renderCenter(objects[i]);
-  // }
+ 
 }
 
 void m_2dRenderer::transform(Renderable *_renderable)
@@ -246,7 +217,7 @@ GLuint m_2dRenderer::loadTexture(std::string path)
                                    &width,
                                    &height,
                                    &channels,
-                                   STBI_rgb);
+                                   STBI_rgb_alpha);
 
   if (image == nullptr) //Error check
   {
@@ -265,7 +236,7 @@ GLuint m_2dRenderer::loadTexture(std::string path)
   GL_LOG("finish buffer ");
 
   // Give the image to OpenGL
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, image);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 
   GL_LOG("finish buffer ");
 
@@ -280,7 +251,6 @@ GLuint m_2dRenderer::loadTexture(std::string path)
 
 void m_2dRenderer::render(Renderable *_renderable)
 {
-  // glBindBuffer(GL_ARRAY_BUFFER, obj.bufferobject);
   glUseProgram(programID);
   GL_LOG("bind shader ");
 
@@ -320,6 +290,7 @@ void m_2dRenderer::render(Renderable *_renderable)
   // 2nd attribute buffer : UVs
   glEnableVertexAttribArray(1);
   glBindBuffer(GL_ARRAY_BUFFER, _renderable->UVBufferID);
+  GL_LOG("draw arrays ");
   glVertexAttribPointer(
       1,        // attribute. No particular reason for 1, but must match the layout in the shader.
       2,        // size : U+V => 2
@@ -332,7 +303,6 @@ void m_2dRenderer::render(Renderable *_renderable)
   // Draw the triangle !
   glDrawArrays(GL_TRIANGLES, 0, _renderable->vertices.size() / 3); // Starting from vertex 0; 3 vertices total . 1 RightTriangle
 
-  GL_LOG("draw arrays ");
 
   glDisableVertexAttribArray(0);
   glDisableVertexAttribArray(1);
@@ -350,7 +320,7 @@ void m_2dRenderer::renderLine(vec3 p1, vec3 p2)
 
   // vector<GLfloat> verts = {-1,1,0,-0.3,1,0};
 
-  GLuint VBO;
+  GLuint VBO = 3;
 
   glGenBuffers(1, &VBO);
 

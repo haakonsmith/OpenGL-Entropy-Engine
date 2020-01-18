@@ -3,33 +3,46 @@
 #include "glm/glm.hpp"
 #include "Shapes/Shape.hpp"
 #include <string>
+#include <iostream>
 #include <vector>
 
 
 using namespace glm;
 using namespace std;
 
+#define NDEBUG
+
+#ifdef NDEBUG
+#define GL_LOG(LOCATION) if(auto error = glGetError()) std::cout << "OpenGL error " << error << " at " << LOCATION << " " << __LINE__ << std::endl
+#else
+#define GL_LOG() do { } while(0)
+#endif
+
 #pragma once
+
+class m_2dRenderer{};
 namespace Entropy
 {
 
 class Renderable
 {
+  friend class m_2dRenderer;
 
 protected:
-
-public:
-  string name; 
+  GLuint vertexBufferID = 0;
+  GLuint UVBufferID = 0;
+  GLuint TextureID = 0;
   vec3 position;
   vec3 scale;
+
+public:
+  bool cleanVBO = true;
+  string name; 
   double rotation;
   mat4 MVP;
   mat4 modelMatrix;
   mat4 scaleMatrix, translationMatrix, rotationMatrix;
 
-  GLuint vertexBufferID;
-  GLuint UVBufferID;
-  GLuint TextureID;
   GLuint texture;
 
   bool TextureINIT = false, UVBufferINIT = false, vertexBufferINIT = false;
@@ -103,7 +116,9 @@ public:
   }
   
   ~Renderable() {
-    glDeleteBuffers(1, &vertexBufferID);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    if (cleanVBO)
+         glDeleteBuffers(1, &vertexBufferID);
     glDeleteBuffers(1, &UVBufferID);
     glDeleteTextures(1, &texture);
   }

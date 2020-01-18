@@ -137,14 +137,22 @@ class Trespass : public Entropy::BaseApplication
         shared_ptr<Player> player;
 
         shared_ptr<GameObject> quad;
+        shared_ptr<PhysicsObject> leftwall;
+        shared_ptr<PhysicsObject> rightwall;
+        shared_ptr<PhysicsObject> topwall;
+        shared_ptr<PhysicsObject> bottomwall;
 
         double previousFrameTime;
 
         int i = 0;
 
+        std::chrono::time_point<std::chrono::high_resolution_clock> t_start;
+
+
     public:
 
         void init() override {
+            t_start = std::chrono::high_resolution_clock::now();
             player = make_shared<Player>();
 
             player->setPosition(vec3(320,240,0));
@@ -184,8 +192,6 @@ class Trespass : public Entropy::BaseApplication
 
             player->physicsType = ACTIVE;
 
-            quad->scale = vec3(1,1,1);
-
             // renderer->drawOutline(true);
 
             
@@ -196,6 +202,26 @@ class Trespass : public Entropy::BaseApplication
             renderer->addRenderable(quad.get());
             player->setScale(10.0f,10.0f,0.1f);
             renderer->addRenderable(player.get());
+
+            leftwall = make_shared<PhysicsObject>();
+            leftwall->boundingBox.height = 240;
+            leftwall->boundingBox.width = 20;
+            leftwall->setPosition(vec3(-10,240,0));
+
+            rightwall = make_shared<PhysicsObject>();
+            rightwall->boundingBox.height = 240;
+            rightwall->boundingBox.width = 20;
+            rightwall->setPosition(vec3(650,240,0));
+
+            topwall = make_shared<PhysicsObject>();
+            topwall->boundingBox.height = 20;
+            topwall->boundingBox.width = 320;
+            topwall->setPosition(vec3(320,490,0));
+
+            bottomwall = make_shared<PhysicsObject>();
+            bottomwall->boundingBox.height = 20;
+            bottomwall->boundingBox.width = 320;
+            bottomwall->setPosition(vec3(320,-10,0));
 
 
     
@@ -208,6 +234,10 @@ class Trespass : public Entropy::BaseApplication
 
             world->addObject(player.get());
             world->addObject(quad.get());
+            world->addObject(leftwall.get());
+            world->addObject(rightwall.get());
+            world->addObject(topwall.get());
+            world->addObject(bottomwall.get());
             world->debug = true;
 
             player->renderer = renderer;
@@ -275,14 +305,19 @@ class Trespass : public Entropy::BaseApplication
                 player->velocity.x = 100;
             }
 
-            bool pressed = false;
+            // bool pressed = false;
+
+            
+
+            auto t_now = std::chrono::high_resolution_clock::now();
 
             state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1);
-            if (state == GLFW_PRESS && !pressed)
+            if (state == GLFW_PRESS && std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count() > 0.3)
             {
-                usleep(50000);
-                pressed = true;
-                LOG(pressed);
+                t_start = t_now;
+                // usleep(50000);
+                // pressed = true;
+                // LOG(pressed);
                 player->shootBullet();
             }
 

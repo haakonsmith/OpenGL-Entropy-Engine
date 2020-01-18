@@ -229,13 +229,12 @@ Build/Obj/Trespass/Debug/main.o: Projects/Trespass/main.cpp \
   Projects/Entropy/Physics/PhysicsEngine.hpp \
   Projects/Entropy/Physics/PhysicsObject.hpp \
   Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp \
-  Projects/Entropy/Physics/collisionData.hpp \
+  Projects/Entropy/Physics/CollisionData.hpp \
   Projects/Entropy/Physics/../Graphics/2dRenderer.hpp \
   Projects/Trespass/src/Bullet.hpp Projects/Entropy/Game/GameObject.hpp \
   Projects/Entropy/Game/../Graphics/Renderable.hpp \
   Projects/Entropy/Game/../Physics/PhysicsObject.hpp \
   Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp \
-  Projects/Entropy/Physics/CollisionData.hpp \
   Projects/Trespass/src/Player.hpp
 
 Libraries/glm/glm.hpp:
@@ -770,7 +769,7 @@ Projects/Entropy/Physics/PhysicsObject.hpp:
 
 Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp:
 
-Projects/Entropy/Physics/collisionData.hpp:
+Projects/Entropy/Physics/CollisionData.hpp:
 
 Projects/Entropy/Physics/../Graphics/2dRenderer.hpp:
 
@@ -783,7 +782,5 @@ Projects/Entropy/Game/../Graphics/Renderable.hpp:
 Projects/Entropy/Game/../Physics/PhysicsObject.hpp:
 
 Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp:
-
-Projects/Entropy/Physics/CollisionData.hpp:
 
 Projects/Trespass/src/Player.hpp:

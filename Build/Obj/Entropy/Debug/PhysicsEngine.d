@@ -138,7 +138,7 @@ Build/Obj/Entropy/Debug/PhysicsEngine.o: \
   Libraries/glm/detail/../simd/integer.h \
   Projects/Entropy/Physics/PhysicsObject.hpp \
   Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp \
-  Projects/Entropy/Physics/collisionData.hpp \
+  Projects/Entropy/Physics/CollisionData.hpp \
   Projects/Entropy/Physics/../Graphics/2dRenderer.hpp \
   /usr/local/include/GLFW/glfw3.h \
   Projects/Entropy/Physics/../Graphics/Renderable.hpp \
@@ -551,7 +551,7 @@ Projects/Entropy/Physics/PhysicsObject.hpp:
 
 Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp:
 
-Projects/Entropy/Physics/collisionData.hpp:
+Projects/Entropy/Physics/CollisionData.hpp:
 
 Projects/Entropy/Physics/../Graphics/2dRenderer.hpp:
 

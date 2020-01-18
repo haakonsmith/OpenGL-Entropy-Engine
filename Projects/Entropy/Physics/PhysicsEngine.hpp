@@ -1,7 +1,7 @@
 #include "glm/glm.hpp"
 #include <vector>
 #include "PhysicsObject.hpp"
-#include "collisionData.hpp"
+#include "CollisionData.hpp"
 #include <iostream>
 
 #include "../Graphics/2dRenderer.hpp"

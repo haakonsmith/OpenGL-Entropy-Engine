@@ -4,11 +4,12 @@
 
 #pragma once
 
-class Bullet : public Entropy::GameObject
+class Bullet : public Entropy::PhysicsObject
 {
 private:
     /* data */
 public:
+    float rotation;
     float speed;
     bool shouldDie = false;
 

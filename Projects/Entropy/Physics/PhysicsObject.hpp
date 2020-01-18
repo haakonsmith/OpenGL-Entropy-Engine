@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include "../Graphics/Shapes/Shape.hpp"
-#include "collisionData.hpp"
+#include "CollisionData.hpp"
 
 using namespace glm;
 
