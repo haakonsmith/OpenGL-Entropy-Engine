@@ -1,7 +1,10 @@
 namespace Entropy {
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////// Render commands /////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     template <uint32 C>
-    void m_2dRenderer::renderInstance(const RenderInstance<C> &Instance) {
+    void m_2dRenderer::renderInstance(const RenderInstance<C> &Instance, uint32 renderCount) {
         glBindBuffer(GL_ARRAY_BUFFER, Instance.Instanced->vertexBufferID);
 
         Instance.Instanced->shader->Bind();
@@ -66,7 +69,8 @@ namespace Entropy {
         glVertexAttribDivisor(1, 0);  // positions : one per quad (its center) -> 1
         glVertexAttribDivisor(2, 1);  // color : one per quad -> 1
 
-        glDrawArraysInstanced(GL_TRIANGLES, 0, Instance.Instanced->Vertices.size(), C);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, Instance.Instanced->Vertices.size(),
+                              (renderCount < C) ? renderCount : C);
 
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);

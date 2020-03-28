@@ -44,10 +44,6 @@ void Player::update() {
             renderer->transform(enemy_Reference.get());
             enemies[i]->velocity = normalize(getPosition() - enemies[i]->getPosition()) * 100.0f;
 
-            
-
-            renderer->renderInstance<10>(*enemy_instance);
-            
         }
         
         if (enemies.size() != 0)
@@ -65,7 +61,7 @@ void Player::update() {
             
 
             enemy_instance->update(PosData);
-            renderer->renderInstance<10>(*enemy_instance);
+            renderer->renderInstance<10>(*enemy_instance, enemies.size());
         }
         
     }

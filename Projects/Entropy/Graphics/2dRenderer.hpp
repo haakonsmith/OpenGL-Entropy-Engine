@@ -122,8 +122,12 @@ namespace Entropy {
                                         // to the upper right
         };
 
+        /**
+         * C is size of data
+         * Imperfect accuracy, possibly due to floating point precision.
+         */
         template <uint32 C>
-        void renderInstance(const RenderInstance<C> &Instance);
+        void renderInstance(const RenderInstance<C> &Instance, uint32 renderCount = C);
 
         /**
          * Converts coordinate vector coordinate to OpenGL float space

@@ -20,38 +20,9 @@ namespace Entropy {
                       objects.end());
     }
 
-    void m_2dRenderer::renderFrame() {
-        for (auto obj : objects) { render(obj); }
-
-        glUseProgram(programID);
-
-        if (debugOutline) {
-            for (auto obj : objects) renderOutline(*obj);
-        }
-    }
-
-    void m_2dRenderer::transform(Renderable *_renderable) {
-        glm::mat4 MVP;
-
-        // Model matrix : an identity matrix (model will be at the origin)
-        glm::mat4 model = glm::mat4(1.0f);
-
-        _renderable->rotationMatrix =
-            glm::rotate(model, glm::radians((float)_renderable->rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-
-        _renderable->translationMatrix = glm::translate(model, (_renderable->getPosition()));
-
-        _renderable->scaleMatrix = glm::scale(model, _renderable->scale);
-
-        _renderable->setModelMatrix(_renderable->translationMatrix * _renderable->rotationMatrix *
-                                    _renderable->scaleMatrix);
-
-        // Our ModelViewProjection : multiplication of our 3 matrices
-        MVP = projectionMatrix * viewMatrix * _renderable->modelMatrix;  // Remember, matrix multiplication is
-                                                                         // the other way around
-
-        _renderable->setMVP(MVP);
-    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////// Init commands ///////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     void m_2dRenderer::genVertexBuffer(Renderable *_renderable) {
         // Create a buffer object for our Renderable
@@ -106,6 +77,69 @@ namespace Entropy {
         GL_LOG("finish buffer ");
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////// Math commands ///////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void m_2dRenderer::transform(Renderable *_renderable) {
+        glm::mat4 MVP;
+
+        // Model matrix : an identity matrix (model will be at the origin)
+        glm::mat4 model = glm::mat4(1.0f);
+
+        _renderable->rotationMatrix =
+            glm::rotate(model, glm::radians((float)_renderable->rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        _renderable->translationMatrix = glm::translate(model, (_renderable->getPosition()));
+
+        _renderable->scaleMatrix = glm::scale(model, _renderable->scale);
+
+        _renderable->setModelMatrix(_renderable->translationMatrix * _renderable->rotationMatrix *
+                                    _renderable->scaleMatrix);
+
+        // Our ModelViewProjection : multiplication of our 3 matrices
+        MVP = projectionMatrix * viewMatrix * _renderable->modelMatrix;  // Remember, matrix multiplication is
+                                                                         // the other way around
+
+        _renderable->setMVP(MVP);
+    }
+
+    GLuint m_2dRenderer::loadTexture(std::string path) {
+        int width, height, channels;
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char *image = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+
+        if (image == nullptr)  // Error check
+        {
+            cerr << "Error when loading texture from file: " + path << endl;
+        }
+
+        // Create one OpenGL texture
+        GLuint textureID;
+        glGenTextures(1, &textureID);
+
+        GL_LOG("finish buffer ");
+
+        // "Bind" the newly created texture : all future texture functions will
+        // modify this texture
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        GL_LOG("finish buffer ");
+
+        // Give the image to OpenGL
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+        GL_LOG("finish buffer ");
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+        GL_LOG("finish buffer ");
+
+        // Return the ID of the texture we just created
+        return textureID;
+    }
+
     float m_2dRenderer::distToNearestPoint(vec3 point) {
         vector<float> distances;
 
@@ -155,40 +189,34 @@ namespace Entropy {
         return *min_element(distances.begin(), distances.end());
     }
 
-    GLuint m_2dRenderer::loadTexture(std::string path) {
-        int width, height, channels;
-        stbi_set_flip_vertically_on_load(true);
-        unsigned char *image = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+    glm::vec3 m_2dRenderer::modelSpace(glm::vec3 worldSpaceCoords) {
+        // coords.x = (coords.x - (SCREEN_WIDTH / 2))/SCREEN_WIDTH * 2;
+        worldSpaceCoords.x = ((worldSpaceCoords.x * 2) / SCREEN_WIDTH) - 1;
+        worldSpaceCoords.y = ((worldSpaceCoords.y * 2) / SCREEN_HEIGHT) - 1;
 
-        if (image == nullptr)  // Error check
-        {
-            cerr << "Error when loading texture from file: " + path << endl;
+        return worldSpaceCoords;
+    }
+
+    glm::vec3 m_2dRenderer::worldSpace(glm::vec3 modelSpaceCoords) {
+        // coords.x = (coords.x - (SCREEN_WIDTH / 2))/SCREEN_WIDTH * 2;
+        modelSpaceCoords.x = (modelSpaceCoords.x * SCREEN_WIDTH + SCREEN_WIDTH) / 2;
+        modelSpaceCoords.y = (modelSpaceCoords.y * SCREEN_HEIGHT + SCREEN_HEIGHT) / 2;
+
+        return modelSpaceCoords;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////// Render commands /////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    void m_2dRenderer::renderFrame() {
+        for (auto obj : objects) { render(obj); }
+
+        glUseProgram(programID);
+
+        if (debugOutline) {
+            for (auto obj : objects) renderOutline(*obj);
         }
-
-        // Create one OpenGL texture
-        GLuint textureID;
-        glGenTextures(1, &textureID);
-
-        GL_LOG("finish buffer ");
-
-        // "Bind" the newly created texture : all future texture functions will
-        // modify this texture
-        glBindTexture(GL_TEXTURE_2D, textureID);
-
-        GL_LOG("finish buffer ");
-
-        // Give the image to OpenGL
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-
-        GL_LOG("finish buffer ");
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-        GL_LOG("finish buffer ");
-
-        // Return the ID of the texture we just created
-        return textureID;
     }
 
     void m_2dRenderer::render(Renderable *_renderable) {
@@ -370,6 +398,10 @@ namespace Entropy {
         glDisableVertexAttribArray(1);
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////// Class commands //////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     m_2dRenderer::m_2dRenderer(unsigned int width, unsigned int height) {
         SCREEN_HEIGHT = height;
         SCREEN_WIDTH = width;
@@ -442,22 +474,6 @@ namespace Entropy {
         objects.clear();
 
         std::cout << "Cleaning up renderer" << std::endl;
-    }
-
-    glm::vec3 m_2dRenderer::modelSpace(glm::vec3 worldSpaceCoords) {
-        // coords.x = (coords.x - (SCREEN_WIDTH / 2))/SCREEN_WIDTH * 2;
-        worldSpaceCoords.x = ((worldSpaceCoords.x * 2) / SCREEN_WIDTH) - 1;
-        worldSpaceCoords.y = ((worldSpaceCoords.y * 2) / SCREEN_HEIGHT) - 1;
-
-        return worldSpaceCoords;
-    }
-
-    glm::vec3 m_2dRenderer::worldSpace(glm::vec3 modelSpaceCoords) {
-        // coords.x = (coords.x - (SCREEN_WIDTH / 2))/SCREEN_WIDTH * 2;
-        modelSpaceCoords.x = (modelSpaceCoords.x * SCREEN_WIDTH + SCREEN_WIDTH) / 2;
-        modelSpaceCoords.y = (modelSpaceCoords.y * SCREEN_HEIGHT + SCREEN_HEIGHT) / 2;
-
-        return modelSpaceCoords;
     }
 
 }  // namespace Entropy
