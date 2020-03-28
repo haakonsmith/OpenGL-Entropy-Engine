@@ -1,10 +1,12 @@
 Build/Obj/Entropy/Debug/PhysicsObject.o: \
   Projects/Entropy/Physics/PhysicsObject.cpp \
-  Projects/Entropy/Physics/PhysicsObject.hpp Libraries/glm/glm.hpp \
-  Libraries/glm/detail/_fixes.hpp Libraries/glm/detail/setup.hpp \
-  Libraries/glm/detail/../simd/platform.h Libraries/glm/fwd.hpp \
-  Libraries/glm/detail/qualifier.hpp Libraries/glm/vec2.hpp \
-  Libraries/glm/./ext/vector_bool2.hpp \
+  Projects/Entropy/Physics/PhysicsObject.hpp \
+  Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp \
+  Projects/Entropy/Physics/../Graphics/Shapes/../Vertex.hpp \
+  Libraries/glm/glm.hpp Libraries/glm/detail/_fixes.hpp \
+  Libraries/glm/detail/setup.hpp Libraries/glm/detail/../simd/platform.h \
+  Libraries/glm/fwd.hpp Libraries/glm/detail/qualifier.hpp \
+  Libraries/glm/vec2.hpp Libraries/glm/./ext/vector_bool2.hpp \
   Libraries/glm/./ext/../detail/type_vec2.hpp \
   Libraries/glm/detail/type_vec2.inl \
   Libraries/glm/detail/./compute_vector_relational.hpp \
@@ -136,11 +138,13 @@ Build/Obj/Entropy/Debug/PhysicsObject.o: \
   Libraries/glm/integer.hpp Libraries/glm/detail/func_integer.inl \
   Libraries/glm/detail/func_integer_simd.inl \
   Libraries/glm/detail/../simd/integer.h \
-  Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp \
-  Projects/Entropy/Physics/../Graphics/Shapes/../Vertex.hpp \
   Projects/Entropy/Physics/CollisionData.hpp
 
 Projects/Entropy/Physics/PhysicsObject.hpp:
+
+Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp:
+
+Projects/Entropy/Physics/../Graphics/Shapes/../Vertex.hpp:
 
 Libraries/glm/glm.hpp:
 
@@ -455,9 +459,5 @@ Libraries/glm/detail/func_integer.inl:
 Libraries/glm/detail/func_integer_simd.inl:
 
 Libraries/glm/detail/../simd/integer.h:
-
-Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp:
-
-Projects/Entropy/Physics/../Graphics/Shapes/../Vertex.hpp:
 
 Projects/Entropy/Physics/CollisionData.hpp:

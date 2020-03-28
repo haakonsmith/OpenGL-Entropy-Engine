@@ -2,7 +2,8 @@ Build/Obj/Entropy/Debug/2dRenderer.o: \
   Projects/Entropy/Graphics/2dRenderer.cpp \
   Projects/Entropy/Graphics/2dRenderer.hpp \
   /usr/local/include/GLFW/glfw3.h \
-  Projects/Entropy/Graphics/Renderable.hpp Libraries/glm/glm.hpp \
+  Projects/Entropy/Graphics/RenderInstance.hpp \
+  Projects/Entropy/Graphics/../Shared.hpp Libraries/glm/glm.hpp \
   Libraries/glm/detail/_fixes.hpp Libraries/glm/detail/setup.hpp \
   Libraries/glm/detail/../simd/platform.h Libraries/glm/fwd.hpp \
   Libraries/glm/detail/qualifier.hpp Libraries/glm/vec2.hpp \
@@ -138,9 +139,8 @@ Build/Obj/Entropy/Debug/2dRenderer.o: \
   Libraries/glm/integer.hpp Libraries/glm/detail/func_integer.inl \
   Libraries/glm/detail/func_integer_simd.inl \
   Libraries/glm/detail/../simd/integer.h \
-  Projects/Entropy/Graphics/Shapes/Shape.hpp \
-  Projects/Entropy/Graphics/Shapes/../Vertex.hpp \
-  Projects/Entropy/Graphics/Vertex.hpp \
+  Projects/Entropy/Graphics/BufferObject.hpp \
+  Projects/Entropy/Graphics/Renderable.hpp \
   Projects/Entropy/Graphics/Shader.hpp Libraries/glm/gtc/type_ptr.hpp \
   Libraries/glm/gtc/../gtc/quaternion.hpp \
   Libraries/glm/gtc/../gtc/constants.hpp \
@@ -229,18 +229,21 @@ Build/Obj/Entropy/Debug/2dRenderer.o: \
   Libraries/glm/gtc/../mat3x3.hpp Libraries/glm/gtc/../mat3x4.hpp \
   Libraries/glm/gtc/../mat4x2.hpp Libraries/glm/gtc/../mat4x3.hpp \
   Libraries/glm/gtc/type_ptr.inl \
+  Projects/Entropy/Graphics/Shapes/Shape.hpp \
+  Projects/Entropy/Graphics/Shapes/../Vertex.hpp \
+  Projects/Entropy/Graphics/Vertex.hpp \
   Projects/Entropy/Graphics/RenderTarget.hpp \
   Projects/Entropy/Graphics/VertexBuffer.hpp \
-  Projects/Entropy/Graphics/../Shared.hpp \
-  Projects/Entropy/Graphics/BufferObject.hpp \
-  Projects/Entropy/Graphics/RenderInstance.hpp \
-  Libraries/glm/gtc/matrix_transform.hpp Libraries/stb/stb_image.h
+  Libraries/glm/gtc/matrix_transform.hpp \
+  Projects/Entropy/Graphics/2dRenderer.tcc Libraries/stb/stb_image.h
 
 Projects/Entropy/Graphics/2dRenderer.hpp:
 
 /usr/local/include/GLFW/glfw3.h:
 
-Projects/Entropy/Graphics/Renderable.hpp:
+Projects/Entropy/Graphics/RenderInstance.hpp:
+
+Projects/Entropy/Graphics/../Shared.hpp:
 
 Libraries/glm/glm.hpp:
 
@@ -556,11 +559,9 @@ Libraries/glm/detail/func_integer_simd.inl:
 
 Libraries/glm/detail/../simd/integer.h:
 
-Projects/Entropy/Graphics/Shapes/Shape.hpp:
+Projects/Entropy/Graphics/BufferObject.hpp:
 
-Projects/Entropy/Graphics/Shapes/../Vertex.hpp:
-
-Projects/Entropy/Graphics/Vertex.hpp:
+Projects/Entropy/Graphics/Renderable.hpp:
 
 Projects/Entropy/Graphics/Shader.hpp:
 
@@ -760,16 +761,18 @@ Libraries/glm/gtc/../mat4x3.hpp:
 
 Libraries/glm/gtc/type_ptr.inl:
 
+Projects/Entropy/Graphics/Shapes/Shape.hpp:
+
+Projects/Entropy/Graphics/Shapes/../Vertex.hpp:
+
+Projects/Entropy/Graphics/Vertex.hpp:
+
 Projects/Entropy/Graphics/RenderTarget.hpp:
 
 Projects/Entropy/Graphics/VertexBuffer.hpp:
 
-Projects/Entropy/Graphics/../Shared.hpp:
-
-Projects/Entropy/Graphics/BufferObject.hpp:
-
-Projects/Entropy/Graphics/RenderInstance.hpp:
-
 Libraries/glm/gtc/matrix_transform.hpp:
+
+Projects/Entropy/Graphics/2dRenderer.tcc:
 
 Libraries/stb/stb_image.h:

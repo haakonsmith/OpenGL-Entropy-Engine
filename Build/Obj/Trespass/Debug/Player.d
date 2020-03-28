@@ -1,8 +1,8 @@
 Build/Obj/Trespass/Debug/Player.o: Projects/Trespass/src/Player.cpp \
-  Projects/Trespass/src/Player.hpp \
-  Projects/Entropy/Graphics/2dRenderer.hpp \
-  /usr/local/include/GLFW/glfw3.h \
-  Projects/Entropy/Graphics/Renderable.hpp Libraries/glm/glm.hpp \
+  Projects/Trespass/src/Player.hpp Projects/Trespass/src/Bullet.hpp \
+  Projects/Entropy/Game/GameObject.hpp \
+  Projects/Entropy/Game/../Graphics/Renderable.hpp \
+  Projects/Entropy/Game/../Graphics/Shader.hpp Libraries/glm/glm.hpp \
   Libraries/glm/detail/_fixes.hpp Libraries/glm/detail/setup.hpp \
   Libraries/glm/detail/../simd/platform.h Libraries/glm/fwd.hpp \
   Libraries/glm/detail/qualifier.hpp Libraries/glm/vec2.hpp \
@@ -137,11 +137,7 @@ Build/Obj/Trespass/Debug/Player.o: Projects/Trespass/src/Player.cpp \
   Libraries/glm/matrix.hpp Libraries/glm/vector_relational.hpp \
   Libraries/glm/integer.hpp Libraries/glm/detail/func_integer.inl \
   Libraries/glm/detail/func_integer_simd.inl \
-  Libraries/glm/detail/../simd/integer.h \
-  Projects/Entropy/Graphics/Shapes/Shape.hpp \
-  Projects/Entropy/Graphics/Shapes/../Vertex.hpp \
-  Projects/Entropy/Graphics/Vertex.hpp \
-  Projects/Entropy/Graphics/Shader.hpp Libraries/glm/gtc/type_ptr.hpp \
+  Libraries/glm/detail/../simd/integer.h Libraries/glm/gtc/type_ptr.hpp \
   Libraries/glm/gtc/../gtc/quaternion.hpp \
   Libraries/glm/gtc/../gtc/constants.hpp \
   Libraries/glm/gtc/../ext/scalar_constants.hpp \
@@ -229,30 +225,36 @@ Build/Obj/Trespass/Debug/Player.o: Projects/Trespass/src/Player.cpp \
   Libraries/glm/gtc/../mat3x3.hpp Libraries/glm/gtc/../mat3x4.hpp \
   Libraries/glm/gtc/../mat4x2.hpp Libraries/glm/gtc/../mat4x3.hpp \
   Libraries/glm/gtc/type_ptr.inl \
-  Projects/Entropy/Graphics/RenderTarget.hpp \
-  Projects/Entropy/Graphics/VertexBuffer.hpp \
-  Projects/Entropy/Graphics/../Shared.hpp \
-  Projects/Entropy/Graphics/BufferObject.hpp \
-  Projects/Entropy/Graphics/RenderInstance.hpp \
-  Libraries/glm/gtc/matrix_transform.hpp \
-  Projects/Entropy/Physics/PhysicsEngine.hpp \
-  Projects/Entropy/Physics/PhysicsObject.hpp \
-  Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp \
-  Projects/Entropy/Physics/CollisionData.hpp \
-  Projects/Entropy/Physics/../Graphics/2dRenderer.hpp \
-  Projects/Entropy/Game/GameObject.hpp \
-  Projects/Entropy/Game/../Graphics/Renderable.hpp \
-  Projects/Entropy/Game/../Physics/PhysicsObject.hpp \
   Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp \
-  Projects/Trespass/src/Bullet.hpp Projects/Trespass/src/Enemy.hpp
+  Projects/Entropy/Game/../Graphics/Shapes/../Vertex.hpp \
+  Projects/Entropy/Game/../Graphics/Vertex.hpp \
+  Projects/Entropy/Game/../Physics/PhysicsObject.hpp \
+  Projects/Entropy/Game/../Physics/../Graphics/Shapes/Shape.hpp \
+  Projects/Entropy/Game/../Physics/CollisionData.hpp \
+  Projects/Entropy/Physics/CollisionData.hpp \
+  Projects/Trespass/src/Enemy.hpp \
+  Projects/Entropy/Graphics/2dRenderer.hpp \
+  /usr/local/include/GLFW/glfw3.h \
+  Projects/Entropy/Game/../Graphics/RenderInstance.hpp \
+  Projects/Entropy/Game/../Graphics/../Shared.hpp \
+  Projects/Entropy/Game/../Graphics/BufferObject.hpp \
+  Projects/Entropy/Game/../Graphics/RenderTarget.hpp \
+  Projects/Entropy/Game/../Graphics/VertexBuffer.hpp \
+  Libraries/glm/gtc/matrix_transform.hpp \
+  Projects/Entropy/Game/../Graphics/2dRenderer.tcc \
+  Projects/Entropy/Physics/PhysicsEngine.hpp \
+  Projects/Entropy/Game/../Physics/../Graphics/2dRenderer.hpp \
+  Projects/Entropy/Graphics/Shapes/Shape.hpp
 
 Projects/Trespass/src/Player.hpp:
 
-Projects/Entropy/Graphics/2dRenderer.hpp:
+Projects/Trespass/src/Bullet.hpp:
 
-/usr/local/include/GLFW/glfw3.h:
+Projects/Entropy/Game/GameObject.hpp:
 
-Projects/Entropy/Graphics/Renderable.hpp:
+Projects/Entropy/Game/../Graphics/Renderable.hpp:
+
+Projects/Entropy/Game/../Graphics/Shader.hpp:
 
 Libraries/glm/glm.hpp:
 
@@ -568,14 +570,6 @@ Libraries/glm/detail/func_integer_simd.inl:
 
 Libraries/glm/detail/../simd/integer.h:
 
-Projects/Entropy/Graphics/Shapes/Shape.hpp:
-
-Projects/Entropy/Graphics/Shapes/../Vertex.hpp:
-
-Projects/Entropy/Graphics/Vertex.hpp:
-
-Projects/Entropy/Graphics/Shader.hpp:
-
 Libraries/glm/gtc/type_ptr.hpp:
 
 Libraries/glm/gtc/../gtc/quaternion.hpp:
@@ -772,36 +766,42 @@ Libraries/glm/gtc/../mat4x3.hpp:
 
 Libraries/glm/gtc/type_ptr.inl:
 
-Projects/Entropy/Graphics/RenderTarget.hpp:
+Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp:
 
-Projects/Entropy/Graphics/VertexBuffer.hpp:
+Projects/Entropy/Game/../Graphics/Shapes/../Vertex.hpp:
 
-Projects/Entropy/Graphics/../Shared.hpp:
-
-Projects/Entropy/Graphics/BufferObject.hpp:
-
-Projects/Entropy/Graphics/RenderInstance.hpp:
-
-Libraries/glm/gtc/matrix_transform.hpp:
-
-Projects/Entropy/Physics/PhysicsEngine.hpp:
-
-Projects/Entropy/Physics/PhysicsObject.hpp:
-
-Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp:
-
-Projects/Entropy/Physics/CollisionData.hpp:
-
-Projects/Entropy/Physics/../Graphics/2dRenderer.hpp:
-
-Projects/Entropy/Game/GameObject.hpp:
-
-Projects/Entropy/Game/../Graphics/Renderable.hpp:
+Projects/Entropy/Game/../Graphics/Vertex.hpp:
 
 Projects/Entropy/Game/../Physics/PhysicsObject.hpp:
 
-Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp:
+Projects/Entropy/Game/../Physics/../Graphics/Shapes/Shape.hpp:
 
-Projects/Trespass/src/Bullet.hpp:
+Projects/Entropy/Game/../Physics/CollisionData.hpp:
+
+Projects/Entropy/Physics/CollisionData.hpp:
 
 Projects/Trespass/src/Enemy.hpp:
+
+Projects/Entropy/Graphics/2dRenderer.hpp:
+
+/usr/local/include/GLFW/glfw3.h:
+
+Projects/Entropy/Game/../Graphics/RenderInstance.hpp:
+
+Projects/Entropy/Game/../Graphics/../Shared.hpp:
+
+Projects/Entropy/Game/../Graphics/BufferObject.hpp:
+
+Projects/Entropy/Game/../Graphics/RenderTarget.hpp:
+
+Projects/Entropy/Game/../Graphics/VertexBuffer.hpp:
+
+Libraries/glm/gtc/matrix_transform.hpp:
+
+Projects/Entropy/Game/../Graphics/2dRenderer.tcc:
+
+Projects/Entropy/Physics/PhysicsEngine.hpp:
+
+Projects/Entropy/Game/../Physics/../Graphics/2dRenderer.hpp:
+
+Projects/Entropy/Graphics/Shapes/Shape.hpp:

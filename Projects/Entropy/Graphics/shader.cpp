@@ -2,7 +2,7 @@
  * Copyright 2020, Haakon Smith.
  */
 
-#include "shader.hpp"
+#include "Shader.hpp"
 
 using namespace std;
 

@@ -71,10 +71,8 @@ namespace Entropy {
     void PhysicsEngine::timeStep(float timeStep) {
         GL_LOG("renderLine");
 
-        // LOG(renderer);
         for (auto obj : objects) {
             if (obj->velocity != vec3(0) && obj->physicsType == ACTIVE) {
-                // LOG(obj->getPosition().x);
 
                 // cout << obj->velocity.x << endl;
                 // cout << obj->velocity.y << endl;
@@ -93,10 +91,7 @@ namespace Entropy {
 
                 // obj->update();
 
-                // LOG(distToNearestObject(obj));
-                // LOG(obj->position.x);
                 obj->setPosition(obj->position + (obj->velocity) * timeStep);
-                // LOG(obj->position.x);
                 if (obj->physicsType == ACTIVE) {
                     for (auto _obj : objects) {
                         if (obj != _obj) {

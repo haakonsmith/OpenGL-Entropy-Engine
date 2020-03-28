@@ -1,7 +1,8 @@
 Build/Obj/Entropy/Debug/GameObject.o: \
   Projects/Entropy/Game/GameObject.cpp \
   Projects/Entropy/Game/GameObject.hpp \
-  Projects/Entropy/Game/../Graphics/Renderable.hpp Libraries/glm/glm.hpp \
+  Projects/Entropy/Game/../Graphics/Renderable.hpp \
+  Projects/Entropy/Game/../Graphics/Shader.hpp Libraries/glm/glm.hpp \
   Libraries/glm/detail/_fixes.hpp Libraries/glm/detail/setup.hpp \
   Libraries/glm/detail/../simd/platform.h Libraries/glm/fwd.hpp \
   Libraries/glm/detail/qualifier.hpp Libraries/glm/vec2.hpp \
@@ -136,12 +137,8 @@ Build/Obj/Entropy/Debug/GameObject.o: \
   Libraries/glm/matrix.hpp Libraries/glm/vector_relational.hpp \
   Libraries/glm/integer.hpp Libraries/glm/detail/func_integer.inl \
   Libraries/glm/detail/func_integer_simd.inl \
-  Libraries/glm/detail/../simd/integer.h \
-  Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp \
-  Projects/Entropy/Game/../Graphics/Shapes/../Vertex.hpp \
-  Projects/Entropy/Game/../Graphics/Vertex.hpp \
-  Projects/Entropy/Game/../Graphics/Shader.hpp \
-  Libraries/glm/gtc/type_ptr.hpp Libraries/glm/gtc/../gtc/quaternion.hpp \
+  Libraries/glm/detail/../simd/integer.h Libraries/glm/gtc/type_ptr.hpp \
+  Libraries/glm/gtc/../gtc/quaternion.hpp \
   Libraries/glm/gtc/../gtc/constants.hpp \
   Libraries/glm/gtc/../ext/scalar_constants.hpp \
   Libraries/glm/./ext/scalar_constants.inl \
@@ -228,6 +225,9 @@ Build/Obj/Entropy/Debug/GameObject.o: \
   Libraries/glm/gtc/../mat3x3.hpp Libraries/glm/gtc/../mat3x4.hpp \
   Libraries/glm/gtc/../mat4x2.hpp Libraries/glm/gtc/../mat4x3.hpp \
   Libraries/glm/gtc/type_ptr.inl \
+  Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp \
+  Projects/Entropy/Game/../Graphics/Shapes/../Vertex.hpp \
+  Projects/Entropy/Game/../Graphics/Vertex.hpp \
   Projects/Entropy/Game/../Physics/PhysicsObject.hpp \
   Projects/Entropy/Game/../Physics/../Graphics/Shapes/Shape.hpp \
   Projects/Entropy/Game/../Physics/CollisionData.hpp
@@ -235,6 +235,8 @@ Build/Obj/Entropy/Debug/GameObject.o: \
 Projects/Entropy/Game/GameObject.hpp:
 
 Projects/Entropy/Game/../Graphics/Renderable.hpp:
+
+Projects/Entropy/Game/../Graphics/Shader.hpp:
 
 Libraries/glm/glm.hpp:
 
@@ -550,14 +552,6 @@ Libraries/glm/detail/func_integer_simd.inl:
 
 Libraries/glm/detail/../simd/integer.h:
 
-Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp:
-
-Projects/Entropy/Game/../Graphics/Shapes/../Vertex.hpp:
-
-Projects/Entropy/Game/../Graphics/Vertex.hpp:
-
-Projects/Entropy/Game/../Graphics/Shader.hpp:
-
 Libraries/glm/gtc/type_ptr.hpp:
 
 Libraries/glm/gtc/../gtc/quaternion.hpp:
@@ -753,6 +747,12 @@ Libraries/glm/gtc/../mat4x2.hpp:
 Libraries/glm/gtc/../mat4x3.hpp:
 
 Libraries/glm/gtc/type_ptr.inl:
+
+Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp:
+
+Projects/Entropy/Game/../Graphics/Shapes/../Vertex.hpp:
+
+Projects/Entropy/Game/../Graphics/Vertex.hpp:
 
 Projects/Entropy/Game/../Physics/PhysicsObject.hpp:
 

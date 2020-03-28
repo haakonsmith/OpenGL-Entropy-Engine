@@ -1,5 +1,5 @@
 Build/Obj/Entropy/Debug/Shader.o: Projects/Entropy/Graphics/Shader.cpp \
-  Projects/Entropy/Graphics/shader.hpp Libraries/glm/glm.hpp \
+  Projects/Entropy/Graphics/Shader.hpp Libraries/glm/glm.hpp \
   Libraries/glm/detail/_fixes.hpp Libraries/glm/detail/setup.hpp \
   Libraries/glm/detail/../simd/platform.h Libraries/glm/fwd.hpp \
   Libraries/glm/detail/qualifier.hpp Libraries/glm/vec2.hpp \
@@ -223,7 +223,7 @@ Build/Obj/Entropy/Debug/Shader.o: Projects/Entropy/Graphics/Shader.cpp \
   Libraries/glm/gtc/../mat4x2.hpp Libraries/glm/gtc/../mat4x3.hpp \
   Libraries/glm/gtc/type_ptr.inl
 
-Projects/Entropy/Graphics/shader.hpp:
+Projects/Entropy/Graphics/Shader.hpp:
 
 Libraries/glm/glm.hpp:
 
