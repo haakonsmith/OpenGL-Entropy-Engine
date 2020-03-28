@@ -139,15 +139,20 @@ Build/Obj/Entropy/Debug/2dRenderer.o: \
   Libraries/glm/detail/func_integer_simd.inl \
   Libraries/glm/detail/../simd/integer.h \
   Projects/Entropy/Graphics/Shapes/Shape.hpp \
-  Projects/Entropy/Graphics/shader.hpp \
-  Libraries/glm/gtc/matrix_transform.hpp Libraries/glm/gtc/../mat4x4.hpp \
-  Libraries/glm/gtc/../vec2.hpp Libraries/glm/gtc/../vec3.hpp \
-  Libraries/glm/gtc/../vec4.hpp \
-  Libraries/glm/gtc/../ext/matrix_projection.hpp \
-  Libraries/glm/./ext/../gtc/constants.hpp \
+  Projects/Entropy/Graphics/Shapes/../Vertex.hpp \
+  Projects/Entropy/Graphics/Vertex.hpp \
+  Projects/Entropy/Graphics/Shader.hpp Libraries/glm/gtc/type_ptr.hpp \
+  Libraries/glm/gtc/../gtc/quaternion.hpp \
+  Libraries/glm/gtc/../gtc/constants.hpp \
   Libraries/glm/gtc/../ext/scalar_constants.hpp \
   Libraries/glm/./ext/scalar_constants.inl \
-  Libraries/glm/gtc/constants.inl Libraries/glm/./ext/../geometric.hpp \
+  Libraries/glm/gtc/constants.inl \
+  Libraries/glm/gtc/../gtc/matrix_transform.hpp \
+  Libraries/glm/gtc/../mat4x4.hpp Libraries/glm/gtc/../vec2.hpp \
+  Libraries/glm/gtc/../vec3.hpp Libraries/glm/gtc/../vec4.hpp \
+  Libraries/glm/gtc/../ext/matrix_projection.hpp \
+  Libraries/glm/./ext/../gtc/constants.hpp \
+  Libraries/glm/./ext/../geometric.hpp \
   Libraries/glm/./ext/../trigonometric.hpp \
   Libraries/glm/./ext/../matrix.hpp \
   Libraries/glm/./ext/matrix_projection.inl \
@@ -159,9 +164,6 @@ Build/Obj/Entropy/Debug/2dRenderer.o: \
   Libraries/glm/gtc/matrix_transform.inl \
   Libraries/glm/gtc/../geometric.hpp \
   Libraries/glm/gtc/../trigonometric.hpp Libraries/glm/gtc/../matrix.hpp \
-  Libraries/glm/gtc/type_ptr.hpp Libraries/glm/gtc/../gtc/quaternion.hpp \
-  Libraries/glm/gtc/../gtc/constants.hpp \
-  Libraries/glm/gtc/../gtc/matrix_transform.hpp \
   Libraries/glm/gtc/../ext/vector_relational.hpp \
   Libraries/glm/./ext/../detail/qualifier.hpp \
   Libraries/glm/./ext/vector_relational.inl \
@@ -226,7 +228,13 @@ Build/Obj/Entropy/Debug/2dRenderer.o: \
   Libraries/glm/gtc/../mat2x4.hpp Libraries/glm/gtc/../mat3x2.hpp \
   Libraries/glm/gtc/../mat3x3.hpp Libraries/glm/gtc/../mat3x4.hpp \
   Libraries/glm/gtc/../mat4x2.hpp Libraries/glm/gtc/../mat4x3.hpp \
-  Libraries/glm/gtc/type_ptr.inl Libraries/stb/stb_image.h
+  Libraries/glm/gtc/type_ptr.inl \
+  Projects/Entropy/Graphics/RenderTarget.hpp \
+  Projects/Entropy/Graphics/VertexBuffer.hpp \
+  Projects/Entropy/Graphics/../Shared.hpp \
+  Projects/Entropy/Graphics/BufferObject.hpp \
+  Projects/Entropy/Graphics/RenderInstance.hpp \
+  Libraries/glm/gtc/matrix_transform.hpp Libraries/stb/stb_image.h
 
 Projects/Entropy/Graphics/2dRenderer.hpp:
 
@@ -550,9 +558,25 @@ Libraries/glm/detail/../simd/integer.h:
 
 Projects/Entropy/Graphics/Shapes/Shape.hpp:
 
-Projects/Entropy/Graphics/shader.hpp:
+Projects/Entropy/Graphics/Shapes/../Vertex.hpp:
 
-Libraries/glm/gtc/matrix_transform.hpp:
+Projects/Entropy/Graphics/Vertex.hpp:
+
+Projects/Entropy/Graphics/Shader.hpp:
+
+Libraries/glm/gtc/type_ptr.hpp:
+
+Libraries/glm/gtc/../gtc/quaternion.hpp:
+
+Libraries/glm/gtc/../gtc/constants.hpp:
+
+Libraries/glm/gtc/../ext/scalar_constants.hpp:
+
+Libraries/glm/./ext/scalar_constants.inl:
+
+Libraries/glm/gtc/constants.inl:
+
+Libraries/glm/gtc/../gtc/matrix_transform.hpp:
 
 Libraries/glm/gtc/../mat4x4.hpp:
 
@@ -565,12 +589,6 @@ Libraries/glm/gtc/../vec4.hpp:
 Libraries/glm/gtc/../ext/matrix_projection.hpp:
 
 Libraries/glm/./ext/../gtc/constants.hpp:
-
-Libraries/glm/gtc/../ext/scalar_constants.hpp:
-
-Libraries/glm/./ext/scalar_constants.inl:
-
-Libraries/glm/gtc/constants.inl:
 
 Libraries/glm/./ext/../geometric.hpp:
 
@@ -597,14 +615,6 @@ Libraries/glm/gtc/../geometric.hpp:
 Libraries/glm/gtc/../trigonometric.hpp:
 
 Libraries/glm/gtc/../matrix.hpp:
-
-Libraries/glm/gtc/type_ptr.hpp:
-
-Libraries/glm/gtc/../gtc/quaternion.hpp:
-
-Libraries/glm/gtc/../gtc/constants.hpp:
-
-Libraries/glm/gtc/../gtc/matrix_transform.hpp:
 
 Libraries/glm/gtc/../ext/vector_relational.hpp:
 
@@ -749,5 +759,17 @@ Libraries/glm/gtc/../mat4x2.hpp:
 Libraries/glm/gtc/../mat4x3.hpp:
 
 Libraries/glm/gtc/type_ptr.inl:
+
+Projects/Entropy/Graphics/RenderTarget.hpp:
+
+Projects/Entropy/Graphics/VertexBuffer.hpp:
+
+Projects/Entropy/Graphics/../Shared.hpp:
+
+Projects/Entropy/Graphics/BufferObject.hpp:
+
+Projects/Entropy/Graphics/RenderInstance.hpp:
+
+Libraries/glm/gtc/matrix_transform.hpp:
 
 Libraries/stb/stb_image.h:

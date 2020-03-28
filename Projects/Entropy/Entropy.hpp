@@ -1,9 +1,10 @@
 
-#ifdef NDEBUG
-#define LOG(MESSAGE) std::cout << MESSAGE << " at line:" << __LINE__ << std::endl
-#else
-#define LOG() do { } while(0)
-#endif
+// CPP Properties
+// "macFrameworkPath": [
+//     "/Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk/System/Library/Frameworks"
+// ],
+
+#define GL_SILENCE_DEPRECATION
 
 #include "Application.hpp"
 

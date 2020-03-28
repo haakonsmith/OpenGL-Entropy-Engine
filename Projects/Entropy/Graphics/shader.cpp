@@ -1,6 +1,28 @@
+/*
+ * Copyright 2020, Haakon Smith.
+ */
+
 #include "shader.hpp"
 
 using namespace std;
+
+string Shader::fragmentShaderExtension = [] { return "fragmentshader"; }();
+string Shader::vertexShaderExtension = [] { return "vertexshader"; }();
+
+std::string getFileExtension(std::string filePath)
+{
+  // Find the last position of '.' in given string
+  std::size_t pos = filePath.rfind('.');
+
+  // If last '.' is found
+  if (pos != std::string::npos)
+  {
+    // return the substring
+    return filePath.substr(pos);
+  }
+  // In case of no extension return empty string
+  return "";
+}
 
 GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path)
 {

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020, Haakon Smith.
+ */
+
 struct RenderTarget
 {
     GLuint FrameBuffer;

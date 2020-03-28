@@ -23,6 +23,50 @@ void Player::update() {
 
             
         }
+   
+
+        for (size_t i = 0; i < enemies.size(); i++)
+        {
+
+            if (enemies[i]->shouldDie)
+            {
+                world->removeObject(enemies[i].get());
+                enemies.erase(enemies.begin() + i);
+            }
+
+            // enemy_Reference->setPosition(enemies[i]->getPosition());
+            // enemy_Reference->rotation = enemies[i]->rotation;
+
+            
+            // renderer->render(enemy_Reference.get());
+            // enemy_Reference->setPosition(vec3(0,-30,0));
+            enemy_Reference->setPosition(vec3(320,240,0));
+            renderer->transform(enemy_Reference.get());
+            enemies[i]->velocity = normalize(getPosition() - enemies[i]->getPosition()) * 100.0f;
+
+            
+
+            renderer->renderInstance<10>(*enemy_instance);
+            
+        }
+        
+        if (enemies.size() != 0)
+        {
+            std::array<vec3, 10> PosData;
+
+            for (size_t i = 0; i < enemies.size(); i++)
+            {
+                if (i < PosData.size())
+                {
+                    PosData[i] = renderer->modelSpace(enemies[i]->getPosition());
+                }
+                // LOG(PosData[i].x);
+            }
+            
+
+            enemy_instance->update(PosData);
+            renderer->renderInstance<10>(*enemy_instance);
+        }
         
     }
 
@@ -33,6 +77,11 @@ void Player::shootBullet() {
         bullet_Reference->cleanVBO = false;
         bullet_Reference->setTexture(renderer->loadTexture("bullet.png"));
         bullet_Reference->setScale(vec3(10,12,0));
+
+        renderer->buffer(enemy_Reference.get());
+        enemy_Reference->cleanVBO = false;
+        // enemy_Reference->setTexture(renderer->loadTexture("bullet.png"));
+        enemy_Reference->setScale(vec3(10,12,0));
     }
 
     vec3 direction = vec3(vec3(glm::rotate(
@@ -40,26 +89,16 @@ void Player::shootBullet() {
       glm::radians((float)rotation - 45),
       glm::vec3(0.0f, 0.0f, 1.0f))*vec4(1,0,0,0)));
 
-    shared_ptr<Bullet> bullet = make_shared<Bullet>(getPosition(), direction, Entropy::Rectangle());
+    shared_ptr<Bullet> bullet = make_shared<Bullet>(getPosition(), direction);
 
     bullet->rotation = rotation + 45;
 
     bullet->physicsType = ACTIVE;
     bullet->friction = 0;
 
-    // bullet->vertexBufferID = bullet_Reference->vertexBufferID;
-    // bullet->UVBufferID = bullet_Reference->UVBufferID;
-    // bullet->texture = bullet_Reference->texture;
-    // bullet->cleanVBO = bullet_Reference->cleanVBO;
+    bullet->boundingBox.width = 10;
+    bullet->boundingBox.height = 10;
 
-
-    
-
-    
-
-    // bullet->velocity = vec3(20,20,0);
-
-    // renderer->addRenderable(bullet.get());
     world->addObject(bullet.get());
 
     bullets.push_back(bullet);
@@ -69,8 +108,20 @@ Player::Player() : Entropy::GameObject() {
     PhysicsObject::name = "Player";
     Renderable::name = "Player";
 
-    bullet_Reference = make_shared<Renderable>(Entropy::Rectangle());
 
+    bullet_Reference = make_shared<Renderable>(Entropy::Rectangle());
+    enemy_Reference = make_shared<Renderable>(Entropy::Rectangle());
+
+    enemy_instance = renderer->getRenderInstance<10>(enemy_Reference);
+
+    GL_LOG("create ");
+
+    
+    
+    enemy_Reference->setTexture(renderer->loadTexture("img_test.png"));
+    enemy_Reference->shader = make_shared<Shader>("shaders/Instance.vertexshader", "shaders/Instance.fragmentshader");
+
+    
 }
 
 Player::~Player() {

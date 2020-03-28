@@ -1,14 +1,15 @@
 #pragma once
 
-#include "glm/glm.hpp"
-#include <vector>
-#include <string>
 #include "../Graphics/Shapes/Shape.hpp"
 #include "CollisionData.hpp"
+#include "glm/glm.hpp"
+#include <string>
+#include <vector>
 
 using namespace glm;
 
-enum {
+enum
+{
     BOUNDINGBOXCOLLISION,
     AABBCOLLISION,
     POLYGONCOLLISION,
@@ -29,29 +30,27 @@ public:
     int physicsType = STATIC;
     BoundingBox boundingBox;
 
+    vector<Vertex> Vertices;
+
     bool collidedLastFrame = false;
 
-    virtual void setPosition(vec3 v) {position = v;}
-    virtual vec3 getPosition() {return position;}
+    virtual void setPosition(const vec3 &v) { position = v; }
+    virtual vec3 getPosition() { return position; }
 
-    virtual void setModelMatrix(mat4 m) {modelMatrix = m;}
-    virtual mat4 getModelMatrix() {return modelMatrix;}
-
-    std::vector<float> vertices;
+    virtual void setModelMatrix(mat4 m) { modelMatrix = m; }
+    virtual mat4 getModelMatrix() { return modelMatrix; }
 
     double friction = 1;
     vec3 position;
     vec3 velocity;
 
-    virtual void update() {};
+    virtual void update(){};
 
-    // std::function<void> customPhysicsStep;
-    // void (*customPhysicsStep) (double) = nullptr;
-    virtual void customPrePhysicsStep (double deltaTime) {};
-    virtual void collide(vec3 prePos, PhysicsObject* collided, CollisionData data) {};
+    virtual void customPrePhysicsStep(double deltaTime){};
+    virtual void collide(vec3 prePos, PhysicsObject *collided, CollisionData data){};
 
     PhysicsObject();
-    PhysicsObject(Shape shape) : PhysicsObject() {vertices = shape.vertices;};
+    PhysicsObject(Shape shape) : PhysicsObject() { Vertices = shape.Vertices; };
     ~PhysicsObject();
 };
 

@@ -224,8 +224,15 @@ Build/Obj/Trespass/Debug/main.o: Projects/Trespass/main.cpp \
   Projects/Entropy/Entropy.hpp Projects/Entropy/Application.hpp \
   Projects/Entropy/Graphics/Renderable.hpp \
   Projects/Entropy/Graphics/Shapes/Shape.hpp \
+  Projects/Entropy/Graphics/Shapes/../Vertex.hpp \
+  Projects/Entropy/Graphics/Vertex.hpp \
+  Projects/Entropy/Graphics/Shader.hpp \
   Projects/Entropy/Graphics/2dRenderer.hpp \
-  Projects/Entropy/Graphics/shader.hpp \
+  Projects/Entropy/Graphics/RenderTarget.hpp \
+  Projects/Entropy/Graphics/VertexBuffer.hpp \
+  Projects/Entropy/Graphics/../Shared.hpp \
+  Projects/Entropy/Graphics/BufferObject.hpp \
+  Projects/Entropy/Graphics/RenderInstance.hpp \
   Projects/Entropy/Physics/PhysicsEngine.hpp \
   Projects/Entropy/Physics/PhysicsObject.hpp \
   Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp \
@@ -235,7 +242,7 @@ Build/Obj/Trespass/Debug/main.o: Projects/Trespass/main.cpp \
   Projects/Entropy/Game/../Graphics/Renderable.hpp \
   Projects/Entropy/Game/../Physics/PhysicsObject.hpp \
   Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp \
-  Projects/Trespass/src/Player.hpp
+  Projects/Trespass/src/Player.hpp Projects/Trespass/src/Enemy.hpp
 
 Libraries/glm/glm.hpp:
 
@@ -759,9 +766,23 @@ Projects/Entropy/Graphics/Renderable.hpp:
 
 Projects/Entropy/Graphics/Shapes/Shape.hpp:
 
+Projects/Entropy/Graphics/Shapes/../Vertex.hpp:
+
+Projects/Entropy/Graphics/Vertex.hpp:
+
+Projects/Entropy/Graphics/Shader.hpp:
+
 Projects/Entropy/Graphics/2dRenderer.hpp:
 
-Projects/Entropy/Graphics/shader.hpp:
+Projects/Entropy/Graphics/RenderTarget.hpp:
+
+Projects/Entropy/Graphics/VertexBuffer.hpp:
+
+Projects/Entropy/Graphics/../Shared.hpp:
+
+Projects/Entropy/Graphics/BufferObject.hpp:
+
+Projects/Entropy/Graphics/RenderInstance.hpp:
 
 Projects/Entropy/Physics/PhysicsEngine.hpp:
 
@@ -784,3 +805,5 @@ Projects/Entropy/Game/../Physics/PhysicsObject.hpp:
 Projects/Entropy/Game/../Graphics/Shapes/Shape.hpp:
 
 Projects/Trespass/src/Player.hpp:
+
+Projects/Trespass/src/Enemy.hpp:

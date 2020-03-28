@@ -1,9 +1,9 @@
 #include "Bullet.hpp"
 
-Bullet::Bullet(vec3 _position, vec3 direction, Entropy::Shape sp) : PhysicsObject(sp)
+Bullet::Bullet(vec3 _position, vec3 direction)
 {
     velocity = direction * 700.0f;
-    setPosition(_position + direction * 13.0f);
+    setPosition(_position + direction * 50.0f);
     PhysicsObject::name = "Bullet";
 }
 
@@ -21,4 +21,4 @@ void Bullet::customPrePhysicsStep(double deltaTime)
 
 Bullet::~Bullet()
 {
-}
+} 

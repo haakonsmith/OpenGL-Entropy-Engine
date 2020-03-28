@@ -138,19 +138,24 @@ Build/Obj/Entropy/Debug/PhysicsEngine.o: \
   Libraries/glm/detail/../simd/integer.h \
   Projects/Entropy/Physics/PhysicsObject.hpp \
   Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp \
+  Projects/Entropy/Physics/../Graphics/Shapes/../Vertex.hpp \
   Projects/Entropy/Physics/CollisionData.hpp \
   Projects/Entropy/Physics/../Graphics/2dRenderer.hpp \
   /usr/local/include/GLFW/glfw3.h \
-  Projects/Entropy/Physics/../Graphics/Renderable.hpp \
-  Projects/Entropy/Physics/../Graphics/shader.hpp \
-  Libraries/glm/gtc/matrix_transform.hpp Libraries/glm/gtc/../mat4x4.hpp \
-  Libraries/glm/gtc/../vec2.hpp Libraries/glm/gtc/../vec3.hpp \
-  Libraries/glm/gtc/../vec4.hpp \
-  Libraries/glm/gtc/../ext/matrix_projection.hpp \
-  Libraries/glm/./ext/../gtc/constants.hpp \
+  Projects/Entropy/Physics/../Graphics/Shapes/../Renderable.hpp \
+  Projects/Entropy/Physics/../Graphics/Shapes/../Shapes/Shape.hpp \
+  Projects/Entropy/Physics/../Graphics/Shapes/../Shader.hpp \
+  Libraries/glm/gtc/type_ptr.hpp Libraries/glm/gtc/../gtc/quaternion.hpp \
+  Libraries/glm/gtc/../gtc/constants.hpp \
   Libraries/glm/gtc/../ext/scalar_constants.hpp \
   Libraries/glm/./ext/scalar_constants.inl \
-  Libraries/glm/gtc/constants.inl Libraries/glm/./ext/../geometric.hpp \
+  Libraries/glm/gtc/constants.inl \
+  Libraries/glm/gtc/../gtc/matrix_transform.hpp \
+  Libraries/glm/gtc/../mat4x4.hpp Libraries/glm/gtc/../vec2.hpp \
+  Libraries/glm/gtc/../vec3.hpp Libraries/glm/gtc/../vec4.hpp \
+  Libraries/glm/gtc/../ext/matrix_projection.hpp \
+  Libraries/glm/./ext/../gtc/constants.hpp \
+  Libraries/glm/./ext/../geometric.hpp \
   Libraries/glm/./ext/../trigonometric.hpp \
   Libraries/glm/./ext/../matrix.hpp \
   Libraries/glm/./ext/matrix_projection.inl \
@@ -162,9 +167,6 @@ Build/Obj/Entropy/Debug/PhysicsEngine.o: \
   Libraries/glm/gtc/matrix_transform.inl \
   Libraries/glm/gtc/../geometric.hpp \
   Libraries/glm/gtc/../trigonometric.hpp Libraries/glm/gtc/../matrix.hpp \
-  Libraries/glm/gtc/type_ptr.hpp Libraries/glm/gtc/../gtc/quaternion.hpp \
-  Libraries/glm/gtc/../gtc/constants.hpp \
-  Libraries/glm/gtc/../gtc/matrix_transform.hpp \
   Libraries/glm/gtc/../ext/vector_relational.hpp \
   Libraries/glm/./ext/../detail/qualifier.hpp \
   Libraries/glm/./ext/vector_relational.inl \
@@ -229,7 +231,13 @@ Build/Obj/Entropy/Debug/PhysicsEngine.o: \
   Libraries/glm/gtc/../mat2x4.hpp Libraries/glm/gtc/../mat3x2.hpp \
   Libraries/glm/gtc/../mat3x3.hpp Libraries/glm/gtc/../mat3x4.hpp \
   Libraries/glm/gtc/../mat4x2.hpp Libraries/glm/gtc/../mat4x3.hpp \
-  Libraries/glm/gtc/type_ptr.inl
+  Libraries/glm/gtc/type_ptr.inl \
+  Projects/Entropy/Physics/../Graphics/Shapes/../RenderTarget.hpp \
+  Projects/Entropy/Physics/../Graphics/Shapes/../VertexBuffer.hpp \
+  Projects/Entropy/Physics/../Graphics/Shapes/../../Shared.hpp \
+  Projects/Entropy/Physics/../Graphics/Shapes/../BufferObject.hpp \
+  Projects/Entropy/Physics/../Graphics/Shapes/../RenderInstance.hpp \
+  Libraries/glm/gtc/matrix_transform.hpp
 
 Projects/Entropy/Physics/PhysicsEngine.hpp:
 
@@ -551,17 +559,33 @@ Projects/Entropy/Physics/PhysicsObject.hpp:
 
 Projects/Entropy/Physics/../Graphics/Shapes/Shape.hpp:
 
+Projects/Entropy/Physics/../Graphics/Shapes/../Vertex.hpp:
+
 Projects/Entropy/Physics/CollisionData.hpp:
 
 Projects/Entropy/Physics/../Graphics/2dRenderer.hpp:
 
 /usr/local/include/GLFW/glfw3.h:
 
-Projects/Entropy/Physics/../Graphics/Renderable.hpp:
+Projects/Entropy/Physics/../Graphics/Shapes/../Renderable.hpp:
 
-Projects/Entropy/Physics/../Graphics/shader.hpp:
+Projects/Entropy/Physics/../Graphics/Shapes/../Shapes/Shape.hpp:
 
-Libraries/glm/gtc/matrix_transform.hpp:
+Projects/Entropy/Physics/../Graphics/Shapes/../Shader.hpp:
+
+Libraries/glm/gtc/type_ptr.hpp:
+
+Libraries/glm/gtc/../gtc/quaternion.hpp:
+
+Libraries/glm/gtc/../gtc/constants.hpp:
+
+Libraries/glm/gtc/../ext/scalar_constants.hpp:
+
+Libraries/glm/./ext/scalar_constants.inl:
+
+Libraries/glm/gtc/constants.inl:
+
+Libraries/glm/gtc/../gtc/matrix_transform.hpp:
 
 Libraries/glm/gtc/../mat4x4.hpp:
 
@@ -574,12 +598,6 @@ Libraries/glm/gtc/../vec4.hpp:
 Libraries/glm/gtc/../ext/matrix_projection.hpp:
 
 Libraries/glm/./ext/../gtc/constants.hpp:
-
-Libraries/glm/gtc/../ext/scalar_constants.hpp:
-
-Libraries/glm/./ext/scalar_constants.inl:
-
-Libraries/glm/gtc/constants.inl:
 
 Libraries/glm/./ext/../geometric.hpp:
 
@@ -606,14 +624,6 @@ Libraries/glm/gtc/../geometric.hpp:
 Libraries/glm/gtc/../trigonometric.hpp:
 
 Libraries/glm/gtc/../matrix.hpp:
-
-Libraries/glm/gtc/type_ptr.hpp:
-
-Libraries/glm/gtc/../gtc/quaternion.hpp:
-
-Libraries/glm/gtc/../gtc/constants.hpp:
-
-Libraries/glm/gtc/../gtc/matrix_transform.hpp:
 
 Libraries/glm/gtc/../ext/vector_relational.hpp:
 
@@ -758,3 +768,15 @@ Libraries/glm/gtc/../mat4x2.hpp:
 Libraries/glm/gtc/../mat4x3.hpp:
 
 Libraries/glm/gtc/type_ptr.inl:
+
+Projects/Entropy/Physics/../Graphics/Shapes/../RenderTarget.hpp:
+
+Projects/Entropy/Physics/../Graphics/Shapes/../VertexBuffer.hpp:
+
+Projects/Entropy/Physics/../Graphics/Shapes/../../Shared.hpp:
+
+Projects/Entropy/Physics/../Graphics/Shapes/../BufferObject.hpp:
+
+Projects/Entropy/Physics/../Graphics/Shapes/../RenderInstance.hpp:
+
+Libraries/glm/gtc/matrix_transform.hpp:

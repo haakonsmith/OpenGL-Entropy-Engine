@@ -1,6 +1,7 @@
 
 #include <vector>
 #define GL_SILENCE_DEPRECATION
+#include "../Vertex.hpp"
 #include "glm/glm.hpp"
 #include <OpenGL/gl3.h>
 
@@ -12,77 +13,47 @@ using namespace std;
 namespace Entropy
 {
 
-
-
 struct Shape
 {
-    vector<GLfloat> vertices;
-
-    vector<GLfloat> UVs;
-
-    Shape() {
-      vertices = {
-        -1.0f, -1.0f, 0.0f, // x,y,z vertex 1
-        1.0f, -1.0f, 0.0f,  // x,y,z vertex 2
-        1.0f, 1.0f, 0.0f,   // x,y,z vertex 3
-      };
-      UVs = {
-        0, 0,
-        1, 0,
-        1, 1
-      };
-    }
-
+  vector<Vertex> Vertices;
+  Shape() {}
 };
 
 struct Rectangle : Shape
 {
 
-    Rectangle() {
-      vertices = {
-          // tri 1
-          -1.0f, -1.0f, 0.0f, // x,y,z vertex 1
-          1.0f, -1.0f, 0.0f,  // x,y,z vertex 2
-          1.0f, 1.0f, 0.0f,   // x,y,z vertex 3
-          // tri 2
-          -1.0f, -1.0f, 0.0f, // x,y,z vertex 4
-          -1.0f, 1.0f, 0.0f,  // x,y,z vertex 5
-          1.0f, 1.0f, 0.0f,   // x,y,z vertex 6
-      };
+  Rectangle()
+  {
+    Vertices = {
+        // tri 1
+        Vertex(-1.0f, -1.0f, 0.0f, 0, 0),
+        Vertex(1.0f, -1.0f, 0.0f, 1, 0),
+        Vertex(1.0f, 1.0f, 0.0f, 1, 1),
 
-      UVs = {
-      // tri 1
-        0, 0, // x,y vertex 1
-        1, 0, // x,y vertex 2
-        1, 1, // x,y vertex 3
-      //   tri 2
-        0, 0, // x,y vertex 1
-        0, 1, // x,y vertex 2
-        1, 1, // x,y vertex 3
-      };
-    }
+        // tri 2
+        Vertex(-1.0f, -1.0f, 0.0f, 0, 0),
+        Vertex(-1.0f, 1.0f, 0.0f, 0, 1),
+        Vertex(1.0f, 1.0f, 0.0f, 1, 1),
+    };
+  }
 };
 
 struct Line : Shape
 {
 
-    Line(vec3 p1, vec3 p2) {
-      vertices.reserve(6);
-      vertices.push_back(p1.x);
-      vertices.push_back(p1.y);
-      vertices.push_back(p1.z);
-      vertices.push_back(p1.x);
-      vertices.push_back(p1.y);
-      vertices.push_back(p1.z);
-
-    }
+  Line(vec3 p1, vec3 p2)
+  {
+    Vertices.reserve(2);
+    Vertices.push_back(p1);
+    Vertices.push_back(p2);
+  }
 };
 
-struct BoundingBox {
+struct BoundingBox
+{
   float width, height;
 
   BoundingBox() : width(), height() {}
 };
 
 } // namespace Entropy
-

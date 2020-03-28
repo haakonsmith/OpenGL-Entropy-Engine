@@ -62,8 +62,8 @@ ifeq ($(config),release)
   INCLUDES += -ILibraries/GLFW/Include -ILibraries
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
-  ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -g -Wdeprecated-declarations
-  ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -g -std=c++17 -Wdeprecated-declarations
+  ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -Wdeprecated-declarations
+  ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -std=c++17 -Wdeprecated-declarations
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   LIBS += -framework OpenGL -lglfw
   LDDEPS +=
@@ -85,7 +85,7 @@ OBJECTS := \
 	$(OBJDIR)/GameObject.o \
 	$(OBJDIR)/2dRenderer.o \
 	$(OBJDIR)/3dRenderer.o \
-	$(OBJDIR)/shader.o \
+	$(OBJDIR)/Shader.o \
 	$(OBJDIR)/PhysicsEngine.o \
 	$(OBJDIR)/PhysicsObject.o \
 
@@ -158,7 +158,7 @@ $(OBJDIR)/2dRenderer.o: Projects/Entropy/Graphics/2dRenderer.cpp
 $(OBJDIR)/3dRenderer.o: Projects/Entropy/Graphics/3dRenderer.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/shader.o: Projects/Entropy/Graphics/shader.cpp
+$(OBJDIR)/Shader.o: Projects/Entropy/Graphics/Shader.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/PhysicsEngine.o: Projects/Entropy/Physics/PhysicsEngine.cpp
