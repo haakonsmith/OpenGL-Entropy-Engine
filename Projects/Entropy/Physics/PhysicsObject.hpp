@@ -1,23 +1,53 @@
+/*
+ * Copyright 2020, Haakon Smith.
+ */
+
 #pragma once
 
-#include <glm/glm.hpp>
+#include <string>
+#include <vector>
+
+#include "../Graphics/Shapes/Shape.hpp"
+#include "CollisionData.hpp"
+#include "glm/glm.hpp"
 
 using namespace glm;
 
-namespace Entropy
-{
+enum { BOUNDINGBOXCOLLISION, AABBCOLLISION, POLYGONCOLLISION, ACTIVE, STATIC };
+namespace Entropy {
 
-class PhysicsObject
-{
+    class PhysicsObject {
+      protected:
+        mat4 modelMatrix;
 
-public:
-    virtual void setPosition(vec3 v) {position = v;}
+      public:
+        string name;
+        int collisionType;
+        int physicsType = STATIC;
+        BoundingBox boundingBox;
 
-    vec3 position;
-    vec3 velocity;
+        vector<Vertex> Vertices;
 
-    PhysicsObject();
-    ~PhysicsObject();
-};
+        bool collidedLastFrame = false;
 
-} // namespace Entropy
+        virtual void setPosition(const vec3 &v) { position = v; }
+        virtual vec3 getPosition() { return position; }
+
+        virtual void setModelMatrix(mat4 m) { modelMatrix = m; }
+        virtual mat4 getModelMatrix() { return modelMatrix; }
+
+        double friction = 1;
+        vec3 position;
+        vec3 velocity;
+
+        virtual void update(){};
+
+        virtual void customPrePhysicsStep(double deltaTime){};
+        virtual void collide(vec3 prePos, PhysicsObject *collided, CollisionData data){};
+
+        PhysicsObject();
+        PhysicsObject(Shape shape) : PhysicsObject() { Vertices = shape.Vertices; };
+        ~PhysicsObject();
+    };
+
+}  // namespace Entropy

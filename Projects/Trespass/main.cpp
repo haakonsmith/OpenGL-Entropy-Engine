@@ -5,6 +5,7 @@
 #include <random>
 #include <string>
 
+#define GL_SILENCE_DEPRECATION
 
 
 #include <vector>
@@ -14,6 +15,7 @@
 #include <cstring>
 #include <chrono>
 #include <thread>
+#include <functional>
 #include <unistd.h>
 
 #define PI 3.1415926535897932384626433832795028841971693993
@@ -34,85 +36,33 @@
 // Include GLFW
 #include <GLFW/glfw3.h>
 
-
-
-// #include <GLUT/glut.h>
-
-// declare window must go before initializers load
-// GLFWwindow *window;
-
-// the order in which these are included does matter
-// Include custom initializers
-// #include <main/initializers.hpp>
-
-// #include <game/open-lib.hpp>
-
-// TODO: clean up
+#include <type_traits> 
 
 
 using namespace glm;
 
-// include shader loader
-
-// // include 3d model loader
-// #include <main/objloader.hpp>
-
-double to_the(double item, int power = 2)
-{
-    double number = 1;
-    for (size_t i = 0; i <= power; i++)
-    {
-        number = number * item;
-    }
-    return number;
-}
-
-double distance(double x_1, double y_1, double x_2, double y_2)
-{
-    double distance = sqrt(to_the(x_1 - x_2, 2) + to_the(y_1 - y_2, 2));
-    return distance;
-}
-
-
-
-// bool loadModel(char name[], std::unique_ptr<Obj> object)
-// {
-//     // Read our .obj file
-//     std::vector<glm::vec3> vertices;
-//     std::vector<glm::vec2> uvs;
-//     std::vector<glm::vec3> normals; // Won't be used at the moment.
-//     bool res = loadOBJ("cube.obj", vertices, uvs, normals);
-    
-//     if (!res) {
-//         printf("error loading blender model");
-//         return false;
-//     }
-    
-//     else
-//     {
-//         object->vertices = vertices;
-//         object->normals = normals;
-//         object->uvs = uvs;
-//         return true;
-//     }
-    
-    
-// }
-
-// #include <Entropy/Application.hpp>
-// #include <Entropy/2dRenderer.hpp>
-
 #define NDEBUG
 #include <Entropy.hpp>
+#include "src/Bullet.hpp"
 #include "src/Player.hpp"
 
 
+
+
 using namespace Entropy;
+using namespace std;
+
+
+
 
 bool done = false;
 
 class Trespass : public Entropy::BaseApplication
 {
+
+        double MouseXPos, MouseYPos;
+
+        int state;
     
         Entropy::m_2dRenderer* renderer;
 
@@ -120,74 +70,230 @@ class Trespass : public Entropy::BaseApplication
 
         Entropy::PhysicsEngine* world;
 
-        Player* player;
+        shared_ptr<Player> player;
+
+        shared_ptr<GameObject> quad;
+        shared_ptr<PhysicsObject> leftwall;
+        shared_ptr<PhysicsObject> rightwall;
+        shared_ptr<PhysicsObject> topwall;
+        shared_ptr<PhysicsObject> bottomwall;
+
+        double previousFrameTime;
 
         int i = 0;
 
-    public:
-        // static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        //     if (key == GLFW_KEY_W && action == GLFW_PRESS)
-        //         player->velocity += 
+        std::chrono::time_point<std::chrono::high_resolution_clock> t_start;
+        std::chrono::time_point<std::chrono::high_resolution_clock> ent_start;
 
-        // }
+
+    public:
 
         void init() override {
-            player = new Player();
+            t_start = std::chrono::high_resolution_clock::now();
+            ent_start = std::chrono::high_resolution_clock::now();
+            player = make_shared<Player>();
+
+            player->setPosition(vec3(320,240,0));
+
 
             // Ensure we can capture the escape key being pressed below
             glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
             renderer = new Entropy::m_2dRenderer(640, 480);
-
-            std::vector<GLfloat> vertices = {
-                -1.0f, -1.0f, 1.0f, // x,y,z vertex 1
-                1.0f, -1.0f, 0.0f,  // x,y,z vertex 2
-                1.0f, 1.0f, 0.0f,   // x,y,z vertex 3
+            renderer->drawOutline(true);
+            std::vector<Vertex> vertices = {
+                Vertex(-1.0f, -1.0f, 0.0f), // x,y,z vertex 1
+                Vertex(1.0f, -1.0f, 0.0f),  // x,y,z vertex 2
+                Vertex(1.0f, 1.0f, 0.0f),   // x,y,z vertex 3
+                Vertex(-1.0f, 1.0f, 0.0f),  // x,y,z vertex 3
             };
 
-            tri = new Renderable(vertices);
+        
 
-            // renderer->add_renderable(tri);
-            renderer->add_renderable(player);
-            // renderer->add_renderable(new Renderable(vertices, glm::vec3(100,100,-10)));
+            tri = new Renderable(Rectangle());
 
-            world = new Entropy::PhysicsEngine();
+            tri->setPosition(vec3(320.0f, 240.0f, 0.0f));
+            tri->setScale(320,240);
+            tri->setTexture(renderer->loadTexture("floor.png"));
 
-            world->addObject(player);
+            quad = make_shared<GameObject>(Rectangle()); 
+
+            quad->setPosition(vec3(320,280,0));
+
+            quad->PhysicsObject::Vertices = vertices;
+
+            quad->boundingBox.width = 10;
+            quad->boundingBox.height = 10;
+
+            player->boundingBox.width = 10;
+            player->boundingBox.height = 10;
+
+            player->physicsType = ACTIVE;
+            GLuint positionBufferID;
+            glGenBuffers(1, &positionBufferID);
+            // renderer->drawOutline(true);
+
+            
+
+
+            quad->setScale(10.0f,10.0f,0.1f);
+            renderer->addRenderable(quad.get());
+            renderer->addRenderable(tri);
+            player->setScale(10.0f,10.0f,0.1f);
+            renderer->addRenderable(player.get());
+
+            leftwall = make_shared<PhysicsObject>();
+            leftwall->boundingBox.height = 240;
+            leftwall->boundingBox.width = 20;
+            leftwall->setPosition(vec3(-10,240,0));
+
+            rightwall = make_shared<PhysicsObject>();
+            rightwall->boundingBox.height = 240;
+            rightwall->boundingBox.width = 20;
+            rightwall->setPosition(vec3(650,240,0));
+
+            topwall = make_shared<PhysicsObject>();
+            topwall->boundingBox.height = 20;
+            topwall->boundingBox.width = 320;
+            topwall->setPosition(vec3(320,490,0));
+
+            bottomwall = make_shared<PhysicsObject>();
+            bottomwall->boundingBox.height = 20;
+            bottomwall->boundingBox.width = 320;
+            bottomwall->setPosition(vec3(320,-10,0));
+
+
+    
+
+
+            // quad->setMVP( quad->Renderable::MVP);
+            // renderer->addRenderable(new Renderable(vertices, glm::vec3(100,100,-10)));
+
+            world = new Entropy::PhysicsEngine(*renderer);
+
+            world->addObject(player.get());
+            world->addObject(quad.get());
+            world->addObject(leftwall.get());
+            world->addObject(rightwall.get());
+            world->addObject(topwall.get());
+            world->addObject(bottomwall.get());
+            world->debug = true;
+
+            player->renderer = renderer;
+            player->world = world;
+
+            // LOG(quad->Renderable::MVP[0].x);
+            // LOG(quad->PhysicsObject::MVP[0].x);
+            
+            
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         }
 
         void loop() override {
+
+            previousFrameTime = glfwGetTime();
+            
             glfwSetTime(0);
 
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glfwGetCursorPos(window, &MouseXPos, &MouseYPos);
 
-            tri->position.x = i;
+            glClear(GL_COLOR_BUFFER_BIT);
+            glClearColor(0.0, 0.0, 0.0, 0.0); 
+
 
             // renderer->transform(tri);
 
-            renderer->transform(player);
+            renderer->transform(player.get());
+
+
+
+
+
+
+            MouseYPos = (MouseYPos - 480) * -1;
+
+
 
             renderer->renderFrame();
+            // renderer->renderQuad(player->getPosition(), 10,10);
+            // renderer->renderQuad(quad->getPosition(), 10,10);
 
+            world->timeStep(previousFrameTime);
+            renderer->renderLine(( player->velocity)  + player->getPosition(), player->getPosition());
+
+            player->rotation = glm::degrees(atan2((MouseYPos - player->getPosition().y), (MouseXPos - player->getPosition().x)) * -1) * -1 + 45;
+            
+            state = glfwGetKey(window, GLFW_KEY_W);
+            if (state == GLFW_PRESS)
+            {
+                player->velocity.y = 100;
+            }
+            state = glfwGetKey(window, GLFW_KEY_S);
+            if (state == GLFW_PRESS)
+            {
+                player->velocity.y = -100;
+            }
+            state = glfwGetKey(window, GLFW_KEY_A);
+            if (state == GLFW_PRESS)
+            {
+                player->velocity.x = -100;
+            }
+            state = glfwGetKey(window, GLFW_KEY_D);
+            if (state == GLFW_PRESS)
+            {
+                player->velocity.x = 100;
+            }
+
+            // bool pressed = false;
+
+            
+
+            auto t_now = std::chrono::high_resolution_clock::now();
+
+            state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1);
+            if (std::chrono::duration_cast<std::chrono::duration<float>>(t_now - ent_start).count() > 0.3) {
+                player->createEnemy(vec3(rand() % 440 + 100,rand() % 220 + 100,0));
+                ent_start = t_now;
+            }
+            if (state == GLFW_PRESS && std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count() > 0.3)
+            {
+                t_start = t_now;
+                player->shouldCreate = true;
+                player->shootBullet();
+            }
+
+            player->update();
+            // glfwSwapBuffers(window);
+            
+
+            // LOG(
+            //     "player position:  " << player->getPosition().x << ", " << player->getPosition().y << 
+            //     "  mouse position:  " << MouseXPos << ", " << MouseYPos
+            //     );
+
+            
+
+            
+
+            // renderer->renderLine(vec3(0,0,0), player->getPosition());
+            // glm::mat4 myMatrix = glm::translate(glm::mat4(), glm::vec3(10.0f, 0.0f, 0.0f));
+
+
+            // LOG(renderer->distToNearestPoint(player.get()));
+            renderer->renderLine(vec3(0),  player->getPosition());
+            // LOG((quad->getModelMatrix() * vec4(1,1,1, 1.0f)).x);
+            // LOG((glm::translate(glm::mat4(), glm::vec3(10.0f, 1.0f, 1.0f)) * vec4(1.0f,0.0f,0.0f, 1.0f)).x);
+            // LOG(renderer->worldSpace(vec3(player->translationMatrix * vec4(0.0f,1.0f,0.0f, 1.0f))).x);
+
+            
             glfwSwapBuffers(window);
             glfwPollEvents();
 
+
+
             auto time = glfwGetTime();
             if (time < 0.016)
-                usleep((0.016 - time) * 1000000);
-
-            i++;
-
-            int state = glfwGetKey(window, GLFW_KEY_W);
-            if (state == GLFW_PRESS)
-            {
-                std::cout << "got here";
-                std::cout << player->getPosition().y;
-                player->velocity.y += 100;
-            }
-
-            world->timeStep(glfwGetTime());
+                usleep((0.016 - time) * 100000);
         }
 
         Trespass() : Entropy::BaseApplication() {
@@ -198,7 +304,8 @@ class Trespass : public Entropy::BaseApplication
             mainLoop();
         }
         ~Trespass() {
-            delete player;
+            // delete player;
+            // delete tri;
             delete world;
             delete renderer;
         }
@@ -206,221 +313,8 @@ class Trespass : public Entropy::BaseApplication
 
 
 int main() {
+
     Trespass* app = new Trespass();
     delete app;
 }
 
-// int oldmain(void)
-// {
-  
-
-
-//     // Dark blue background
-//     glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-
-//     GLuint VertexArrayID;
-//     glGenVertexArrays(1, &VertexArrayID);
-//     glBindVertexArray(VertexArrayID);
-
-//     // This will identify our vertex buffer
-//     GLuint worldbuffer;
-    
-
-//     GLuint programID = LoadShaders("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader");
-
-    
-//     // std::unique_ptr<Obj> cube(new Obj(programID, GL_STATIC_DRAW));
-  
-//     // std::unique_ptr<Triangle> triangle(new Triangle(programID, GL_STATIC_DRAW));
-//         std::unique_ptr<RightTriangle> triangle2(new RightTriangle(programID, worldbuffer));
-
-//         std::unique_ptr<GameObject> box(new GameObject(glm::vec3(40, 40, 1), 60, 60));
-
-//         box->add_shape("tri", TRIANGLE, programID, worldbuffer);
-
-//         auto room = std::make_shared<Room>(SCREEN_WIDTH, SCREEN_HEIGHT);
-//         room->add("tri", std::move(box));
-
-//         // player object
-//         std::unique_ptr<GameObject> objk(new GameObject(glm::vec3(1, 1, 1), 10, 10, TRIANGLE));
-//         objk->add_shape("tri", TRIANGLE, programID, worldbuffer);
-
-//         std::unique_ptr<Player>
-//             player(new Player(std::move(objk), room));
-
-//         std::shared_ptr<GameObject> bullet_ob(new GameObject(glm::vec3(1, 1, 1)));
-//         bullet_ob->add_shape("tri", TRIANGLE, programID, worldbuffer);
-
-//         player->bullet_object = bullet_ob;
-//         player->shader = programID;
-    
-
-    
-//     triangle2->buffer();
-//     // room->buffer();
-//     // player->buffer();
-
-//     auto t_start = std::chrono::high_resolution_clock::now();
-
-//     double lastTime = glfwGetTime();
-//     int nbFrames = 0;
-//     int movecounter = 0;
-
-//     float thingX = 1;
-//     float thingY = 1;
-
-//     int lastMouseState = GLFW_RELEASE;
-
-//     // loop if not close event
-//     while (!glfwWindowShouldClose(window))
-//     {
-
-//         // Measure speed
-//         double currentTime = glfwGetTime();
-//         nbFrames++;
-//         if (currentTime - lastTime >= 1.0)
-//         { // If last prinf() was more than 1 sec ago
-//             // printf and reset timer
-//             printf("%f ms/frame\n", 1000.0 / double(nbFrames));
-//             std::cout << double(nbFrames) << " frames\n";
-//             nbFrames = 0;
-//             lastTime += 1.0;
-            
-//         }
-//         // std::printf(glGetError());
-//         usleep(8000);
-
-//         // Clear the screen to black
-//         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//         glClear(GL_COLOR_BUFFER_BIT);
-
-//         // Calculate transformation
-//         auto t_now = std::chrono::high_resolution_clock::now();
-//         float my_time = std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count();
-
-//         // triangle->transform(player->rotation, glm::vec3(player->x, player->y, 1));
-//         // triangle->draw();
-
-//         #include <game/Loop.hpp>    
-
-//         glfwSwapBuffers(window);
-//         glfwPollEvents();
-
-//         double xMousePos, yMousePos;
-//         glfwGetCursorPos(window, &xMousePos, &yMousePos);
-
-//         if (
-//             xMousePos > 0 && xMousePos < SCREEN_WIDTH 
-//             &&
-//             yMousePos > 0 && yMousePos < SCREEN_HEIGHT
-//         ) 
-//         {
-//             // std::cout << xMousePos << "     " << yMousePos << "\n";
-
-//             // convert y axis to bottem left corner coordinate system
-//             yMousePos = (yMousePos - SCREEN_HEIGHT) * -1;
-
-//             // calculate player rotation
-//             player->rotation = glm::degrees(atan2((yMousePos - player->y), (xMousePos - player->x)) * -1) *-1;
-//         }
-
-        
-
-//         GLuint state;
-//         // keys:
-//             // get state of left mouse key
-//             state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-
-//             // if left mouse key is pressed down
-//             if (state == GLFW_PRESS)
-//             {
-//                 lastMouseState = GLFW_PRESS;
-//                 // std::cout << "yes";
-//                 // player->shoot();
-//             }
-            
-//             if (state == GLFW_RELEASE) {
-                
-//                 if (lastMouseState == GLFW_PRESS) {
-//                     std::cout << "yes\n";
-//                     player->shoot(worldbuffer);
-//                 }
-                
-//                 lastMouseState = GLFW_RELEASE;
-//             }
-            
-
-//             state = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT);
-
-            
-//             if (state == GLFW_PRESS) {
-//                 player->speed = 5;
-//             }
-            
-//             else{
-//                 player->speed = 1;
-//             }
-
-//             // Measure speed
-//             // currentTime = glfwGetTime();
-//             // nbFrames++;
-//             if (currentTime - lastTime >= (0.6 - player->speed) - 20)
-//             { // If last prinf() was more than 1 sec ago
-             
-
-//                 glfwGetWindowSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
-
-                
-//                 state = glfwGetKey(window, GLFW_KEY_W);
-
-//                 if (state == GLFW_PRESS && player->boundary(MOVE::UP) < room->boundary(MOVE::UP))
-//                 {
-//                     player->move(MOVE::UP);
-//                 }
-
-//                 state = glfwGetKey(window, GLFW_KEY_S);
-
-//                 if (state == GLFW_PRESS && player->boundary(MOVE::DOWN) > room->boundary(MOVE::DOWN) * -1)
-//                 {
-//                     player->move(MOVE::DOWN);
-//                 }
-
-//                 state = glfwGetKey(window, GLFW_KEY_A);
-
-//                 if (state == GLFW_PRESS && player->boundary(MOVE::LEFT) > room->boundary(MOVE::LEFT))
-//                 {
-//                     player->move(MOVE::LEFT);
-//                 }
-
-//                 state = glfwGetKey(window, GLFW_KEY_D);
-
-//                 if (state == GLFW_PRESS && player->boundary(MOVE::RIGHT) < room->boundary(MOVE::RIGHT))
-//                 {
-//                     player->move(MOVE::RIGHT);
-//                 }
-//             }
-//             state = glfwGetKey(window, GLFW_KEY_E);
-
-//             if (state == GLFW_PRESS)
-//             {
-//                 player->move(MOVE::ROTATE);
-//             }
-
-//             // get state of escape key
-//             state = glfwGetKey(window, GLFW_KEY_ESCAPE);
-
-//             // if escape key is pressed down quit
-//             if (state == GLFW_PRESS)
-//             {
-//                 glfwSetWindowShouldClose(window, GLFW_TRUE);
-//             }
-//     }
-
-//     glDeleteBuffers(1, &worldbuffer);
-//     glDeleteProgram(programID);
-//     glDeleteVertexArrays(1, &VertexArrayID);
-//     // Close OpenGL window and terminate GLFW
-//     glfwTerminate();
-
-//     return 0;
-// }

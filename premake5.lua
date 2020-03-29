@@ -10,6 +10,8 @@ workspace "Premake"
 	-- We will compile for x86_64. You can change this to x86 for 32 bit builds.
 	architecture "x86_64"
 
+	buildoptions {"-Wdeprecated-declarations"}
+
 	cppdialect "C++17"
 	
 	-- Configurations are often used to store some compiler / linker settings together.
@@ -21,8 +23,8 @@ workspace "Premake"
 	
 	-- We now only set settings for the Debug configuration
 	filter { "configurations:Debug" }
-		-- We want debug symbols in our debug config
 		symbols "On"
+		-- We want debug symbols in our debug config
 	
 	-- We now only set settings for Release
 	filter { "configurations:Release" }
@@ -31,6 +33,7 @@ workspace "Premake"
 	
 	-- Reset the filter for other settings
 	filter { }
+
 
 	
 	
@@ -63,6 +66,7 @@ function linkGLFW()
 
 end
 
+
 -- Our first project, the static library
 project "Entropy"
 	-- kind is used to indicate the type of this project.
@@ -80,6 +84,7 @@ project "Entropy"
 		links { "/System/Library/Frameworks/OpenGL.framework" }
 
 	filter {}
+
 	
 	-- We need GLFW, so we include it
 	includeGLFW()
@@ -113,6 +118,7 @@ project "Trespass"
 	useEntropy()
 
 	includeGLM()
+
 	
 	-- Now we need to add the OpenGL system libraries
 	
