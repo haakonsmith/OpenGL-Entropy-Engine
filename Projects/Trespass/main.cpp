@@ -95,11 +95,10 @@ class Trespass : public Entropy::BaseApplication
 
             player->setPosition(vec3(320,240,0));
 
-
             // Ensure we can capture the escape key being pressed below
             glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
-            renderer = new Entropy::m_2dRenderer(640, 480);
+            renderer = new Entropy::m_2dRenderer(getScreen());
             renderer->drawOutline(true);
             std::vector<Vertex> vertices = {
                 Vertex(-1.0f, -1.0f, 0.0f), // x,y,z vertex 1
@@ -129,8 +128,6 @@ class Trespass : public Entropy::BaseApplication
             player->boundingBox.height = 10;
 
             player->physicsType = ACTIVE;
-            GLuint positionBufferID;
-            glGenBuffers(1, &positionBufferID);
             // renderer->drawOutline(true);
 
             
@@ -162,14 +159,7 @@ class Trespass : public Entropy::BaseApplication
             bottomwall->boundingBox.width = 320;
             bottomwall->setPosition(vec3(320,-10,0));
 
-
-    
-
-
-            // quad->setMVP( quad->Renderable::MVP);
-            // renderer->addRenderable(new Renderable(vertices, glm::vec3(100,100,-10)));
-
-            world = new Entropy::PhysicsEngine(*renderer);
+            world = new Entropy::PhysicsEngine(*renderer, getScreen());
 
             world->addObject(player.get());
             world->addObject(quad.get());
@@ -182,10 +172,7 @@ class Trespass : public Entropy::BaseApplication
             player->renderer = renderer;
             player->world = world;
 
-            // LOG(quad->Renderable::MVP[0].x);
-            // LOG(quad->PhysicsObject::MVP[0].x);
-            
-            
+
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         }
 
@@ -204,6 +191,7 @@ class Trespass : public Entropy::BaseApplication
             // renderer->transform(tri);
 
             renderer->transform(player.get());
+            renderer->renderCircle(vec3(320,240,0), 10);
 
 
 
@@ -215,8 +203,7 @@ class Trespass : public Entropy::BaseApplication
 
 
             renderer->renderFrame();
-            // renderer->renderQuad(player->getPosition(), 10,10);
-            // renderer->renderQuad(quad->getPosition(), 10,10);
+
 
             world->timeStep(previousFrameTime);
             renderer->renderLine(( player->velocity)  + player->getPosition(), player->getPosition());
@@ -255,7 +242,7 @@ class Trespass : public Entropy::BaseApplication
                 player->createEnemy(vec3(rand() % 440 + 100,rand() % 220 + 100,0));
                 ent_start = t_now;
             }
-            if (state == GLFW_PRESS && std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count() > 0.3)
+            if (state == GLFW_PRESS && std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count() > 0.05)
             {
                 t_start = t_now;
                 player->shouldCreate = true;
@@ -293,7 +280,7 @@ class Trespass : public Entropy::BaseApplication
 
             auto time = glfwGetTime();
             if (time < 0.016)
-                usleep((0.016 - time) * 100000);
+                usleep((0.016 - time) * 100000 * 3);
         }
 
         Trespass() : Entropy::BaseApplication() {

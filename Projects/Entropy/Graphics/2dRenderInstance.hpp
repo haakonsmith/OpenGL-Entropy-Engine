@@ -37,7 +37,7 @@ namespace Entropy {
         void update(const std::array<vec3, C> &data) {
             PositionData = data;
 
-            PositionBuffer->SubBuffer(0, C * sizeof(vec3), PositionData.data());
+            PositionBuffer->subBuffer(0, C * sizeof(vec3), PositionData.data());
         }
 
         uint32 getCount() { return C; }

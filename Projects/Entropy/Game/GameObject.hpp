@@ -16,8 +16,7 @@ namespace Entropy {
     class GameObject : public Renderable, public PhysicsObject {
       public:
         void setPosition(const vec3 &v) override {
-            GameObject::PhysicsObject::position = v;
-            GameObject::Renderable::position = v;
+            GameObject::PhysicsObject::position = GameObject::Renderable::position = v;
         }
         vec3 getPosition() override { return GameObject::Renderable::position; }
 
@@ -26,9 +25,7 @@ namespace Entropy {
             PhysicsObject::modelMatrix = m;
         }
 
-        virtual mat4 getModelMatrix() override {
-            return Renderable::modelMatrix;
-        }
+        virtual mat4 getModelMatrix() override { return Renderable::modelMatrix; }
 
         GameObject();
         GameObject(Shape shape);

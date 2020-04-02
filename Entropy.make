@@ -24,7 +24,7 @@ ifeq ($(config),debug)
   TARGET = $(TARGETDIR)/libEntropy.dylib
   OBJDIR = Build/Obj/Entropy/Debug
   DEFINES +=
-  INCLUDES += -ILibraries/GLFW/Include -ILibraries
+  INCLUDES += -ILibraries/GLFW/Include -ILibraries -ILibraries/Cute
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -fPIC -g -Wdeprecated-declarations
@@ -59,7 +59,7 @@ ifeq ($(config),release)
   TARGET = $(TARGETDIR)/libEntropy.dylib
   OBJDIR = Build/Obj/Entropy/Release
   DEFINES +=
-  INCLUDES += -ILibraries/GLFW/Include -ILibraries
+  INCLUDES += -ILibraries/GLFW/Include -ILibraries -ILibraries/Cute
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -Wdeprecated-declarations
@@ -88,6 +88,7 @@ OBJECTS := \
 	$(OBJDIR)/Shader.o \
 	$(OBJDIR)/PhysicsEngine.o \
 	$(OBJDIR)/PhysicsObject.o \
+	$(OBJDIR)/cute_c2.o \
 
 RESOURCES := \
 
@@ -165,6 +166,9 @@ $(OBJDIR)/PhysicsEngine.o: Projects/Entropy/Physics/PhysicsEngine.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/PhysicsObject.o: Projects/Entropy/Physics/PhysicsObject.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/cute_c2.o: Projects/Entropy/cute_c2.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 

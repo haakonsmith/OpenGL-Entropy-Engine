@@ -7,6 +7,7 @@
 #include <OpenGL/gl3.h>
 
 #include "../Vertex.hpp"
+#include "Cute/cute_c2.hpp"
 #include "glm/glm.hpp"
 
 #pragma once
@@ -48,7 +49,7 @@ namespace Entropy {
     struct BoundingBox {
         float width, height;
 
-        BoundingBox() : width(), height() {}
+        BoundingBox() : width(10), height(10) {}
     };
 
 }  // namespace Entropy

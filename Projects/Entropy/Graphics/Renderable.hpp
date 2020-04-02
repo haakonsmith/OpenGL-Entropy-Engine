@@ -10,20 +10,10 @@
 #include "Vertex.hpp"
 #include "glm/glm.hpp"
 
+#include "../Shared.hpp"
+
 using namespace glm;
 using namespace std;
-
-#define NDEBUG
-
-#ifdef NDEBUG
-#define GL_LOG(LOCATION)           \
-    if (auto error = glGetError()) \
-    std::cout << "OpenGL error " << error << " at " << LOCATION << " " << __LINE__ << std::endl
-#else
-#define GL_LOG() \
-    do {         \
-    } while (0)
-#endif
 
 #pragma once
 

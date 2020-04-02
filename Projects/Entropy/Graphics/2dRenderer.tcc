@@ -7,10 +7,10 @@ namespace Entropy {
     void m_2dRenderer::renderInstance(const RenderInstance<C> &Instance, uint32 renderCount) {
         glBindBuffer(GL_ARRAY_BUFFER, Instance.Instanced->vertexBufferID);
 
-        Instance.Instanced->shader->Bind();
+        Instance.Instanced->shader->bind();
         GL_LOG("bind shader ");
 
-        Instance.Instanced->shader->UniformMatrix4fv("MVP", Instance.Instanced->MVP);
+        Instance.Instanced->shader->uniformMatrix4fv("MVP", Instance.Instanced->MVP);
         GL_LOG("bind shader ");
 
         glActiveTexture(GL_TEXTURE0);
@@ -19,7 +19,7 @@ namespace Entropy {
         GL_LOG("Bind Texture");
 
         // Set our "myTextureSampler" sampler to use Texture Unit 0
-        Instance.Instanced->shader->Uniform1i("myTextureSampler", 0);
+        Instance.Instanced->shader->uniform1i("myTextureSampler", 0);
         GL_LOG("Use shader");
 
         // 1st attribute buffer : Vertices
@@ -52,7 +52,7 @@ namespace Entropy {
 
         glEnableVertexAttribArray(2);
         GL_LOG("Atrib instance");
-        Instance.PositionBuffer->Bind();
+        Instance.PositionBuffer->bind();
         GL_LOG("Bind instance position buffer");
         glVertexAttribPointer(2,  // attribute 0. No particular reason for 0, but must match
                                   // the layout in the shader.

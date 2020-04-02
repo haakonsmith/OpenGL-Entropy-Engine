@@ -15,7 +15,8 @@
 #include <string>
 #include <vector>
 
-#include "RenderInstance.hpp"
+#include "2dRenderInstance.hpp"
+#include "2dRenderInterface.hpp"
 #include "RenderTarget.hpp"
 #include "Renderable.hpp"
 #include "Shader.hpp"
@@ -25,6 +26,7 @@
 #include "glm/glm.hpp"
 // #include <glm/gtx/string_cast.hpp>
 #include "../Shared.hpp"
+#include "../Screen.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #else
@@ -33,7 +35,7 @@
 
 #pragma once
 namespace Entropy {
-    class m_2dRenderer {
+    class m_2dRenderer : public m_2dRenderInterface {
       private:
         unsigned int SCREEN_WIDTH, SCREEN_HEIGHT;
 
@@ -43,6 +45,8 @@ namespace Entropy {
 
         shared_ptr<Shader> program;
 
+        Screen &screen;
+
         shared_ptr<Renderable> debugQuad;
         GLuint VertexArrayID;
         GLuint programID;
@@ -50,6 +54,7 @@ namespace Entropy {
         shared_ptr<Shader> debugShader;
         shared_ptr<Shader> instanceShader;
         shared_ptr<Shader> debugLineShader;
+        shared_ptr<Shader> builtinCircleShader;
         std::vector<Renderable *> objects = std::vector<Renderable *>();
 
         /**
@@ -129,13 +134,6 @@ namespace Entropy {
         template <uint32 C>
         void renderInstance(const RenderInstance<C> &Instance, uint32 renderCount = C);
 
-        /**
-         * Converts coordinate vector coordinate to OpenGL float space
-         */
-        glm::vec3 modelSpace(glm::vec3 coords);
-
-        glm::vec3 worldSpace(glm::vec3 coords);
-
         void removeRenderable(Renderable *renderable);
         /**
          * Add renderable object to objects.
@@ -190,7 +188,9 @@ namespace Entropy {
          */
         void transform(Renderable *obj);
 
-        m_2dRenderer(unsigned int width, unsigned int height);
+        void renderCircle(vec3 position, float radius, bool hollow = false);
+
+        m_2dRenderer(Screen &_s);
         ~m_2dRenderer();
     };
 }  // namespace Entropy

@@ -189,22 +189,6 @@ namespace Entropy {
         return *min_element(distances.begin(), distances.end());
     }
 
-    glm::vec3 m_2dRenderer::modelSpace(glm::vec3 worldSpaceCoords) {
-        // coords.x = (coords.x - (SCREEN_WIDTH / 2))/SCREEN_WIDTH * 2;
-        worldSpaceCoords.x = ((worldSpaceCoords.x * 2) / SCREEN_WIDTH) - 1;
-        worldSpaceCoords.y = ((worldSpaceCoords.y * 2) / SCREEN_HEIGHT) - 1;
-
-        return worldSpaceCoords;
-    }
-
-    glm::vec3 m_2dRenderer::worldSpace(glm::vec3 modelSpaceCoords) {
-        // coords.x = (coords.x - (SCREEN_WIDTH / 2))/SCREEN_WIDTH * 2;
-        modelSpaceCoords.x = (modelSpaceCoords.x * SCREEN_WIDTH + SCREEN_WIDTH) / 2;
-        modelSpaceCoords.y = (modelSpaceCoords.y * SCREEN_HEIGHT + SCREEN_HEIGHT) / 2;
-
-        return modelSpaceCoords;
-    }
-
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////// Render commands /////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -221,16 +205,16 @@ namespace Entropy {
 
     void m_2dRenderer::render(Renderable *_renderable) {
         glBindBuffer(GL_ARRAY_BUFFER, _renderable->vertexBufferID);
-        _renderable->shader->Bind();
+        _renderable->shader->bind();
         GL_LOG("bind shader ");
 
-        _renderable->shader->UniformMatrix4fv("MVP", _renderable->MVP);
+        _renderable->shader->uniformMatrix4fv("MVP", _renderable->MVP);
 
         // Bind our texture in Texture Unit 0
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, _renderable->texture);
         // Set our "myTextureSampler" sampler to use Texture Unit 0
-        _renderable->shader->Uniform1i("myTextureSampler", 0);
+        _renderable->shader->uniform1i("myTextureSampler", 0);
 
         // 1st attribute buffer : Vertices
 
@@ -270,11 +254,11 @@ namespace Entropy {
     }
 
     void m_2dRenderer::renderLine(const vec3 &p1, const vec3 &p2) {
-        Vertex verts[] = {Vertex(modelSpace(p1)), Vertex(modelSpace(p2))};
+        Vertex verts[] = {Vertex(screen.localSpace(p1)), Vertex(screen.localSpace(p2))};
 
         VertexBuffer vbo(0, sizeof(verts), verts, GL_STREAM_DRAW);
-        debugLineShader->Bind();
-        vbo.Bind();
+        debugLineShader->bind();
+        vbo.bind();
 
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -311,10 +295,10 @@ namespace Entropy {
     }
 
     void m_2dRenderer::renderOutline(const Renderable &_renderable) {
-        debugShader->Bind();
+        debugShader->bind();
 
-        debugShader->UniformMatrix4fv("MVP", _renderable.MVP);
-        debugShader->Uniform3f("inColor", 1, 1, 0);
+        debugShader->uniformMatrix4fv("MVP", _renderable.MVP);
+        debugShader->uniform3f("inColor", 1, 1, 0);
 
         GL_LOG("bind uniform ");
 
@@ -361,10 +345,10 @@ namespace Entropy {
         mat4 MVP = projectionMatrix * viewMatrix *
                    (glm::translate(mat4(1.0f), (position)) * glm::scale(mat4(1.0f), vec3(width, height, 1)));
 
-        debugShader->Bind();
+        debugShader->bind();
 
-        debugShader->UniformMatrix4fv("MVP", MVP);
-        debugShader->Uniform3f("inColor", colour.x, colour.y, colour.z);
+        debugShader->uniformMatrix4fv("MVP", MVP);
+        debugShader->uniform3f("inColor", colour.x, colour.y, colour.z);
 
         glBindBuffer(GL_ARRAY_BUFFER, debugQuad->vertexBufferID);
 
@@ -373,7 +357,7 @@ namespace Entropy {
 
         glVertexAttribPointer(0,  // attribute 0. No particular reason for 0,
                                   // but must match the layout in the shader.
-                              3,               // size
+                              3,               // count
                               GL_FLOAT,        // type
                               GL_FALSE,        // normalized?
                               sizeof(Vertex),  // stride
@@ -398,22 +382,61 @@ namespace Entropy {
         glDisableVertexAttribArray(1);
     }
 
+    void m_2dRenderer::renderCircle(vec3 position, float radius, bool hollow) {
+        builtinCircleShader->bind();
+
+        position.z += 1;
+
+        mat4 MVP = projectionMatrix * viewMatrix * (translate(mat4(1.0f), position) * scale(mat4(1.0f), vec3(radius)));
+
+        builtinCircleShader->uniformMatrix4fv("MVP", MVP);
+        builtinCircleShader->uniform1i("hollow", hollow);
+
+        // 1st attribute buffer : vertices
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+
+        glBindBuffer(GL_ARRAY_BUFFER, debugQuad->vertexBufferID);
+
+        glVertexAttribPointer(0,  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+                              3,  // size
+                              GL_FLOAT,        // type
+                              GL_FALSE,        // normalized?
+                              sizeof(Vertex),  // stride
+                              (void *)0        // array buffer offset
+        );
+        GL_LOG("Atrib pointer");
+
+        glVertexAttribPointer(1,  // attribute. No particular reason for 1, but must match the layout in the shader.
+                              2,  // size : U+V => 2
+                              GL_FLOAT,        // type
+                              GL_FALSE,        // normalized?
+                              sizeof(Vertex),  // stride
+                              (void *)12       // array buffer offset
+        );
+
+        GL_LOG("draw arrays ");
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+
+        GL_LOG("Render");
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////// Class commands //////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    m_2dRenderer::m_2dRenderer(unsigned int width, unsigned int height) {
-        SCREEN_HEIGHT = height;
-        SCREEN_WIDTH = width;
-
+    m_2dRenderer::m_2dRenderer(Screen &_s) : screen(_s) {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        projectionMatrix = glm::ortho(0.0f,                  // left
-                                      (float)SCREEN_WIDTH,   // right
-                                      0.0f,                  // bottom
-                                      (float)SCREEN_HEIGHT,  // top
-                                      0.0f,                  // zNear
-                                      100.0f                 // zFar
+        projectionMatrix = glm::ortho(0.0f,                 // left
+                                      (float)screen.sizeX,  // right
+                                      0.0f,                 // bottom
+                                      (float)screen.sizeY,  // top
+                                      0.0f,                 // zNear
+                                      100.0f                // zFar
         );
 
         // Camera matrix
@@ -442,6 +465,9 @@ namespace Entropy {
             shared_ptr<Shader>(new Shader("shaders/debug/red.vertexshader", "shaders/debug/red.fragmentshader"));
         debugLineShader =
             shared_ptr<Shader>(new Shader("shaders/debug/line.vertexshader", "shaders/debug/line.fragmentshader"));
+
+        builtinCircleShader = shared_ptr<Shader>(
+            new Shader("shaders/Builtin/circle.vertexshader", "shaders/Builtin/circle.fragmentshader"));
 
         program = shared_ptr<Shader>(
             new Shader("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader"));

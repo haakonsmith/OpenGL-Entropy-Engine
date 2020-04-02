@@ -9,12 +9,12 @@ struct BufferObject {
     uint32_t dataSize = 0;
     GLenum drawType;
 
-    void Release() {
+    void release() {
         glDeleteBuffers(1, &bufferObjectID);
         bufferObjectID = 0;
     }
 
-    virtual void BufferData(uint32_t size, const void *data, GLenum drawType) {
+    virtual void bufferData(uint32_t size, const void *data, GLenum drawType) {
         glBufferData(T, size, data, drawType);
         GL_LOG("create ");
     }
@@ -26,22 +26,22 @@ struct BufferObject {
         GL_LOG("create ");
         glBindBuffer(T, bufferObjectID);
         GL_LOG("create ");
-        BufferData(size, data, drawType);
+        bufferData(size, data, drawType);
         GL_LOG("create ");
         dataSize = size;
     }
 
     ~BufferObject() {
-        Unbind();
-        Release();
+        unBind();
+        release();
     }
 
-    inline void Bind() const { glBindBuffer(T, bufferObjectID); }
+    inline void bind() const { glBindBuffer(T, bufferObjectID); }
 
-    inline void Unbind() const { glBindBuffer(T, 0); }
+    inline void unBind() const { glBindBuffer(T, 0); }
 
-    inline void SubBuffer(unsigned int offset, uint32_t size, const void *data) {
-        Bind();
+    inline void subBuffer(unsigned int offset, uint32_t size, const void *data) {
+        bind();
         glBufferSubData(T, offset, size, data);
     }
 
@@ -56,7 +56,7 @@ struct BufferObject {
     BufferObject &operator=(BufferObject &&other) {
         // ALWAYS check for self-assignment.
         if (this != &other) {
-            Release();
+            release();
             // obj_ is now 0.
             std::swap(bufferObjectID, other.bufferObjectID);
         }

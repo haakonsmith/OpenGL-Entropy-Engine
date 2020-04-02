@@ -69,25 +69,25 @@ class Shader {
 
     ~Shader() { glDeleteProgram(shaderID); }
 
-    inline void Bind() {
+    inline void bind() {
         if (initialised != true)
             throw std::runtime_error("Cannot bind uninitialised shader.");
         glUseProgram(shaderID);
     }
 
-    inline void UniformMatrix4fv(const GLchar *name, glm::mat4 matrix) {
+    inline void uniformMatrix4fv(const GLchar *name, glm::mat4 matrix) {
         cachePing(name);
 
         glUniformMatrix4fv(cache[name], 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
-    inline void Uniform3f(const GLchar *name, float a, float b, float c) {
+    inline void uniform3f(const GLchar *name, float a, float b, float c) {
         cachePing(name);
 
         glUniform3f(cache[name], a, b, c);
     }
 
-    inline void Uniform1i(const GLchar *name, int a) {
+    inline void uniform1i(const GLchar *name, int a) {
         cachePing(name);
 
         glUniform1i(cache[name], a);

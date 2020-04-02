@@ -8,6 +8,7 @@
 using namespace std;
 
 namespace Entropy {
+    
     void BaseApplication::mainLoop() {
         while (!glfwWindowShouldClose(window)) { loop(); }
     }
@@ -55,6 +56,7 @@ namespace Entropy {
     }
 
     BaseApplication::BaseApplication() {
+        App::screen = Screen(640, 480);
         cout << "Starting initialization... " << endl;
 
         glfwSetErrorCallback(&glfwError);

@@ -92,6 +92,8 @@ project "Entropy"
 	includeGLM()
 
 	linkGLFW()
+
+	includedirs "Libraries/Cute"
     
 function useEntropy()
     -- The library's public headers

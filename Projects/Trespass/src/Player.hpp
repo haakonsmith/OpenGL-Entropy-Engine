@@ -6,6 +6,7 @@
 #include "Graphics/2dRenderer.hpp"
 #include "Physics/CollisionData.hpp"
 #include "Physics/PhysicsEngine.hpp"
+#include "Application.hpp"
 #include <GLFW/glfw3.h>
 #include <OpenGL/gl3.h>
 #include <iostream>
@@ -24,9 +25,7 @@ public:
     shared_ptr<Renderable> enemy_Reference;
 
     shared_ptr<Entropy::RenderInstance<10>> enemy_instance;
-
-    // BufferObject<GL_ARRAY_BUFFER> positionBuffer;
-
+    
     float data[3] = {10, 10, 0};
 
     vector<shared_ptr<Bullet>> bullets;
@@ -57,8 +56,16 @@ public:
 
     void collide(vec3 prePos, Entropy::PhysicsObject *obj, Entropy::CollisionData data) override
     {
-        // velocity = vec3(0);
-        setPosition(prePos);
+        // auto iff = [](int n) 
+        // { 
+        //     if (n == 0) 
+        //         return 1;
+        //     else
+        //         return 0;
+        // };
+        preventIntersection(data);
+        // velocity = velocity * vec3(iff(data.manifold.n.x), iff(data.manifold.n.y), 1);
+        // setPosition(getPosition()  + vec3(data.manifold.n.x*-1, data.manifold.n.y*-1, 0));
     }
 
     Player();

@@ -12,6 +12,8 @@
 
 #define GL_SILENCE_DEPRECATION
 
+
+
 #include "Application.hpp"
 #include "Graphics/2dRenderer.hpp"
 #include "Graphics/Renderable.hpp"
