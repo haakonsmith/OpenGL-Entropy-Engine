@@ -12,6 +12,7 @@ namespace Entropy {
             struct {
                 float X, Y, Z;
             };
+            glm::vec2 xy;
             glm::vec3 Position;
         };
         union {

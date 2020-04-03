@@ -10,6 +10,8 @@ namespace Entropy {
         // created.
         buffer(_renderable);
 
+        if (_renderable->castsShadow)
+            renderables.push_back(_renderable);
         objects.push_back(_renderable);
     }
 
@@ -98,7 +100,7 @@ namespace Entropy {
                                     _renderable->scaleMatrix);
 
         // Our ModelViewProjection : multiplication of our 3 matrices
-        MVP = projectionMatrix * viewMatrix * _renderable->modelMatrix;  // Remember, matrix multiplication is
+        MVP = projectionMatrix * viewMatrix * _renderable->getModelMatrix();  // Remember, matrix multiplication is
                                                                          // the other way around
 
         _renderable->setMVP(MVP);
@@ -195,6 +197,8 @@ namespace Entropy {
 
     void m_2dRenderer::renderFrame() {
         for (auto obj : objects) { render(obj); }
+
+        renderAntiShadows();
 
         glUseProgram(programID);
 
@@ -428,7 +432,7 @@ namespace Entropy {
     ////////////////////////////////////////////// Class commands //////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    m_2dRenderer::m_2dRenderer(Screen &_s) : screen(_s) {
+    m_2dRenderer::m_2dRenderer(Screen &_s) : screen(_s), LightRendererAttachment() {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         projectionMatrix = glm::ortho(0.0f,                 // left

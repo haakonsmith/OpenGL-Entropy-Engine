@@ -28,6 +28,7 @@
 #include "../Shared.hpp"
 #include "../Screen.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "LightRendererAttachment.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #else
 #error "2d renderer included twice"
@@ -35,7 +36,7 @@
 
 #pragma once
 namespace Entropy {
-    class m_2dRenderer : public m_2dRenderInterface {
+    class m_2dRenderer : public m_2dRenderInterface, public LightRendererAttachment {
       private:
         unsigned int SCREEN_WIDTH, SCREEN_HEIGHT;
 
@@ -75,6 +76,8 @@ namespace Entropy {
         Ref<RenderInstance<C>> getRenderInstance(Ref<Renderable> renderable) {
             return make_shared<RenderInstance<C>>(renderable);
         }
+
+        inline mat4 getViewProjectionMatrix() { return projectionMatrix * viewMatrix;}
 
         map<string, RenderTarget> frameBuffers;
 

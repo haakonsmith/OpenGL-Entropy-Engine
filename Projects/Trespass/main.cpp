@@ -114,6 +114,7 @@ class Trespass : public Entropy::BaseApplication
             tri->setPosition(vec3(320.0f, 240.0f, 0.0f));
             tri->setScale(320,240);
             tri->setTexture(renderer->loadTexture("floor.png"));
+            tri->castsShadow = false;
 
             quad = make_shared<GameObject>(Rectangle()); 
 

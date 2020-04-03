@@ -9,6 +9,7 @@
 #include "Shapes/Shape.hpp"
 #include "Vertex.hpp"
 #include "glm/glm.hpp"
+#include "LightRendererAttachment.hpp"
 
 #include "../Shared.hpp"
 
@@ -20,7 +21,7 @@ using namespace std;
 class m_2dRenderer {};
 namespace Entropy {
 
-    class Renderable {
+    class Renderable : public OcclusionObject {
         friend class m_2dRenderer;
 
       protected:
@@ -30,6 +31,7 @@ namespace Entropy {
         vec3 scale;
 
       public:
+        bool castsShadow = true;
         bool cleanVBO = true;
         string name;
         shared_ptr<Shader> shader;
@@ -64,6 +66,8 @@ namespace Entropy {
 
         virtual void setMVP(mat4 mvp) { MVP = mvp; }
         virtual mat4 getMVP() { return MVP; }
+
+        inline std::vector<Vertex> getVertices() override {return Vertices;}
 
         virtual void setModelMatrix(mat4 m) { modelMatrix = m; }
         virtual mat4 getModelMatrix() { return modelMatrix; }
