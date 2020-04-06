@@ -1,3 +1,4 @@
+#include "../Mixins/Geometry.hpp"
 #include "glm/glm.hpp"
 
 #pragma once
@@ -30,5 +31,7 @@ namespace Entropy {
         Vertex(const glm::vec3 &position, const glm::vec2 &uv) : Position(position), UV(uv) {}
         Vertex(const glm::vec3 &position) : Position(position), UV(glm::vec2(1, 1)) {}
         // clang-format on
+
+        operator Vertex2D() { return Vertex2D(x, y); }
     };
 }  // namespace Entropy

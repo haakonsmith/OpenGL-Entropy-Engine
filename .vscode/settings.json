@@ -1,8 +1,8 @@
 {
   "files.associations": {
-    "**/requirements{/**,*}.{txt,in}": "pip-requirements",
     "**/templates/*.html": "django-html",
     "**/templates/*": "django-txt",
+    "**/requirements{/**,*}.{txt,in}": "pip-requirements",
     "ios": "cpp",
     "ostream": "cpp",
     "__bit_reference": "cpp",
@@ -79,6 +79,7 @@
     "cinttypes": "cpp",
     "filesystem": "cpp",
     "codecvt": "cpp",
-    "stack": "cpp"
-  }
+    "stack": "cpp",
+    "__functional_03": "cpp"
+}
 }

@@ -5,23 +5,21 @@
 #include <string>
 #include <vector>
 
+#include "../Mixins/Geometry.hpp"
+#include "../Mixins/Transform.hpp"
+#include "../Shared.hpp"
 #include "Shader.hpp"
 #include "Shapes/Shape.hpp"
 #include "Vertex.hpp"
 #include "glm/glm.hpp"
-#include "LightRendererAttachment.hpp"
-
-#include "../Shared.hpp"
 
 using namespace glm;
 using namespace std;
 
 #pragma once
 
-class m_2dRenderer {};
 namespace Entropy {
-
-    class Renderable : public OcclusionObject {
+    class Renderable : public Polygon2D {
         friend class m_2dRenderer;
 
       protected:
@@ -52,22 +50,25 @@ namespace Entropy {
 
         // Getters and Setters
         // clang-format off
-        virtual void setPosition(const vec3 &v) { position = v; }
-        inline virtual void setPosition(const vec2 &v) { setPosition(vec3(v, position.z)); }
-        inline virtual void setPosition(float x, float y) { setPosition(vec3(x, y, position.z)); }
-        inline virtual void setPosition(float x, float y, float z) { setPosition(vec3(x, y, z)); }
-        virtual vec3 getPosition() { return position; }
+        inline void setPosition(const vec3 &v) { position = v; }
+        inline void setPosition(const vec2 &v) { setPosition(vec3(v, position.z)); }
+        inline void setPosition(float x, float y) { setPosition(vec3(x, y, position.z)); }
+        inline void setPosition(float x, float y, float z) { setPosition(vec3(x, y, z)); }
+        inline vec3 getPosition() { return position; }
 
-        virtual void setScale(const vec3 &v) { scale = v; }
-        inline virtual void setScale(float x, float y) { setScale(vec3(x, y, scale.z)); }
-        inline virtual void setScale(float x, float y, float z) { setScale(vec3(x, y, z)); }
-        inline virtual void setScale(const vec2 &v) { setScale(vec3(v, scale.z)); }
-        virtual vec3 getScale() { return scale; }
+        inline void setScale(const vec3 &v) { scale = v; }
+        inline void setScale(float x, float y) { setScale(vec3(x, y, scale.z)); }
+        inline void setScale(float x, float y, float z) { setScale(vec3(x, y, z)); }
+        inline void setScale(const vec2 &v) { setScale(vec3(v, scale.z)); }
+        inline vec3 getScale() { return scale; }
 
+        inline float getRotation() { return rotation; }
+        inline void setRotation(float r) { rotation = r; }
+    
         virtual void setMVP(mat4 mvp) { MVP = mvp; }
         virtual mat4 getMVP() { return MVP; }
 
-        inline std::vector<Vertex> getVertices() override {return Vertices;}
+        inline std::vector<Vertex> getVertices() {return Vertices;}
 
         virtual void setModelMatrix(mat4 m) { modelMatrix = m; }
         virtual mat4 getModelMatrix() { return modelMatrix; }
@@ -79,7 +80,11 @@ namespace Entropy {
         }
 
         // create default Renderable
-        Renderable() : position(0, 0, 0), scale(1, 1, 1), rotation(0) {
+        Renderable()
+            : position(0, 0, 0),
+              scale(1, 1, 1),
+              rotation(0),
+              Polygon2D(vector<Vertex2D>({Vertex2D(-1, -1), Vertex2D(1, -1), Vertex2D(1, 1)})) {
             name = "Renderable";
 
             Vertices.push_back(Vertex(-1.0f, -1.0f, 0.0f, 0, 0));
@@ -88,8 +93,8 @@ namespace Entropy {
         }
 
         Renderable(Shape shape) : position(0, 0, 0), scale(1, 1, 1), rotation(0) {
-            Vertices = shape.Vertices;
             name = "Renderable";
+            Vertices = shape.Vertices;
         }
 
         Renderable(vector<Vertex> _vertices) : position(0, 0, 0), scale(1, 1, 1), rotation(0) {
