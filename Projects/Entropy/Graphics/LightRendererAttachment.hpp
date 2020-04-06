@@ -34,8 +34,12 @@ namespace Entropy {
     class LightRendererAttachment {
       protected:
         Ref<VertexBuffer> antiShadowBuffer;
+        Ref<VertexBuffer> lightSquareBuffer;
+
+        std::vector<Vertex> squareVerts;
 
         int antiShadowBufferID = 0;
+        int lightSquareBufferID = 0;
 
         virtual void renderLine(const vec3 &p1, const vec3 &p2) = 0;
 
@@ -54,14 +58,11 @@ namespace Entropy {
             // vec2 x2;
             // bool found1 = false;
 
-            auto indexofSmallestElement = [](float array[], int size)
-            {
+            auto indexofSmallestElement = [](float array[], int size) {
                 int index = 0;
 
-                for(int i = 1; i < size; i++)
-                {
-                    if(array[i] < array[index])
-                        index = i;              
+                for (int i = 1; i < size; i++) {
+                    if (array[i] < array[index]) index = i;
                 }
 
                 return index;
@@ -78,25 +79,24 @@ namespace Entropy {
             for (size_t i = 0; i < polygon.size(); i++) {
                 // projections[i] = glm::proj(polygon[i].xy, normal);
                 auto d = (polygon[i].x - observer.x) * (end.y - observer.y) -
-                    (polygon[i].y - observer.y) * (end.x - observer.x);
+                         (polygon[i].y - observer.y) * (end.x - observer.x);
 
                 if (d <= 0) {
                     // auto projLen = glm::length(glm::proj(polygon[i].xy, normal));
                     // auto projLen = glm::orientedAngle(normalize(polygon[i].xy), normalize(observer));
                     // auto projLen = glm::angle(normalize(polygon[i].xy), normalize(observer));
                     auto projLen = atan2((polygon[i].y - observer.y), (polygon[i].x - observer.x)) * -1;
-                    
+
                     // projLen = (observer.y > polygon[i].y) ? projLen : projLen * -1;
 
                     // dists[i] = projLen;
                     // poses[i] = polygon[i].xy;
-                    
+
                     if (std::min(projLen, dist) != dist) {
                         // LOG("Angle: " << (projLen));
                         dist = projLen;
                         rightMost = polygon[i].xy;
                     }
-
                 }
             }
 
@@ -107,21 +107,20 @@ namespace Entropy {
             for (size_t i = 0; i < polygon.size(); i++) {
                 // projections[i] = glm::proj(polygon[i].xy, normal);
                 auto d = (polygon[i].x - observer.x) * (end.y - observer.y) -
-                    (polygon[i].y - observer.y) * (end.x - observer.x);
+                         (polygon[i].y - observer.y) * (end.x - observer.x);
 
                 if (d >= 0) {
                     // auto projLen = glm::length(glm::proj(polygon[i].xy, normal));
                     // auto projLen = glm::orientedAngle(normalize(polygon[i].xy), normalize(observer));
                     // auto projLen = glm::angle(normalize(polygon[i].xy), normalize(observer));
                     auto projLen = atan2((polygon[i].y - observer.y), (polygon[i].x - observer.x));
-                                        
+
                     // projLen = (observer.y < polygon[i].y) ? projLen : projLen * -1;
 
                     if (std::min(projLen, dist) != dist) {
                         dist = projLen;
                         leftMost = polygon[i].xy;
                     }
-
                 }
             }
 
@@ -198,6 +197,7 @@ namespace Entropy {
 
       public:
         std::vector<Renderable *> renderables;
+        Ref<Shader> shadowShader;
         Ref<Shader> lightShader;
 
         uint32_t lightVertexCount = 64;
@@ -211,12 +211,15 @@ namespace Entropy {
 
                 for (size_t i = 0; i < verts.size(); i++) {
                     verts[i].Position = glm::vec3(r->getModelMatrix() * glm::vec4(verts[i].Position, 1));
+
+                    v.push_back(verts[i]);
                 }
 
                 auto origin = glm::vec3(320, 240, 0);
                 auto norm = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
                 // LOG(std::get<0>(findExtremePoints(origin, verts)).x);
-                // auto x1 = Vertex(vec3(std::get<0>(findExtremePoints(origin, verts, r->getPosition() + vec3(norm(r->getPosition(), origin), 0))), 0));
+                // auto x1 = Vertex(vec3(std::get<0>(findExtremePoints(origin, verts, r->getPosition() +
+                // vec3(norm(r->getPosition(), origin), 0))), 0));
                 auto x1 = Vertex(vec3(std::get<0>(findExtremePoints(origin, verts, r->getPosition())), 0));
                 auto x2 = Vertex(vec3(std::get<1>(findExtremePoints(origin, verts, r->getPosition())), 0));
 
@@ -326,18 +329,14 @@ namespace Entropy {
             auto lightMesh = getLightMesh();
             GL_LOG("Atrib pointer");
 
-            lightShader->bind();
-            GL_LOG("Atrib pointer");
+           
 
-            lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
-
-            antiShadowBuffer->bind();
-            GL_LOG("Atrib pointer");
-            antiShadowBuffer->subBuffer(0, lightVertexCount * sizeof(Vertex), lightMesh.data());
-            GL_LOG("Atrib pointer");
+            
 
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
+
+            lightSquareBuffer->bind();
 
             glVertexAttribPointer(0,  // attribute 0. No particular reason for 0,
                                       // but must match the layout in the shader.
@@ -361,8 +360,67 @@ namespace Entropy {
             );
             GL_LOG("add buffer data ");
 
-            // glDrawArrays(GL_TRIANGLES, 0, 3);
+            lightShader->bind();
+            GL_LOG("Atrib pointer");
+            lightShader->uniform3f("light", 0.5,0.5,0);
+            GL_LOG("Atrib pointer");
+            lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
+            GL_LOG("Atrib pointer");
+
+            glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA);
+            glBlendEquation(GL_FUNC_ADD);
+
+
+            glDrawArrays(GL_TRIANGLES, 0, squareVerts.size());
+            GL_LOG("Atrib pointer");
+
+            glDisableVertexAttribArray(0);
+            glDisableVertexAttribArray(1);
+
+            shadowShader->bind();
+            GL_LOG("Atrib pointer");
+
+            shadowShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
+
+            antiShadowBuffer->bind();
+            GL_LOG("Atrib pointer");
+            antiShadowBuffer->subBuffer(0, lightVertexCount * sizeof(Vertex), lightMesh.data());
+            GL_LOG("Atrib pointer");
+
+            glEnableVertexAttribArray(0);
+            glEnableVertexAttribArray(1);
+
+
+            glVertexAttribPointer(0,  // attribute 0. No particular reason for 0,
+                                      // but must match the layout in the shader.
+                                  3,               // size
+                                  GL_FLOAT,        // type
+                                  GL_FALSE,        // normalized?
+                                  sizeof(Vertex),  // stride
+                                  (void *)0        // array buffer offset
+            );
+
+            GL_LOG("Atrib pointer");
+            // 2nd attribute buffer : UVs
+            GL_LOG("draw arrays ");
+            glVertexAttribPointer(1,  // attribute. No particular reason for 1, but
+                                      // must match the layout in the shader.
+                                  2,               // size : U+V => 2
+                                  GL_FLOAT,        // type
+                                  GL_FALSE,        // normalized?
+                                  sizeof(Vertex),  // stride
+                                  (void *)12       // array buffer offset
+            );
+            GL_LOG("add buffer data ");
+
+            
+            glBlendFunc(GL_DST_COLOR, GL_DST_COLOR);
+            glBlendEquation(GL_FUNC_SUBTRACT);
             glDrawArrays(GL_TRIANGLES, 0, lightMesh.size());
+            
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            glBlendEquation(GL_FUNC_ADD);
+
 
             GL_LOG("draw arrays ");
 
@@ -372,10 +430,26 @@ namespace Entropy {
         }
 
         LightRendererAttachment() {
+            squareVerts = {
+                Vertex(0, 0, 0, 0, 0),
+                Vertex(0, 480, 0, 0, 1),
+                Vertex(640, 480, 0, 1, 1),
+
+                Vertex(0, 0, 0, 0, 0),
+                Vertex(640, 0, 0, 1, 0),
+                Vertex(640, 480, 0, 1, 1),
+            };
+
             LOG("LIGHT INIT");
             antiShadowBuffer = std::make_shared<VertexBuffer>(antiShadowBufferID, lightVertexCount * sizeof(Vertex),
                                                               nullptr, GL_STREAM_DRAW);
-            lightShader = std::make_shared<Shader>("shaders/Builtin/Lighting/light.vertexshader",
+
+            lightSquareBuffer = std::make_shared<VertexBuffer>(lightSquareBufferID, squareVerts.size() * sizeof(Vertex),
+                                                               squareVerts.data(), GL_STATIC_DRAW);
+            shadowShader = std::make_shared<Shader>("shaders/Builtin/Lighting/mesh.vertexshader",
+                                                   "shaders/Builtin/Lighting/shadow.fragmentshader");
+
+            lightShader = std::make_shared<Shader>("shaders/Builtin/Lighting/mesh.vertexshader",
                                                    "shaders/Builtin/Lighting/light.fragmentshader");
         }
         ~LightRendererAttachment() {}
