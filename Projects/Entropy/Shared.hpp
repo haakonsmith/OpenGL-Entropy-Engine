@@ -19,6 +19,17 @@ enum Coordinates { x, y, z };
 
 #endif
 
+#include "Profiler.hpp"
+
+#ifdef NDEBUG
+#define PROFILE_FUNCTION()                                               \
+    Entropy::Performance::Timer(__FUNCTION__);
+#else
+#define PROFILE_FUNCTION() \
+    do {         \
+    } while (0)
+#endif
+
 #ifdef NDEBUG
 #define GL_LOG(LOCATION)                                               \
     if (auto error = glGetError())                                     \

@@ -10,5 +10,8 @@ out vec4 color;
 
 void main()
 {
-	color = vec4(1,1,1,1-distance(light.xy, UV));
+    const float attenuation = 2;
+    float intensity = pow(distance(light.xy, UV),-attenuation) / 10;
+    // float intensity = 1-distance(light.xy, UV);
+	color = vec4(1,1,1,intensity);
 }

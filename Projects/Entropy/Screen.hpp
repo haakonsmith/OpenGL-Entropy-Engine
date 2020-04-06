@@ -9,8 +9,6 @@ namespace Entropy {
     class Screen {
         friend class BaseApplication;
 
-      private:
-
       public:
         Screen(unsigned int _x, unsigned int _y) : x(_x), y(_y) {}
         union {

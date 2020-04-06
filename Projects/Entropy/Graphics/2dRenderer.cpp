@@ -84,6 +84,7 @@ namespace Entropy {
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     void m_2dRenderer::transform(Renderable *_renderable) {
+        PROFILE_FUNCTION();
         glm::mat4 MVP;
 
         // Model matrix : an identity matrix (model will be at the origin)

@@ -46,54 +46,23 @@ namespace Entropy {
         virtual glm::mat4 getViewProjectionMatrix() = 0;
 
         std::pair<vec2, vec2> findExtremePoints(vec2 observer, std::vector<Vertex> const &polygon, vec2 end) {
-            // vec2 closestPoint = std::min_element(polygon.begin(), polygon.end(), [observer](Vertex const& elem,
-            // Vertex const& min_elem){
-            //     return (glm::distance(vec2(elem.Position), observer) < glm::distance(vec2(min_elem.Position),
-            //     observer));
-            // })->Position;
-
-            // auto clIndext = std::distance(polygon.begin(),min_element(polygon.begin(),polygon.end()));
-
-            // vec2 x1;
-            // vec2 x2;
-            // bool found1 = false;
-
-            auto indexofSmallestElement = [](float array[], int size) {
-                int index = 0;
-
-                for (int i = 1; i < size; i++) {
-                    if (array[i] < array[index]) index = i;
-                }
-
-                return index;
+            auto calculateD = [observer, end](vec2 const& pos){
+                return (pos.x - observer.x) * (end.y - observer.y) -
+                         (pos.y - observer.y) * (end.x - observer.x);
             };
+            
             float dist = 10000;
-            // vec2 normal;
+            float d = 0;
             vec2 rightMost, leftMost;
 
-            // normal = glm::normalize(glm::rotate(observer, 90.0f));
-
-            // float dists[polygon.size()];
-            // vec2 poses[polygon.size()];
-
+             // get rightmost extreme
             for (size_t i = 0; i < polygon.size(); i++) {
-                // projections[i] = glm::proj(polygon[i].xy, normal);
-                auto d = (polygon[i].x - observer.x) * (end.y - observer.y) -
-                         (polygon[i].y - observer.y) * (end.x - observer.x);
+                d = calculateD(polygon[i].xy);
 
                 if (d <= 0) {
-                    // auto projLen = glm::length(glm::proj(polygon[i].xy, normal));
-                    // auto projLen = glm::orientedAngle(normalize(polygon[i].xy), normalize(observer));
-                    // auto projLen = glm::angle(normalize(polygon[i].xy), normalize(observer));
                     auto projLen = atan2((polygon[i].y - observer.y), (polygon[i].x - observer.x)) * -1;
 
-                    // projLen = (observer.y > polygon[i].y) ? projLen : projLen * -1;
-
-                    // dists[i] = projLen;
-                    // poses[i] = polygon[i].xy;
-
                     if (std::min(projLen, dist) != dist) {
-                        // LOG("Angle: " << (projLen));
                         dist = projLen;
                         rightMost = polygon[i].xy;
                     }
@@ -102,20 +71,12 @@ namespace Entropy {
 
             dist = 10000;
 
-            // rightMost = poses[indexofSmallestElement(dists, polygon.size())];
-
+            // get leftmost extreme
             for (size_t i = 0; i < polygon.size(); i++) {
-                // projections[i] = glm::proj(polygon[i].xy, normal);
-                auto d = (polygon[i].x - observer.x) * (end.y - observer.y) -
-                         (polygon[i].y - observer.y) * (end.x - observer.x);
+                d = calculateD(polygon[i].xy);
 
                 if (d >= 0) {
-                    // auto projLen = glm::length(glm::proj(polygon[i].xy, normal));
-                    // auto projLen = glm::orientedAngle(normalize(polygon[i].xy), normalize(observer));
-                    // auto projLen = glm::angle(normalize(polygon[i].xy), normalize(observer));
                     auto projLen = atan2((polygon[i].y - observer.y), (polygon[i].x - observer.x));
-
-                    // projLen = (observer.y < polygon[i].y) ? projLen : projLen * -1;
 
                     if (std::min(projLen, dist) != dist) {
                         dist = projLen;
@@ -123,53 +84,6 @@ namespace Entropy {
                     }
                 }
             }
-
-            // renderLine(vec3((rightMost), 0) * 1.0f, vec3((observer), 0) * 1.0f);
-            // renderLine(vec3(normalize(rightMost), 0) * 100.0f, vec3(normalize(observer), 0) * 100.0f);
-
-            // normal = glm::normalize(glm::rotate(observer, -90.0f));
-
-            // for (size_t i = 0; i < polygon.size(); i++) {
-            //     // projections[i] = glm::proj(polygon[i].xy, normal);
-
-            //     auto d = (polygon[i].x - observer.x) * (end.y - observer.y) -
-            //         (polygon[i].x - observer.y) * (end.x - observer.x);
-
-            //     if (d > 0) {
-            //         // auto projLen = glm::length(glm::proj(polygon[i].xy, normal));
-            //         // auto projLen = glm::orientedAngle(normalize(polygon[i].xy), normalize(observer));
-            //         auto projLen = glm::angle(normalize(polygon[i].xy), normalize(observer));
-
-            //         if (std::max(projLen, dist) != dist) {
-            //             dist = projLen;
-            //             leftMost = polygon[i].xy;
-            //         }
-
-            //         LOG(dist);
-            //     }
-            // }
-
-            // for (size_t i = 0; i < polygon.size()*2; i++) {
-            //     auto P = vec2(polygon[(i - 1) % polygon.size()].Position);
-            //     auto N = vec2(polygon[(i + 1) % polygon.size()].Position);
-            //     auto A = polygon[(i) % polygon.size()].xy;
-
-            //     auto vec_of_A = A - observer;  // observer-to-A vector
-            //     auto vec_of_P = P - observer;
-            //     auto vec_of_N = N - observer;
-
-            //     auto productP = vec_of_A.x * vec_of_P.y - vec_of_A.y * vec_of_P.x;
-            //     auto productN = vec_of_A.x * vec_of_N.y - vec_of_A.y * vec_of_N.x;
-
-            //     if (sign(productP) == sign(productN)) {
-            //         if (found1 && x1 != A)
-            //             x2 = A;
-            //         else
-            //             found1 = true;
-            //             x1 = A;
-            //         // LOG("EXTEREM " << A.x);
-            //     }
-            // }
 
             return std::make_pair(leftMost, rightMost);
         }
@@ -203,8 +117,8 @@ namespace Entropy {
         uint32_t lightVertexCount = 64;
         glm::vec3 pos = glm::vec3(320, 240, 0);
 
-        std::vector<Vertex> getLightMesh() {
-            std::vector<Vertex> v;
+        std::vector<Vertex> getShadowMesh() {
+            std::vector<Vertex> shadowMesh;
 
             for (auto r : renderables) {
                 auto verts = r->getVertices();
@@ -212,16 +126,16 @@ namespace Entropy {
                 for (size_t i = 0; i < verts.size(); i++) {
                     verts[i].Position = glm::vec3(r->getModelMatrix() * glm::vec4(verts[i].Position, 1));
 
-                    v.push_back(verts[i]);
+                    // add renderable itself to shadowMap
+                    shadowMesh.push_back(verts[i]);
                 }
 
                 auto origin = glm::vec3(320, 240, 0);
                 auto norm = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
-                // LOG(std::get<0>(findExtremePoints(origin, verts)).x);
-                // auto x1 = Vertex(vec3(std::get<0>(findExtremePoints(origin, verts, r->getPosition() +
-                // vec3(norm(r->getPosition(), origin), 0))), 0));
-                auto x1 = Vertex(vec3(std::get<0>(findExtremePoints(origin, verts, r->getPosition())), 0));
-                auto x2 = Vertex(vec3(std::get<1>(findExtremePoints(origin, verts, r->getPosition())), 0));
+
+                auto extremePoints = findExtremePoints(origin, verts, r->getPosition());
+                auto x1 = Vertex(vec3(std::get<0>(extremePoints), 0));
+                auto x2 = Vertex(vec3(std::get<1>(extremePoints), 0));
 
                 auto d1 = x1;
                 auto d2 = x2;
@@ -302,36 +216,33 @@ namespace Entropy {
                 // }
 
                 // v.insert(v.end(), verts.begin(), verts.end());
-                v.push_back(x1);
-                v.push_back(x2);
-                v.push_back(d1);
+                shadowMesh.reserve(12);
+                shadowMesh.push_back(x1);
+                shadowMesh.push_back(x2);
+                shadowMesh.push_back(d1);
 
-                v.push_back(x1);
-                v.push_back(x2);
-                v.push_back(d2);
+                shadowMesh.push_back(x1);
+                shadowMesh.push_back(x2);
+                shadowMesh.push_back(d2);
 
-                v.push_back(x1);
-                v.push_back(d2);
-                v.push_back(d1);
+                shadowMesh.push_back(x1);
+                shadowMesh.push_back(d2);
+                shadowMesh.push_back(d1);
 
-                v.push_back(x2);
-                v.push_back(d1);
-                v.push_back(d2);
+                shadowMesh.push_back(x2);
+                shadowMesh.push_back(d1);
+                shadowMesh.push_back(d2);
             }
 
             // LOG("MESH\n");
             // for (auto v1 : v) { LOG("X: " << v1.x << ", Y: " << v1.y); }
 
-            return v;
+            return shadowMesh;
         }
 
         void renderAntiShadows() {
-            auto lightMesh = getLightMesh();
+            auto lightMesh = getShadowMesh();
             GL_LOG("Atrib pointer");
-
-           
-
-            
 
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
@@ -362,14 +273,13 @@ namespace Entropy {
 
             lightShader->bind();
             GL_LOG("Atrib pointer");
-            lightShader->uniform3f("light", 0.5,0.5,0);
+            lightShader->uniform3f("light", 0.5, 0.5, 0);
             GL_LOG("Atrib pointer");
             lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
             GL_LOG("Atrib pointer");
 
             glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA);
             glBlendEquation(GL_FUNC_ADD);
-
 
             glDrawArrays(GL_TRIANGLES, 0, squareVerts.size());
             GL_LOG("Atrib pointer");
@@ -389,7 +299,6 @@ namespace Entropy {
 
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
-
 
             glVertexAttribPointer(0,  // attribute 0. No particular reason for 0,
                                       // but must match the layout in the shader.
@@ -413,14 +322,12 @@ namespace Entropy {
             );
             GL_LOG("add buffer data ");
 
-            
             glBlendFunc(GL_DST_COLOR, GL_DST_COLOR);
             glBlendEquation(GL_FUNC_SUBTRACT);
             glDrawArrays(GL_TRIANGLES, 0, lightMesh.size());
-            
+
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glBlendEquation(GL_FUNC_ADD);
-
 
             GL_LOG("draw arrays ");
 
@@ -431,13 +338,9 @@ namespace Entropy {
 
         LightRendererAttachment() {
             squareVerts = {
-                Vertex(0, 0, 0, 0, 0),
-                Vertex(0, 480, 0, 0, 1),
-                Vertex(640, 480, 0, 1, 1),
+                Vertex(0, 0, 0, 0, 0), Vertex(0, 480, 0, 0, 1), Vertex(640, 480, 0, 1, 1),
 
-                Vertex(0, 0, 0, 0, 0),
-                Vertex(640, 0, 0, 1, 0),
-                Vertex(640, 480, 0, 1, 1),
+                Vertex(0, 0, 0, 0, 0), Vertex(640, 0, 0, 1, 0), Vertex(640, 480, 0, 1, 1),
             };
 
             LOG("LIGHT INIT");
@@ -447,7 +350,7 @@ namespace Entropy {
             lightSquareBuffer = std::make_shared<VertexBuffer>(lightSquareBufferID, squareVerts.size() * sizeof(Vertex),
                                                                squareVerts.data(), GL_STATIC_DRAW);
             shadowShader = std::make_shared<Shader>("shaders/Builtin/Lighting/mesh.vertexshader",
-                                                   "shaders/Builtin/Lighting/shadow.fragmentshader");
+                                                    "shaders/Builtin/Lighting/shadow.fragmentshader");
 
             lightShader = std::make_shared<Shader>("shaders/Builtin/Lighting/mesh.vertexshader",
                                                    "shaders/Builtin/Lighting/light.fragmentshader");

@@ -15,6 +15,7 @@
 
 
 #include "Application.hpp"
+#include "Profiler.hpp"
 #include "Graphics/2dRenderer.hpp"
 #include "Graphics/Renderable.hpp"
 #include "Graphics/Shapes/Shape.hpp"
