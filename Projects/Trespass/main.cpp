@@ -168,7 +168,7 @@ class Trespass : public Entropy::BaseApplication
             world->addObject(rightwall.get());
             world->addObject(topwall.get());
             world->addObject(bottomwall.get());
-            // world->debug = true;
+            world->debug = true;
 
             player->renderer = renderer;
             player->world = world;
@@ -178,7 +178,7 @@ class Trespass : public Entropy::BaseApplication
         }
 
         void loop() override {
-            App::profiler.startFrame();
+            PROFILE_FUNCTION();
 
             previousFrameTime = glfwGetTime();
             
@@ -277,7 +277,6 @@ class Trespass : public Entropy::BaseApplication
             
             glfwSwapBuffers(window);
             glfwPollEvents();
-            App::profiler.endFrame();
 
 
 

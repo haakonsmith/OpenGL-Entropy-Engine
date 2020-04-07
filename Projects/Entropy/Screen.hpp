@@ -49,7 +49,7 @@ namespace Entropy {
     };
 
     namespace App {
-        static Screen screen = Screen(640, 480);
+        extern Screen screen;
     };
 
 }  // namespace Entropy

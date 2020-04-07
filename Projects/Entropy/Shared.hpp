@@ -1,6 +1,6 @@
 /*
  * Copyright 2020, Haakon Smith.
- * 
+ *
  * Shared.hpp
  */
 
@@ -10,6 +10,7 @@
 #include <memory>
 
 #define NDEBUG
+#define PROFILE
 #define SUPRESS
 
 #ifndef COORDINATES
@@ -21,20 +22,23 @@ enum Coordinates { x, y, z };
 
 #include "Profiler.hpp"
 
-#ifdef NDEBUG
-#define PROFILE_FUNCTION()                                               \
-    Entropy::Performance::Timer(__FUNCTION__);
+
+
+#define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCTION__)
+
+#ifdef PROFILE
+#define PROFILE_SCOPE(LOCATION) Entropy::Performance::Timer timer(LOCATION)
+
 #else
-#define PROFILE_FUNCTION() \
-    do {         \
+#define PROFILE_SCOPE() \
+    do {                \
     } while (0)
 #endif
 
 #ifdef NDEBUG
-#define GL_LOG(LOCATION)                                               \
-    if (auto error = glGetError())                                     \
-    std::cout << "OpenGL error " << error << " at " << LOCATION << " " \
-              << __LINE__ << std::endl
+#define GL_LOG(LOCATION)           \
+    if (auto error = glGetError()) \
+    std::cout << "OpenGL error " << error << " at " << LOCATION << " " << __LINE__ << std::endl
 #else
 #define GL_LOG() \
     do {         \
@@ -42,8 +46,7 @@ enum Coordinates { x, y, z };
 #endif
 
 #ifdef NDEBUG
-#define LOG(MESSAGE) \
-    std::cout << MESSAGE << " at line:" << __LINE__ << std::endl
+#define LOG(MESSAGE) std::cout << MESSAGE << " at line:" << __LINE__ << std::endl
 #else
 #define LOG() \
     do {      \

@@ -1,4 +1,4 @@
-#include <iostream>
+#include <iosfwd>
 
 #include "Game/GameObject.hpp"
 #include "Physics/CollisionData.hpp"

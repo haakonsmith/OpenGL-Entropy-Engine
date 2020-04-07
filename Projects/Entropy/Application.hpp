@@ -9,7 +9,7 @@
 #define GL_SILENCE_DEPRECATION
 #include <GLFW/glfw3.h>
 
-#include <iostream>
+#include <iosfwd>
 
 #include "Screen.hpp"
 #include "Shared.hpp"

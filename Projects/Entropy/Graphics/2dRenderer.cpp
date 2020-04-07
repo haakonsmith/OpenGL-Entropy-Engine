@@ -108,6 +108,7 @@ namespace Entropy {
     }
 
     GLuint m_2dRenderer::loadTexture(std::string path) {
+        
         int width, height, channels;
         stbi_set_flip_vertically_on_load(true);
         unsigned char *image = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
@@ -197,6 +198,7 @@ namespace Entropy {
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     void m_2dRenderer::renderFrame() {
+        PROFILE_FUNCTION();
         for (auto obj : objects) { render(obj); }
 
         renderAntiShadows();
@@ -209,6 +211,7 @@ namespace Entropy {
     }
 
     void m_2dRenderer::render(Renderable *_renderable) {
+        PROFILE_FUNCTION();
         glBindBuffer(GL_ARRAY_BUFFER, _renderable->vertexBufferID);
         _renderable->shader->bind();
         GL_LOG("bind shader ");
@@ -259,6 +262,7 @@ namespace Entropy {
     }
 
     void m_2dRenderer::renderLine(const vec3 &p1, const vec3 &p2) {
+        PROFILE_FUNCTION();
         Vertex verts[] = {Vertex(screen.localSpace(p1)), Vertex(screen.localSpace(p2))};
 
         VertexBuffer vbo(0, sizeof(verts), verts, GL_STREAM_DRAW);
@@ -300,6 +304,7 @@ namespace Entropy {
     }
 
     void m_2dRenderer::renderOutline(const Renderable &_renderable) {
+        PROFILE_FUNCTION();
         debugShader->bind();
 
         debugShader->uniformMatrix4fv("MVP", _renderable.MVP);
@@ -347,6 +352,7 @@ namespace Entropy {
     void m_2dRenderer::renderCenter(Renderable *_renderable) {}
 
     void m_2dRenderer::renderQuad(vec3 position, float width, float height, bool hollow, vec3 colour) {
+        PROFILE_FUNCTION();
         mat4 MVP = projectionMatrix * viewMatrix *
                    (glm::translate(mat4(1.0f), (position)) * glm::scale(mat4(1.0f), vec3(width, height, 1)));
 
@@ -388,6 +394,7 @@ namespace Entropy {
     }
 
     void m_2dRenderer::renderCircle(vec3 position, float radius, bool hollow) {
+        PROFILE_FUNCTION();
         builtinCircleShader->bind();
 
         position.z += 1;

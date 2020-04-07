@@ -9,7 +9,7 @@
 #include "Application.hpp"
 #include <GLFW/glfw3.h>
 #include <OpenGL/gl3.h>
-#include <iostream>
+#include <iosfwd>
 #include <stdlib.h>
 
 class Player : public Entropy::GameObject

@@ -46,7 +46,10 @@ namespace Entropy {
         virtual glm::mat4 getViewProjectionMatrix() = 0;
 
         std::pair<vec2, vec2> findExtremePoints(vec2 observer, std::vector<Vertex> const &polygon, vec2 end) {
+            PROFILE_FUNCTION();
+
             auto calculateD = [observer, end](vec2 const& pos){
+                PROFILE_SCOPE("calculateD");
                 return (pos.x - observer.x) * (end.y - observer.y) -
                          (pos.y - observer.y) * (end.x - observer.x);
             };
@@ -57,6 +60,7 @@ namespace Entropy {
 
              // get rightmost extreme
             for (size_t i = 0; i < polygon.size(); i++) {
+                PROFILE_SCOPE("findRightMost");
                 d = calculateD(polygon[i].xy);
 
                 if (d <= 0) {
@@ -73,6 +77,7 @@ namespace Entropy {
 
             // get leftmost extreme
             for (size_t i = 0; i < polygon.size(); i++) {
+                PROFILE_SCOPE("findLeftMost");
                 d = calculateD(polygon[i].xy);
 
                 if (d >= 0) {
@@ -118,12 +123,17 @@ namespace Entropy {
         glm::vec3 pos = glm::vec3(320, 240, 0);
 
         std::vector<Vertex> getShadowMesh() {
+            PROFILE_FUNCTION();
+
             std::vector<Vertex> shadowMesh;
 
             for (auto r : renderables) {
+                PROFILE_SCOPE("RenderableIteration");
                 auto verts = r->getVertices();
 
                 for (size_t i = 0; i < verts.size(); i++) {
+                    PROFILE_SCOPE("ModelMatrixTransform");
+
                     verts[i].Position = glm::vec3(r->getModelMatrix() * glm::vec4(verts[i].Position, 1));
 
                     // add renderable itself to shadowMap
@@ -216,22 +226,25 @@ namespace Entropy {
                 // }
 
                 // v.insert(v.end(), verts.begin(), verts.end());
-                shadowMesh.reserve(12);
-                shadowMesh.push_back(x1);
-                shadowMesh.push_back(x2);
-                shadowMesh.push_back(d1);
+                {
+                    PROFILE_SCOPE("assembleMesh");
+                    shadowMesh.reserve(12);
+                    shadowMesh.push_back(x1);
+                    shadowMesh.push_back(x2);
+                    shadowMesh.push_back(d1);
 
-                shadowMesh.push_back(x1);
-                shadowMesh.push_back(x2);
-                shadowMesh.push_back(d2);
+                    shadowMesh.push_back(x1);
+                    shadowMesh.push_back(x2);
+                    shadowMesh.push_back(d2);
 
-                shadowMesh.push_back(x1);
-                shadowMesh.push_back(d2);
-                shadowMesh.push_back(d1);
+                    shadowMesh.push_back(x1);
+                    shadowMesh.push_back(d2);
+                    shadowMesh.push_back(d1);
 
-                shadowMesh.push_back(x2);
-                shadowMesh.push_back(d1);
-                shadowMesh.push_back(d2);
+                    shadowMesh.push_back(x2);
+                    shadowMesh.push_back(d1);
+                    shadowMesh.push_back(d2);
+                }
             }
 
             // LOG("MESH\n");
@@ -241,6 +254,8 @@ namespace Entropy {
         }
 
         void renderAntiShadows() {
+            PROFILE_FUNCTION();
+
             auto lightMesh = getShadowMesh();
             GL_LOG("Atrib pointer");
 

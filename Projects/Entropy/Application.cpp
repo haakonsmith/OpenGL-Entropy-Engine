@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include <iostream>
+#include <iosfwd>
 #include <stdexcept>
 
 using namespace std;

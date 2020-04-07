@@ -80,6 +80,10 @@
     "filesystem": "cpp",
     "codecvt": "cpp",
     "stack": "cpp",
-    "__functional_03": "cpp"
+    "__functional_03": "cpp",
+    "future": "cpp",
+    "regex": "cpp",
+    "set": "cpp",
+    "variant": "cpp"
 }
 }

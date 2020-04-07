@@ -2,7 +2,7 @@
  * Copyright 2020, Haakon Smith.
  */
 
-#include <iostream>
+#include <iosfwd>
 #include <vector>
 
 #include "../Graphics/2dRenderer.hpp"
@@ -49,10 +49,12 @@ namespace Entropy {
         inline void removeObject(PhysicsObject *obj) { objects.erase(find(objects.begin(), objects.end(), obj)); }
 
         inline c2v scaleForCollision(c2v const &p) {
+            PROFILE_FUNCTION();
             return c2V(p.x / screen.sizeX + screen.sizeX, p.y / screen.sizeY + screen.sizeY);
         }
 
         inline c2AABB scaleForCollision(c2AABB const &aabb) {
+            PROFILE_FUNCTION();
             c2AABB sAABB;
             sAABB.min = scaleForCollision(aabb.min);
             sAABB.max = scaleForCollision(aabb.max);
@@ -60,6 +62,7 @@ namespace Entropy {
         }
 
         inline c2v scaleForRenderering(c2v const &p) {
+            PROFILE_FUNCTION();
             return c2V((p.x - screen.sizeX) * screen.sizeX, (p.y - screen.sizeY) * screen.sizeY);
         }
 

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <thread>
 
 using std::ofstream;
 
@@ -14,62 +15,66 @@ namespace Entropy {
     namespace Performance {
 
         struct Profile {
-            std::chrono::duration<long, std::nano> duration;
+            long long start;
+            long long end;
             std::string title;
-        };
-
-        struct FrameProfile {
-            std::__1::chrono::steady_clock::time_point start;
-            std::chrono::duration<long, std::nano> duration;
-            std::vector<Profile> profiles;
-
-            // FrameProfile(std::chrono::duration<long, std::nano> d) : duration(d) {}
         };
 
         class Profiler {
           private:
-            std::vector<FrameProfile> frames;
+            const long long minProfile = 50000;
+
+            size_t profileCount = 0;
             std::__1::chrono::steady_clock::time_point t_start;
 
             ofstream profileFile;
 
+            bool writingToFile = false;
+
           public:
-            void startFrame() {
-                frames.push_back(FrameProfile());
-                frames.back().start = std::chrono::high_resolution_clock::now();
+            inline void addProfileToFrame(Profile const& profile) {
+                if ((profile.end - profile.start) > minProfile) { 
+                    while (writingToFile) {
+                        std::this_thread::sleep_for(std::chrono::microseconds(5));
+                    }
+                    writeProfile(profile); 
+                }
             }
-            void endFrame() {
-                frames.back().duration = std::chrono::high_resolution_clock::now() - frames.back().start;
-            }
 
-            void addProfileToFrame(std::chrono::duration<long, std::nano> duration, std::string title) {
-                Profile profile;
+            inline void writeProfile(Profile const& profile) {
+                writingToFile = true;
 
-                profile.duration = duration;
-                profile.title = title;
+                if (profileCount++ > 0) profileFile << ",";
 
-                frames.back().profiles.push_back(profile);
-
-                profileFile << "{\n";
-                profileFile << '\"cat\": \"' << title << '\",';
-                profileFile << '},\n';
+                profileFile << "{";
+                profileFile << "\"cat\": \"function\",";
+                profileFile << "\"dur\": \"" << (profile.end - profile.start) << "\",";
+                profileFile << "\"name\": \"" << profile.title << "\",";
+                profileFile << "\"ph\": \"X\",";
+                profileFile << "\"pid\": \"0\",";
+                profileFile << "\"tid\": \"0\",";
+                profileFile << "\"ts\": \"" << profile.start << "\"";
+                profileFile << "}";
 
                 profileFile.flush();
+
+                writingToFile = false;
             }
 
             Profiler() {
                 t_start = std::chrono::high_resolution_clock::now();
                 profileFile = ofstream("Tracing/main.json");
 
-                profileFile << "{\n";
-                profileFile << '\"traceEvents\": [\n';
+                profileFile << "{";
+                profileFile << "\"traceEvents\": [";
 
                 profileFile.flush();
             }
             ~Profiler() {
-                frames.clear();
-                profileFile << '}\n';
-                profileFile << '}\n';
+                std::cout << "Done profiling" << std::endl;
+                profileFile << "\t],";
+                profileFile << "\"displayTimeUnit\": \"ns\"";
+                profileFile << "}";
 
                 profileFile.flush();
                 profileFile.close();
@@ -79,7 +84,7 @@ namespace Entropy {
     }  // namespace Performance
 
     namespace App {
-        static Performance::Profiler profiler = Performance::Profiler();
+        extern Performance::Profiler profiler;
     };
 
     namespace Performance {
@@ -90,7 +95,17 @@ namespace Entropy {
 
           public:
             Timer(std::string title) : name(title) { t_start = std::chrono::high_resolution_clock::now(); }
-            ~Timer() { App::profiler.addProfileToFrame(std::chrono::high_resolution_clock::now() - t_start, name); }
+            ~Timer() {
+                auto t_end = std::chrono::high_resolution_clock::now();
+
+                Profile profile;
+                profile.start =
+                    std::chrono::time_point_cast<std::chrono::nanoseconds>(t_start).time_since_epoch().count();
+                profile.end = std::chrono::time_point_cast<std::chrono::nanoseconds>(t_end).time_since_epoch().count();
+                profile.title = name;
+
+                App::profiler.addProfileToFrame(profile);
+            }
         };
     }  // namespace Performance
 

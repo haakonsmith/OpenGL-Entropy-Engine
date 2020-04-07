@@ -3,6 +3,7 @@
 namespace Entropy {
 
     void PhysicsEngine::checkForCollisions(PhysicsObject &obj, vec3 &prePos) {
+        PROFILE_FUNCTION();
         for (auto _obj : objects) {
             if (&obj != _obj) {
                 switch (obj.collisionType) {
@@ -43,6 +44,7 @@ namespace Entropy {
     }
 
     void PhysicsEngine::timeStep(float timeStep) {
+        PROFILE_FUNCTION();
         const int collisionPrecision = 1000;
 
         for (auto obj : objects) {

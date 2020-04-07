@@ -14,7 +14,7 @@ namespace Entropy {
     };
 
     void PerformatApplication::loop() {
-        App::profiler.newFrame();
+
         glfwPollEvents();
     }
 

@@ -9,7 +9,7 @@
 #include <OpenGL/gl3.h>
 
 #include <fstream>
-#include <iostream>
+#include <iosfwd>
 #include <map>
 #include <sstream>
 #include <string>
