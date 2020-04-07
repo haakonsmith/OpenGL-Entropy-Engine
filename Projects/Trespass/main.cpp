@@ -131,6 +131,12 @@ class Trespass : public Entropy::BaseApplication
             player->physicsType = ACTIVE;
             // renderer->drawOutline(true);
 
+            shared_ptr<Light> light = make_shared<Light>();
+
+            light->position = vec3(320,240,0);
+
+            renderer->addLight(light.get());
+
             
 
 

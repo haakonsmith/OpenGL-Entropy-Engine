@@ -20,6 +20,8 @@
 #include "glm/vec4.hpp"
 
 using glm::vec2;
+using glm::vec3;
+using glm::vec4;
 
 #pragma once
 
@@ -30,6 +32,12 @@ namespace Entropy {
     //     virtual std::vector<Vertex> getVertices() = 0;
     //     virtual glm::mat4 getModelMatrix() = 0;
     // };
+
+    struct Light {
+        vec3 position;
+        float intensity;
+        vec4 colour;
+    };
 
     class LightRendererAttachment {
       protected:
@@ -48,17 +56,16 @@ namespace Entropy {
         std::pair<vec2, vec2> findExtremePoints(vec2 observer, std::vector<Vertex> const &polygon, vec2 end) {
             PROFILE_FUNCTION();
 
-            auto calculateD = [observer, end](vec2 const& pos){
+            auto calculateD = [observer, end](vec2 const &pos) {
                 PROFILE_SCOPE("calculateD");
-                return (pos.x - observer.x) * (end.y - observer.y) -
-                         (pos.y - observer.y) * (end.x - observer.x);
+                return (pos.x - observer.x) * (end.y - observer.y) - (pos.y - observer.y) * (end.x - observer.x);
             };
-            
+
             float dist = 10000;
             float d = 0;
             vec2 rightMost, leftMost;
 
-             // get rightmost extreme
+            // get rightmost extreme
             for (size_t i = 0; i < polygon.size(); i++) {
                 PROFILE_SCOPE("findRightMost");
                 d = calculateD(polygon[i].xy);
@@ -114,8 +121,65 @@ namespace Entropy {
             return vNormals;
         }
 
+        std::vector<Vertex> computeLineOfSightVertices(Light *light, Renderable *r) {
+            std::vector<Vertex> shadowMesh;
+
+            PROFILE_FUNCTION();
+            auto verts = r->getVertices();
+
+            for (size_t i = 0; i < verts.size(); i++) {
+                PROFILE_SCOPE("ModelMatrixTransform");
+
+                verts[i].Position = glm::vec3(r->getModelMatrix() * glm::vec4(verts[i].Position, 1));
+
+                // add renderable itself to shadowMap
+                shadowMesh.push_back(verts[i]);
+            }
+
+            auto origin = (light->position);
+
+            auto norm = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
+
+            auto extremePoints = findExtremePoints(origin, verts, r->getPosition());
+            auto x1 = Vertex(vec3(std::get<0>(extremePoints), 0));
+            auto x2 = Vertex(vec3(std::get<1>(extremePoints), 0));
+
+            auto d1 = x1;
+            auto d2 = x2;
+
+            renderLine(x1.Position, origin);
+            renderLine(x2.Position, origin);
+            renderLine(r->getPosition(), origin);
+
+            d1.xy = x1.xy + normalize(norm(vec2(origin), x1.xy)) * 600.0f;
+            d2.xy = x2.xy + normalize(norm(vec2(origin), x2.xy)) * 600.0f;
+
+            {
+                PROFILE_SCOPE("assembleMesh");
+                shadowMesh.reserve(12);
+                shadowMesh.push_back(x1);
+                shadowMesh.push_back(x2);
+                shadowMesh.push_back(d1);
+
+                shadowMesh.push_back(x1);
+                shadowMesh.push_back(x2);
+                shadowMesh.push_back(d2);
+
+                shadowMesh.push_back(x1);
+                shadowMesh.push_back(d2);
+                shadowMesh.push_back(d1);
+
+                shadowMesh.push_back(x2);
+                shadowMesh.push_back(d1);
+                shadowMesh.push_back(d2);
+            }
+
+            return shadowMesh;
+        }
+
       public:
         std::vector<Renderable *> renderables;
+        std::vector<Light *> lights;
         Ref<Shader> shadowShader;
         Ref<Shader> lightShader;
 
@@ -127,130 +191,19 @@ namespace Entropy {
 
             std::vector<Vertex> shadowMesh;
 
-            for (auto r : renderables) {
-                PROFILE_SCOPE("RenderableIteration");
-                auto verts = r->getVertices();
-
-                for (size_t i = 0; i < verts.size(); i++) {
-                    PROFILE_SCOPE("ModelMatrixTransform");
-
-                    verts[i].Position = glm::vec3(r->getModelMatrix() * glm::vec4(verts[i].Position, 1));
-
-                    // add renderable itself to shadowMap
-                    shadowMesh.push_back(verts[i]);
-                }
-
-                auto origin = glm::vec3(320, 240, 0);
-                auto norm = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
-
-                auto extremePoints = findExtremePoints(origin, verts, r->getPosition());
-                auto x1 = Vertex(vec3(std::get<0>(extremePoints), 0));
-                auto x2 = Vertex(vec3(std::get<1>(extremePoints), 0));
-
-                auto d1 = x1;
-                auto d2 = x2;
-
-                renderLine(x1.Position, origin);
-                renderLine(x2.Position, origin);
-                renderLine(r->getPosition(), origin);
-
-                d1.xy = x1.xy + normalize(norm(vec2(origin), x1.xy)) * 600.0f;
-                d2.xy = x2.xy + normalize(norm(vec2(origin), x2.xy)) * 600.0f;
-
-                // // d1.xy = vec2(0);
-                // // d2.xy = vec2(0);
-
-                // v.push_back(d1);
-                // v.push_back(x1);
-                // v.push_back(x2);
-
-                // v.push_back(x2);
-                // v.push_back(d2);
-                // v.push_back(d1);
-
-                // v.push_back(x1);
-                // v.push_back(d2);
-                // v.push_back(d1);
-
-                // for (auto vertex : verts) {
-                //     c2Ray ray;
-                //     ray.p = c2V(origin.x, origin.y);
-                //     auto direction = normalize(norm(vec2(origin), vertex.xy));
-                //     ray.d = c2Norm(c2Sub(Vector2D(vertex.xy).c2Vector, ray.p));
-                //     ray.p = c2Add(ray.p, ray.d);
-                //     // ray.d = Vector2D(direction).c2Vector;
-                //     ray.t = distance(vertex.xy, vec2(origin));
-
-                //     for (auto poly : renderables) {
-                //         if (poly != r) {
-                //             c2x pos;
-
-                //             c2Poly polyy;
-
-                //             polyy = poly->poly;
-                //             for (size_t i = 0; i < 8; i++)
-                //             {
-                //                 polyy.verts[i] = Vector2D(glm::vec2(r->getModelMatrix() * glm::vec4((vec2)
-                //                 Vector2D(polyy.verts[i]), 0, 1)));
-                //             }
-
-                //             c2MakePoly(&polyy);
-
-                //             // pos = c2Transform(Vector2D(poly->getPosition()), poly->getRotation());
-                //             pos = c2xIdentity();
-                //             c2Raycast cast;
-                //             bool hit = c2RaytoPoly(ray, &polyy, 0, &cast);
-                //             if (hit) {
-                //                 LOG("IMPACT!!!");
-                //                 LOG("cast.t: " << cast.t);
-                //                 LOG("ray.p.y: " << ray.p.y);
-                //                 LOG("ray.p.x: " << ray.p.x);
-                //                 renderLine(vec3((vec2)Vector2D(ray.p), 0),
-                //                         vec3((vec2)Vector2D(c2Add(ray.p, c2Mulvs(ray.d, cast.t))), 0));
-                //                 v.push_back(Vertex(
-                //                     vec3((vec2)Vector2D(c2Add(ray.p, c2Mulvs(ray.d, cast.t / pow(10, 24) * 2))),
-                //                     0)));
-
-                //             }
-                //         }
-                //     }
-                // }
-
-                // for (size_t i = 0; i < verts.size(); i++) {
-                //     v.push_back(verts[i]);
-
-                //     v.push_back(d1);
-                //     v.push_back(d2);
-
-                //     // v.push_back(verts[(i + 1) % verts.size()]);
-                // }
-
-                // v.insert(v.end(), verts.begin(), verts.end());
-                {
-                    PROFILE_SCOPE("assembleMesh");
-                    shadowMesh.reserve(12);
-                    shadowMesh.push_back(x1);
-                    shadowMesh.push_back(x2);
-                    shadowMesh.push_back(d1);
-
-                    shadowMesh.push_back(x1);
-                    shadowMesh.push_back(x2);
-                    shadowMesh.push_back(d2);
-
-                    shadowMesh.push_back(x1);
-                    shadowMesh.push_back(d2);
-                    shadowMesh.push_back(d1);
-
-                    shadowMesh.push_back(x2);
-                    shadowMesh.push_back(d1);
-                    shadowMesh.push_back(d2);
+            for (auto light : lights) {
+                for (auto r : renderables) {
+                    LOG(light->position.x);
+                    auto m = computeLineOfSightVertices(light, r);
+                    shadowMesh.insert(shadowMesh.end(), m.begin(), m.end());
                 }
             }
 
-            // LOG("MESH\n");
-            // for (auto v1 : v) { LOG("X: " << v1.x << ", Y: " << v1.y); }
-
             return shadowMesh;
+        }
+
+        void addLight(Light* light) {
+            lights.push_back(light);
         }
 
         void renderAntiShadows() {
@@ -288,15 +241,19 @@ namespace Entropy {
 
             lightShader->bind();
             GL_LOG("Atrib pointer");
-            lightShader->uniform3f("light", 0.5, 0.5, 0);
-            GL_LOG("Atrib pointer");
+
             lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
             GL_LOG("Atrib pointer");
 
             glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA);
             glBlendEquation(GL_FUNC_ADD);
 
-            glDrawArrays(GL_TRIANGLES, 0, squareVerts.size());
+            for (auto light : lights) {
+                lightShader->uniform3f("light", 0.5, 0.5, 0);
+                GL_LOG("Atrib pointer");
+                glDrawArrays(GL_TRIANGLES, 0, squareVerts.size());
+            }
+
             GL_LOG("Atrib pointer");
 
             glDisableVertexAttribArray(0);
