@@ -31,7 +31,7 @@ namespace Entropy {
 
     }  // namespace Mixin
 
-    struct Position : public Mixin::Transform{
+    struct Position : public virtual Mixin::Transform{
         vec3 position;
         vec3 scale;
         float rotation;

@@ -1,6 +1,6 @@
 #include <OpenGL/gl3.h>
 
-#include <tuple>
+#include <future>
 #include <vector>
 
 #define GLM_ENABLE_EXPERIMENTAL
@@ -37,6 +37,9 @@ namespace Entropy {
         vec3 position;
         float intensity;
         vec4 colour;
+
+        Light() : position(vec3(0)), intensity(0), colour(vec4(1)) {}
+        Light(vec3 const &v) : position(v), intensity(0), colour(vec4(1)) {}
     };
 
     class LightRendererAttachment {
@@ -53,7 +56,7 @@ namespace Entropy {
 
         virtual glm::mat4 getViewProjectionMatrix() = 0;
 
-        std::pair<vec2, vec2> findExtremePoints(vec2 observer, std::vector<Vertex> const &polygon, vec2 end) {
+        static std::pair<vec2, vec2> findExtremePoints(vec2 observer, std::vector<Vertex> const &polygon, vec2 end) {
             PROFILE_FUNCTION();
 
             auto calculateD = [observer, end](vec2 const &pos) {
@@ -121,7 +124,7 @@ namespace Entropy {
             return vNormals;
         }
 
-        std::vector<Vertex> computeLineOfSightVertices(Light *light, Renderable *r) {
+        static std::vector<Vertex> computeLineOfSightVertices(Light *light, Renderable *r) {
             std::vector<Vertex> shadowMesh;
 
             PROFILE_FUNCTION();
@@ -136,7 +139,7 @@ namespace Entropy {
                 shadowMesh.push_back(verts[i]);
             }
 
-            auto origin = (light->position);
+            const auto origin = (light->position);
 
             auto norm = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
 
@@ -146,11 +149,7 @@ namespace Entropy {
 
             auto d1 = x1;
             auto d2 = x2;
-
-            renderLine(x1.Position, origin);
-            renderLine(x2.Position, origin);
-            renderLine(r->getPosition(), origin);
-
+            
             d1.xy = x1.xy + normalize(norm(vec2(origin), x1.xy)) * 600.0f;
             d2.xy = x2.xy + normalize(norm(vec2(origin), x2.xy)) * 600.0f;
 
@@ -191,10 +190,21 @@ namespace Entropy {
 
             std::vector<Vertex> shadowMesh;
 
+            // std::vector<std::future<std::vector<Vertex>>> meshes;
+
+            // for (auto light : lights) {
+            //     for (auto r : renderables) {
+            //         meshes.push_back(std::async(computeLineOfSightVertices, light, r));
+            //     }
+            // }
+            // for (size_t i = 0; i < meshes.size(); i++) {
+            //     auto m = meshes[i].get();
+            //     shadowMesh.insert(shadowMesh.end(), m.begin(), m.end());
+            // }
+
             for (auto light : lights) {
                 for (auto r : renderables) {
-                    LOG(light->position.x);
-                    auto m = computeLineOfSightVertices(light, r);
+                    auto m =(computeLineOfSightVertices(light, r));
                     shadowMesh.insert(shadowMesh.end(), m.begin(), m.end());
                 }
             }
@@ -202,9 +212,7 @@ namespace Entropy {
             return shadowMesh;
         }
 
-        void addLight(Light* light) {
-            lights.push_back(light);
-        }
+        void addLight(Light *light) { lights.push_back(light); }
 
         void renderAntiShadows() {
             PROFILE_FUNCTION();

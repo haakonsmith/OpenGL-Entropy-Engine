@@ -6,10 +6,10 @@
 
 using namespace std;
 
-string Shader::fragmentShaderExtension = [] { return "fragmentshader"; }();
-string Shader::vertexShaderExtension = [] { return "vertexshader"; }();
+string Entropy::Shader::fragmentShaderExtension = [] { return "fragmentshader"; }();
+string Entropy::Shader::vertexShaderExtension = [] { return "vertexshader"; }();
 
-std::string getFileExtension(std::string filePath)
+std::string Entropy::getFileExtension(std::string filePath)
 {
   // Find the last position of '.' in given string
   std::size_t pos = filePath.rfind('.');
@@ -24,7 +24,7 @@ std::string getFileExtension(std::string filePath)
   return "";
 }
 
-GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path)
+GLuint Entropy::LoadShaders(const char *vertex_file_path, const char *fragment_file_path)
 {
 
   // Create the shaders

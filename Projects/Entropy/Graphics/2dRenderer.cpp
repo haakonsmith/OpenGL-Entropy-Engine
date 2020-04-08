@@ -69,7 +69,8 @@ namespace Entropy {
     void m_2dRenderer::buffer(Renderable *_renderable) {
         // renderables don't come prepackaged with MVP, so it needs to be
         // created
-        transform(_renderable);
+
+        _renderable->transform.compute();
 
         if (!_renderable->vertexBufferINIT) genVertexBuffer(_renderable);
 
@@ -82,30 +83,6 @@ namespace Entropy {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////// Math commands ///////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    void m_2dRenderer::transform(Renderable *_renderable) {
-        PROFILE_FUNCTION();
-        glm::mat4 MVP;
-
-        // Model matrix : an identity matrix (model will be at the origin)
-        glm::mat4 model = glm::mat4(1.0f);
-
-        _renderable->rotationMatrix =
-            glm::rotate(model, glm::radians((float)_renderable->rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-
-        _renderable->translationMatrix = glm::translate(model, (_renderable->getPosition()));
-
-        _renderable->scaleMatrix = glm::scale(model, _renderable->scale);
-
-        _renderable->setModelMatrix(_renderable->translationMatrix * _renderable->rotationMatrix *
-                                    _renderable->scaleMatrix);
-
-        // Our ModelViewProjection : multiplication of our 3 matrices
-        MVP = projectionMatrix * viewMatrix * _renderable->getModelMatrix();  // Remember, matrix multiplication is
-                                                                         // the other way around
-
-        _renderable->setMVP(MVP);
-    }
 
     GLuint m_2dRenderer::loadTexture(std::string path) {
         
@@ -216,7 +193,7 @@ namespace Entropy {
         _renderable->shader->bind();
         GL_LOG("bind shader ");
 
-        _renderable->shader->uniformMatrix4fv("MVP", _renderable->MVP);
+        _renderable->shader->uniformMatrix4fv("MVP", getViewProjectionMatrix() * _renderable->transform.modelMatrix);
 
         // Bind our texture in Texture Unit 0
         glActiveTexture(GL_TEXTURE0);
@@ -307,7 +284,7 @@ namespace Entropy {
         PROFILE_FUNCTION();
         debugShader->bind();
 
-        debugShader->uniformMatrix4fv("MVP", _renderable.MVP);
+        debugShader->uniformMatrix4fv("MVP", getViewProjectionMatrix() * _renderable.transform.modelMatrix);
         debugShader->uniform3f("inColor", 1, 1, 0);
 
         GL_LOG("bind uniform ");
@@ -399,6 +376,7 @@ namespace Entropy {
 
         position.z += 1;
 
+        // mat4 MVP = projectionMatrix * viewMatrix * (translate(mat4(1.0f), position) * scale(mat4(1.0f), vec3(radius)));
         mat4 MVP = projectionMatrix * viewMatrix * (translate(mat4(1.0f), position) * scale(mat4(1.0f), vec3(radius)));
 
         builtinCircleShader->uniformMatrix4fv("MVP", MVP);

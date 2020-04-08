@@ -8,7 +8,7 @@ namespace Entropy {
     }
 
     GameObject::GameObject(Shape shape)
-        : Renderable(shape), PhysicsObject(shape) {
+        : Renderable(shape) {
         PhysicsObject::name = "GameObject";
         Renderable::name = "GameObject";
     }

@@ -78,6 +78,8 @@ class Trespass : public Entropy::BaseApplication
         shared_ptr<PhysicsObject> topwall;
         shared_ptr<PhysicsObject> bottomwall;
 
+        shared_ptr<Light> light;
+
         double previousFrameTime;
 
         int i = 0;
@@ -99,7 +101,7 @@ class Trespass : public Entropy::BaseApplication
             glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
             renderer = new Entropy::m_2dRenderer(getScreen());
-            renderer->drawOutline(true);
+            // renderer->drawOutline(true);
             std::vector<Vertex> vertices = {
                 Vertex(-1.0f, -1.0f, 0.0f), // x,y,z vertex 1
                 Vertex(1.0f, -1.0f, 0.0f),  // x,y,z vertex 2
@@ -112,7 +114,7 @@ class Trespass : public Entropy::BaseApplication
             tri = new Renderable(Rectangle());
 
             tri->setPosition(vec3(320.0f, 240.0f, 0.0f));
-            tri->setScale(320,240);
+            tri->setScale(vec3(320,240,0));
             tri->setTexture(renderer->loadTexture("floor.png"));
             tri->castsShadow = false;
 
@@ -120,50 +122,49 @@ class Trespass : public Entropy::BaseApplication
 
             quad->setPosition(vec3(320,280,0));
 
-            quad->PhysicsObject::Vertices = vertices;
+            quad->collider.boundingBox.width = 10;
+            quad->collider.boundingBox.height = 10;
 
-            quad->boundingBox.width = 10;
-            quad->boundingBox.height = 10;
+            player->collider.boundingBox.width = 10;
+            player->collider.boundingBox.height = 10;
 
-            player->boundingBox.width = 10;
-            player->boundingBox.height = 10;
-
-            player->physicsType = ACTIVE;
+            player->data.physicsType = ACTIVE;
             // renderer->drawOutline(true);
 
-            shared_ptr<Light> light = make_shared<Light>();
+            light = shared_ptr<Light>(new Light());
 
             light->position = vec3(320,240,0);
 
             renderer->addLight(light.get());
+            // light->position = vec3(320,240,0);
 
             
 
 
-            quad->setScale(10.0f,10.0f,0.1f);
+            quad->setScale(vec3(10.0f,10.0f,0.1f));
             renderer->addRenderable(quad.get());
             renderer->addRenderable(tri);
-            player->setScale(10.0f,10.0f,0.1f);
+            player->setScale(vec3(10.0f,10.0f,0.1f));
             renderer->addRenderable(player.get());
 
             leftwall = make_shared<PhysicsObject>();
-            leftwall->boundingBox.height = 240;
-            leftwall->boundingBox.width = 20;
+            leftwall->collider.boundingBox.height = 240;
+            leftwall->collider.boundingBox.width = 20;
             leftwall->setPosition(vec3(-10,240,0));
 
             rightwall = make_shared<PhysicsObject>();
-            rightwall->boundingBox.height = 240;
-            rightwall->boundingBox.width = 20;
+            rightwall->collider.boundingBox.height = 240;
+            rightwall->collider.boundingBox.width = 20;
             rightwall->setPosition(vec3(650,240,0));
 
             topwall = make_shared<PhysicsObject>();
-            topwall->boundingBox.height = 20;
-            topwall->boundingBox.width = 320;
+            topwall->collider.boundingBox.height = 20;
+            topwall->collider.boundingBox.width = 320;
             topwall->setPosition(vec3(320,490,0));
 
             bottomwall = make_shared<PhysicsObject>();
-            bottomwall->boundingBox.height = 20;
-            bottomwall->boundingBox.width = 320;
+            bottomwall->collider.boundingBox.height = 20;
+            bottomwall->collider.boundingBox.width = 320;
             bottomwall->setPosition(vec3(320,-10,0));
 
             world = new Entropy::PhysicsEngine(*renderer, getScreen());
@@ -174,7 +175,7 @@ class Trespass : public Entropy::BaseApplication
             world->addObject(rightwall.get());
             world->addObject(topwall.get());
             world->addObject(bottomwall.get());
-            world->debug = true;
+            // world->debug = true;
 
             player->renderer = renderer;
             player->world = world;
@@ -184,7 +185,9 @@ class Trespass : public Entropy::BaseApplication
         }
 
         void loop() override {
+            // LOG("FPS: " << App::profiler.fps);
             PROFILE_FUNCTION();
+            App::profiler.newFrame();
 
             previousFrameTime = glfwGetTime();
             
@@ -198,7 +201,7 @@ class Trespass : public Entropy::BaseApplication
 
             // renderer->transform(tri);
 
-            renderer->transform(player.get());
+            player->transform.compute();
             renderer->renderCircle(vec3(320,240,0), 10);
 
 
@@ -214,33 +217,30 @@ class Trespass : public Entropy::BaseApplication
 
 
             world->timeStep(previousFrameTime);
-            renderer->renderLine(( player->velocity)  + player->getPosition(), player->getPosition());
+            renderer->renderLine(( player->data.velocity)  + player->getPosition(), player->getPosition());
 
-            player->rotation = glm::degrees(atan2((MouseYPos - player->getPosition().y), (MouseXPos - player->getPosition().x)) * -1) * -1 + 45;
+            player->transform.rotation = glm::degrees(atan2((MouseYPos - player->getPosition().y), (MouseXPos - player->getPosition().x)) * -1) * -1 + 45;
             
             state = glfwGetKey(window, GLFW_KEY_W);
             if (state == GLFW_PRESS)
             {
-                player->velocity.y = 100;
+                player->data.velocity.y = 100;
             }
             state = glfwGetKey(window, GLFW_KEY_S);
             if (state == GLFW_PRESS)
             {
-                player->velocity.y = -100;
+                player->data.velocity.y = -100;
             }
             state = glfwGetKey(window, GLFW_KEY_A);
             if (state == GLFW_PRESS)
             {
-                player->velocity.x = -100;
+                player->data.velocity.x = -100;
             }
             state = glfwGetKey(window, GLFW_KEY_D);
             if (state == GLFW_PRESS)
             {
-                player->velocity.x = 100;
+                player->data.velocity.x = 100;
             }
-
-            // bool pressed = false;
-
             
 
             auto t_now = std::chrono::high_resolution_clock::now();
@@ -283,12 +283,15 @@ class Trespass : public Entropy::BaseApplication
             
             glfwSwapBuffers(window);
             glfwPollEvents();
+            App::profiler.endFrame();
 
 
 
-            auto time = glfwGetTime();
-            if (time < 0.016)
-                usleep((0.016 - time) * 100000 * 3);
+            // auto time = glfwGetTime();
+            // if (time < 0.016)
+            //     usleep((0.016 - time) * 100000 * 3);
+
+                
         }
 
         Trespass() : Entropy::BaseApplication() {

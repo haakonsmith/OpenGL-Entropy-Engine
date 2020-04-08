@@ -3,7 +3,7 @@
 #include "Player.hpp"
 
 Bullet::Bullet(vec3 _position, vec3 direction) {
-    velocity = direction * 700.0f;
+    data.velocity = direction * 700.0f;
     setPosition(_position + direction * 20.0f);
     PhysicsObject::name = "Bullet";
 }

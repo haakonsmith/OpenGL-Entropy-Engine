@@ -5,12 +5,13 @@ namespace Entropy {
 
     template <uint32 C>
     void m_2dRenderer::renderInstance(const RenderInstance<C> &Instance, uint32 renderCount) {
+        PROFILE_FUNCTION();
         glBindBuffer(GL_ARRAY_BUFFER, Instance.Instanced->vertexBufferID);
 
         Instance.Instanced->shader->bind();
         GL_LOG("bind shader ");
 
-        Instance.Instanced->shader->uniformMatrix4fv("MVP", Instance.Instanced->MVP);
+        Instance.Instanced->shader->uniformMatrix4fv("MVP", getViewProjectionMatrix() * Instance.Instanced->transform.modelMatrix);
         GL_LOG("bind shader ");
 
         glActiveTexture(GL_TEXTURE0);

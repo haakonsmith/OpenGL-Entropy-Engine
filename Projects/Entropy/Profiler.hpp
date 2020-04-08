@@ -2,9 +2,10 @@
 #include <chrono>
 #include <fstream>
 #include <iostream>
+#include <mutex>
 #include <string>
-#include <vector>
 #include <thread>
+#include <vector>
 
 using std::ofstream;
 
@@ -22,27 +23,50 @@ namespace Entropy {
 
         class Profiler {
           private:
-            const long long minProfile = 50000;
+            std::mutex writeMutex;
+
+            const long long minProfile = 5;
 
             size_t profileCount = 0;
-            std::__1::chrono::steady_clock::time_point t_start;
+            int frameCount = 1;
+
+            std::chrono::steady_clock::time_point t_start;
+            std::chrono::steady_clock::time_point t_frame_start;
 
             ofstream profileFile;
 
             bool writingToFile = false;
 
           public:
+            double fps = 0;
+
+            inline long long getTime() {
+                return std::chrono::time_point_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now())
+                    .time_since_epoch()
+                    .count();
+            }
+
+            inline void newFrame() {
+                fps = frameCount / 
+                      (double) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - t_start).count();
+
+                fps = fps * 1000;
+                frameCount++;
+
+                t_frame_start = std::chrono::high_resolution_clock::now();
+            }
+
+            inline void endFrame() {
+                auto frame_duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - t_frame_start);
+                std::this_thread::sleep_for((std::chrono::milliseconds(16) - frame_duration));
+            }
+
             inline void addProfileToFrame(Profile const& profile) {
-                if ((profile.end - profile.start) > minProfile) { 
-                    while (writingToFile) {
-                        std::this_thread::sleep_for(std::chrono::microseconds(5));
-                    }
-                    writeProfile(profile); 
-                }
+                if ((profile.end - profile.start) > minProfile) { writeProfile(profile); }
             }
 
             inline void writeProfile(Profile const& profile) {
-                writingToFile = true;
+                std::lock_guard<std::mutex> guard(writeMutex);
 
                 if (profileCount++ > 0) profileFile << ",";
 
@@ -52,7 +76,7 @@ namespace Entropy {
                 profileFile << "\"name\": \"" << profile.title << "\",";
                 profileFile << "\"ph\": \"X\",";
                 profileFile << "\"pid\": \"0\",";
-                profileFile << "\"tid\": \"0\",";
+                profileFile << "\"tid\": \"" << std::this_thread::get_id() << "\",";
                 profileFile << "\"ts\": \"" << profile.start << "\"";
                 profileFile << "}";
 
@@ -63,6 +87,7 @@ namespace Entropy {
 
             Profiler() {
                 t_start = std::chrono::high_resolution_clock::now();
+
                 profileFile = ofstream("Tracing/main.json");
 
                 profileFile << "{";
@@ -71,6 +96,7 @@ namespace Entropy {
                 profileFile.flush();
             }
             ~Profiler() {
+
                 std::cout << "Done profiling" << std::endl;
                 profileFile << "\t],";
                 profileFile << "\"displayTimeUnit\": \"ns\"";
@@ -78,6 +104,8 @@ namespace Entropy {
 
                 profileFile.flush();
                 profileFile.close();
+
+                system("python3 Tracing/pack_zip.py");
             }
         };
 
@@ -100,8 +128,8 @@ namespace Entropy {
 
                 Profile profile;
                 profile.start =
-                    std::chrono::time_point_cast<std::chrono::nanoseconds>(t_start).time_since_epoch().count();
-                profile.end = std::chrono::time_point_cast<std::chrono::nanoseconds>(t_end).time_since_epoch().count();
+                    std::chrono::time_point_cast<std::chrono::microseconds>(t_start).time_since_epoch().count();
+                profile.end = std::chrono::time_point_cast<std::chrono::microseconds>(t_end).time_since_epoch().count();
                 profile.title = name;
 
                 App::profiler.addProfileToFrame(profile);

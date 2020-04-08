@@ -12,9 +12,9 @@ void Player::update() {
         }
 
         bullet_Reference->setPosition(bullets[i]->getPosition());
-        bullet_Reference->rotation = bullets[i]->rotation;
+        bullet_Reference->transform.rotation = bullets[i]->rotation;
 
-        renderer->transform(bullet_Reference.get());
+        bullet_Reference->transform.compute();
         renderer->render(bullet_Reference.get());
     }
 
@@ -24,7 +24,7 @@ void Player::update() {
             enemies.erase(enemies.begin() + i);
         }
         
-        enemies[i]->velocity = normalize(getPosition() - enemies[i]->getPosition()) * 100.0f;
+        enemies[i]->data.velocity = normalize(getPosition() - enemies[i]->getPosition()) * 100.0f;
     }
 
     if (enemies.size() != 0) {
@@ -51,21 +51,21 @@ void Player::shootBullet() {
         enemy_Reference->cleanVBO = false;
         enemy_Reference->setPosition(vec3(320, 240, 0));
         enemy_Reference->setScale(vec3(10, 12, 0));
-        renderer->transform(enemy_Reference.get());
+        enemy_Reference->transform.compute();
     }
 
     vec3 direction = vec3(vec3(
-        glm::rotate(mat4(1.0f), glm::radians((float)rotation - 45), glm::vec3(0.0f, 0.0f, 1.0f)) * vec4(1, 0, 0, 0)));
+        glm::rotate(mat4(1.0f), glm::radians((float)transform.rotation - 45), glm::vec3(0.0f, 0.0f, 1.0f)) * vec4(1, 0, 0, 0)));
 
     shared_ptr<Bullet> bullet = make_shared<Bullet>(getPosition(), direction);
 
-    bullet->rotation = rotation + 45;
+    bullet->rotation = transform.rotation + 45;
 
-    bullet->physicsType = ACTIVE;
-    bullet->friction = 0;
+    bullet->data.physicsType = ACTIVE;
+    bullet->data.friction = 0;
 
-    bullet->boundingBox.width = 10;
-    bullet->boundingBox.height = 10;
+    bullet->collider.boundingBox.width = 10;
+    bullet->collider.boundingBox.height = 10;
 
     world->addObject(bullet.get());
 
@@ -84,7 +84,7 @@ Player::Player() : Entropy::GameObject() {
     GL_LOG("create ");
 
     
-    enemy_Reference->shader = make_shared<Shader>("shaders/Instance.vertexshader", "shaders/Instance.fragmentshader");
+    enemy_Reference->shader = make_shared<Entropy::Shader>("shaders/Instance.vertexshader", "shaders/Instance.fragmentshader");
 }
 
 Player::~Player() {}

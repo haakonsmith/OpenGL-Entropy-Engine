@@ -26,8 +26,6 @@ public:
 
     shared_ptr<Entropy::RenderInstance<10>> enemy_instance;
     
-    float data[3] = {10, 10, 0};
-
     vector<shared_ptr<Bullet>> bullets;
     vector<shared_ptr<Enemy>> enemies;
 
@@ -35,7 +33,7 @@ public:
 
     void customPrePhysicsStep(double deltaTime) override
     {
-        velocity = glm::normalize(velocity) * std::max(std::abs(velocity.x), std::abs(velocity.y));
+        data.velocity = glm::normalize(data.velocity) * std::max(std::abs(data.velocity.x), std::abs(data.velocity.y));
     }
 
     void shootBullet();
@@ -45,10 +43,10 @@ public:
         {
             auto enemy = make_shared<Enemy>();
             enemy->setPosition(position);
-            enemy->physicsType = ACTIVE;
-            enemy->friction = 1;
-            enemy->boundingBox.width = 10;
-            enemy->boundingBox.height = 10;
+            enemy->data.physicsType = ACTIVE;
+            enemy->data.friction = 1;
+            enemy->collider.boundingBox.width = 10;
+            enemy->collider.boundingBox.height = 10;
             world->addObject(enemy.get());
             enemies.push_back(enemy);
         }

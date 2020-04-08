@@ -1,45 +1,32 @@
-
+#include <future>
 #include "PhysicsEngine.hpp"
 namespace Entropy {
 
     void PhysicsEngine::checkForCollisions(PhysicsObject &obj, vec3 &prePos) {
         PROFILE_FUNCTION();
         for (auto _obj : objects) {
-            if (&obj != _obj) {
-                switch (obj.collisionType) {
-                    case AABBCOLLISION: {
-                        CollisionData collision;
+            if (&obj != _obj) { checkForCollision(obj, *_obj, prePos); }
+        }
+    }
 
-                        c2AABBtoAABBManifold(scaleForCollision(obj.getAABB()), scaleForCollision(_obj->getAABB()),
-                                             &collision.manifold);
+    void PhysicsEngine::checkForCollision(PhysicsObject &obj, PhysicsObject &_obj, vec3 const &objPrePos) {
+        PROFILE_FUNCTION();
+        CollisionData collision;
 
-                        collision.collision =
-                            c2AABBtoAABB(scaleForCollision(obj.getAABB()), scaleForCollision(_obj->getAABB()));
+        collision.collision = c2AABBtoAABB(scaleForCollision(obj.getAABB()), scaleForCollision(_obj.getAABB()));
 
-                        if (collision.collision) {
-                            for (int i = 0; i < collision.manifold.count; ++i) {
-                                auto p = scaleForRenderering(collision.manifold.contact_points[i]);
-                                auto n = (collision.manifold.n);
 
-                                if (debug) {
-                                    renderer.renderCircle(vec3(p.x, p.y, 0), 5.0f);
-                                    renderer.renderLine(vec3(p.x, p.y, 0), vec3(p.x + n.x, p.y + n.y, 0) * 10.0f);
-                                }
-                            }
-                            obj.collidedLastFrame = true;
-                            obj.collide(prePos, _obj, collision);
-                            _obj->collide(prePos, &obj, collision);
-                        } else {
-                            obj.collidedLastFrame = false;
-                        }
+        if (collision.collision) {
+            c2AABBtoAABBManifold(scaleForCollision(obj.getAABB()), scaleForCollision(_obj.getAABB()), &collision.manifold);
+            obj.collider.collidedLastFrame = true;
+            {
+                PROFILE_SCOPE("CollisionHandling");
+                obj.collide(objPrePos, &_obj, collision);
+                _obj.collide(objPrePos, &obj, collision);
 
-                        break;
-                    }
-
-                    default:
-                        break;
-                }
             }
+        } else {
+            obj.collider.collidedLastFrame = false;
         }
     }
 
@@ -47,24 +34,31 @@ namespace Entropy {
         PROFILE_FUNCTION();
         const int collisionPrecision = 1000;
 
-        for (auto obj : objects) {
-            if (obj->velocity != vec3(0) && obj->physicsType == ACTIVE) {
+        future<void> futures[objects.size()];
+
+        for (size_t i = 0; i < objects.size(); i++) {
+            auto obj = objects[i];
+            if (obj->data.velocity != vec3(0) && obj->data.physicsType == ACTIVE) {
                 vec3 prePos = obj->getPosition();
 
                 obj->customPrePhysicsStep((float)timeStep);
 
-                obj->velocity.x = floorf(obj->velocity.x * collisionPrecision) / collisionPrecision;
-                obj->velocity.y = floorf(obj->velocity.y * collisionPrecision) / collisionPrecision;
-                obj->velocity.z = floorf(obj->velocity.z * collisionPrecision) / collisionPrecision;
-                obj->velocity = obj->velocity - ((obj->velocity * (float)(obj->friction * 10)) * timeStep);
+                obj->data.velocity.x = floorf(obj->data.velocity.x * collisionPrecision) / collisionPrecision;
+                obj->data.velocity.y = floorf(obj->data.velocity.y * collisionPrecision) / collisionPrecision;
+                obj->data.velocity.z = floorf(obj->data.velocity.z * collisionPrecision) / collisionPrecision;
+                obj->data.velocity =
+                    obj->data.velocity - ((obj->data.velocity * (float)(obj->data.friction * 10)) * timeStep);
 
-                checkForCollisions(*obj, prePos);
+                
+                // futures[i] = std::async(std::launch::async, &PhysicsEngine::checkForCollisions, this, std::ref(*obj), std::ref(prePos));
+                checkForCollisions( std::ref(*obj), std::ref(prePos));
 
-                obj->setPosition(obj->position + (obj->velocity) * timeStep);
+                obj->setPosition(obj->data.position + (obj->data.velocity) * timeStep);
 
                 if (debug) {
-                    renderer.renderQuad(obj->getPosition(), obj->boundingBox.width, obj->boundingBox.height, true,
-                                        obj->collidedLastFrame ? vec3(0, 1, 0) : vec3(1, 0, 0));
+                    renderer.renderQuad(obj->getPosition(), obj->collider.boundingBox.width,
+                                        obj->collider.boundingBox.height, true,
+                                        obj->collider.collidedLastFrame ? vec3(0, 1, 0) : vec3(1, 0, 0));
                 }
             }
         }

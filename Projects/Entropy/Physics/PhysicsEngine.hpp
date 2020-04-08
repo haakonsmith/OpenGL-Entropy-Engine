@@ -30,6 +30,8 @@ namespace Entropy {
 
         void checkForCollisions(PhysicsObject &obj, vec3 &prePos);
 
+        void checkForCollision(PhysicsObject &obj, PhysicsObject &_obj, vec3 const& objPrePos);
+
         bool debug = false;
 
         /**
@@ -54,7 +56,7 @@ namespace Entropy {
         }
 
         inline c2AABB scaleForCollision(c2AABB const &aabb) {
-            PROFILE_FUNCTION();
+            PROFILE_SCOPE("AABB scaleForCollision");
             c2AABB sAABB;
             sAABB.min = scaleForCollision(aabb.min);
             sAABB.max = scaleForCollision(aabb.max);

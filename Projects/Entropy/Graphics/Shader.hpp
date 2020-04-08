@@ -17,79 +17,75 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-/*
- * Get File extension from File path or File Name
- */
-std::string getFileExtension(std::string filePath);
+namespace Entropy {
 
-GLuint LoadShaders(const char *vertex_file_path,
-                   const char *fragment_file_path);
+    /*
+     * Get File extension from File path or File Name
+     */
+    std::string getFileExtension(std::string filePath);
 
-class Shader {
-  private:
-    GLuint shaderID;
-    std::string fragmentShaderPath, vertexShaderPath;
+    GLuint LoadShaders(const char *vertex_file_path,
 
-    std::unordered_map<const GLchar *, GLuint> cache;
+                       const char *fragment_file_path);
+    class Shader {
+      private:
+        GLuint shaderID;
+        std::string fragmentShaderPath, vertexShaderPath;
 
-    inline void cachePing(const GLchar *name) {
-        if (cache.find(name) == cache.end())
-            cache[name] = glGetUniformLocation(shaderID, name);
-    }
+        std::unordered_map<const GLchar *, GLuint> cache;
 
-    inline void checkExtensions(const std::string &vertexShader,
-                                const std::string &fragmentShader) {
-        if (getFileExtension(fragmentShader) != fragmentShaderExtension)
-            std::cerr << "!! Warning !! Unkown fragment shader extension."
-                      << std::endl;
+        inline void cachePing(const GLchar *name) {
+            if (cache.find(name) == cache.end()) cache[name] = glGetUniformLocation(shaderID, name);
+        }
 
-        if (getFileExtension(vertexShader) != vertexShaderExtension)
-            std::cerr << "!! Warning !! Unkown vertex shader extension."
-                      << std::endl;
-    }
+        inline void checkExtensions(const std::string &vertexShader, const std::string &fragmentShader) {
+            if (getFileExtension(fragmentShader) != fragmentShaderExtension)
+                std::cerr << "!! Warning !! Unkown fragment shader extension." << std::endl;
 
-  public:
-    bool initialised = false;
-    static std::string fragmentShaderExtension, vertexShaderExtension;
+            if (getFileExtension(vertexShader) != vertexShaderExtension)
+                std::cerr << "!! Warning !! Unkown vertex shader extension." << std::endl;
+        }
 
-    Shader() : initialised(true) {
-        shaderID = LoadShaders("shaders/SimpleVertexShader.vertexshader",
-                               "shaders/SimpleFragmentShader.fragmentshader");
-    }
+      public:
+        bool initialised = false;
+        static std::string fragmentShaderExtension, vertexShaderExtension;
 
-    Shader(const std::string &vertexShader, const std::string &fragmentShader)
-        : initialised(true),
-          fragmentShaderPath(fragmentShader),
-          vertexShaderPath(vertexShader) {
-        shaderID =
-            LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
+        Shader() : initialised(true) {
+            shaderID =
+                LoadShaders("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader");
+        }
 
-        checkExtensions(vertexShader, fragmentShader);
-    }
+        Shader(const std::string &vertexShader, const std::string &fragmentShader)
+            : initialised(true), fragmentShaderPath(fragmentShader), vertexShaderPath(vertexShader) {
+            shaderID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
 
-    ~Shader() { glDeleteProgram(shaderID); }
+            checkExtensions(vertexShader, fragmentShader);
+        }
 
-    inline void bind() {
-        if (initialised != true)
-            throw std::runtime_error("Cannot bind uninitialised shader.");
-        glUseProgram(shaderID);
-    }
+        ~Shader() { glDeleteProgram(shaderID); }
 
-    inline void uniformMatrix4fv(const GLchar *name, glm::mat4 matrix) {
-        cachePing(name);
+        inline void bind() {
+            if (initialised != true) throw std::runtime_error("Cannot bind uninitialised shader.");
+            glUseProgram(shaderID);
+        }
 
-        glUniformMatrix4fv(cache[name], 1, GL_FALSE, glm::value_ptr(matrix));
-    }
+        inline void uniformMatrix4fv(const GLchar *name, glm::mat4 matrix) {
+            cachePing(name);
 
-    inline void uniform3f(const GLchar *name, float a, float b, float c) {
-        cachePing(name);
+            glUniformMatrix4fv(cache[name], 1, GL_FALSE, glm::value_ptr(matrix));
+        }
 
-        glUniform3f(cache[name], a, b, c);
-    }
+        inline void uniform3f(const GLchar *name, float a, float b, float c) {
+            cachePing(name);
 
-    inline void uniform1i(const GLchar *name, int a) {
-        cachePing(name);
+            glUniform3f(cache[name], a, b, c);
+        }
 
-        glUniform1i(cache[name], a);
-    }
-};
+        inline void uniform1i(const GLchar *name, int a) {
+            cachePing(name);
+
+            glUniform1i(cache[name], a);
+        }
+    };
+
+}  // namespace Entropy
