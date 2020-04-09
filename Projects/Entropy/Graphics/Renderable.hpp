@@ -12,6 +12,7 @@
 #include "Shapes/Shape.hpp"
 #include "Vertex.hpp"
 #include "glm/glm.hpp"
+#include "Texture.hpp"
 
 #include "../Components/Transform.hpp"
 
@@ -26,17 +27,15 @@ namespace Entropy {
 
       protected:
         GLuint vertexBufferID = 0;
-        GLuint TextureID = 0;
-
       public:
 
         bool castsShadow = true;
         bool cleanVBO = true;
 
         string name;
-        shared_ptr<Shader> shader;
+        Ref<Shader> shader;
 
-        GLuint texture;
+        Texture texture;
 
         Transform transform;
 
@@ -53,8 +52,9 @@ namespace Entropy {
         
         inline std::vector<Vertex> getVertices() {return Vertices;}
 
-        void setTexture(GLuint tex) {
-            texture = tex;
+        void setTexture(std::string path) {
+            texture = Texture(path);
+            GL_LOG("Set Texture");
             TextureINIT = true;
         }
 
@@ -83,7 +83,7 @@ namespace Entropy {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             if (cleanVBO) glDeleteBuffers(1, &vertexBufferID);
             // glDeleteBuffers(1, &UVBufferID);
-            glDeleteTextures(1, &texture);
+            // glDeleteTextures(1, &texture);
         }
     };
 

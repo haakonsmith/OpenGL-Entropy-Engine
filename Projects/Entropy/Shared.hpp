@@ -11,7 +11,7 @@
 
 #define NDEBUG
 #define PROFILE
-#define SUPRESS
+#define SUPPRESS
 
 #ifndef COORDINATES
 #define COORDINATES

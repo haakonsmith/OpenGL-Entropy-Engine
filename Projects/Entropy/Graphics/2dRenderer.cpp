@@ -1,6 +1,5 @@
 #include "2dRenderer.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
 namespace Entropy {
@@ -74,7 +73,7 @@ namespace Entropy {
 
         if (!_renderable->vertexBufferINIT) genVertexBuffer(_renderable);
 
-        if (!_renderable->TextureINIT) _renderable->texture = loadTexture("img_test.png");
+        if (!_renderable->TextureINIT) _renderable->setTexture("bullet.png");
 
         if (_renderable->shader == nullptr) _renderable->shader = program;
         GL_LOG("finish buffer ");
@@ -196,8 +195,9 @@ namespace Entropy {
         _renderable->shader->uniformMatrix4fv("MVP", getViewProjectionMatrix() * _renderable->transform.modelMatrix);
 
         // Bind our texture in Texture Unit 0
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _renderable->texture);
+        // glActiveTexture(GL_TEXTURE0);
+        // glBindTexture(GL_TEXTURE_2D, _renderable->texture);
+        _renderable->texture.bind();
         // Set our "myTextureSampler" sampler to use Texture Unit 0
         _renderable->shader->uniform1i("myTextureSampler", 0);
 

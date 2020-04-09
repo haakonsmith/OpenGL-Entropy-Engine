@@ -14,10 +14,11 @@ namespace Entropy {
         Instance.Instanced->shader->uniformMatrix4fv("MVP", getViewProjectionMatrix() * Instance.Instanced->transform.modelMatrix);
         GL_LOG("bind shader ");
 
-        glActiveTexture(GL_TEXTURE0);
-        GL_LOG("Active Texture");
-        glBindTexture(GL_TEXTURE_2D, Instance.Instanced->texture);
-        GL_LOG("Bind Texture");
+        // glActiveTexture(GL_TEXTURE0);
+        // GL_LOG("Active Texture");
+        // glBindTexture(GL_TEXTURE_2D, Instance.Instanced->texture);
+        // GL_LOG("Bind Texture");
+        Instance.Instanced->texture.bind();
 
         // Set our "myTextureSampler" sampler to use Texture Unit 0
         Instance.Instanced->shader->uniform1i("myTextureSampler", 0);

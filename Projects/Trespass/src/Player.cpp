@@ -43,10 +43,10 @@ void Player::shootBullet() {
     if (bullet_Reference->cleanVBO) {
         renderer->buffer(bullet_Reference.get());
         bullet_Reference->cleanVBO = false;
-        bullet_Reference->setTexture(renderer->loadTexture("bullet.png"));
+        bullet_Reference->setTexture(("bullet.png"));
         bullet_Reference->setScale(vec3(10, 12, 0));
 
-        enemy_Reference->setTexture(renderer->loadTexture("img_test.png"));
+        enemy_Reference->setTexture(("img_test.png"));
         renderer->buffer(enemy_Reference.get());
         enemy_Reference->cleanVBO = false;
         enemy_Reference->setPosition(vec3(320, 240, 0));
