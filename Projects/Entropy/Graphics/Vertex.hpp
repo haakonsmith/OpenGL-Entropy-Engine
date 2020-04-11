@@ -5,7 +5,9 @@
 
 namespace Entropy {
 
-    struct Vertex {
+    typedef struct Vertex {
+        static void assertLayout();
+
         union {
             struct {
                 float x, y, z;
@@ -33,5 +35,5 @@ namespace Entropy {
         // clang-format on
 
         operator Vertex2D() { return Vertex2D(x, y); }
-    };
+    } Vertex;
 }  // namespace Entropy

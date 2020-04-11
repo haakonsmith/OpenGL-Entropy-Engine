@@ -38,8 +38,6 @@
 namespace Entropy {
     class m_2dRenderer : public LightRendererAttachment {
       private:
-        unsigned int SCREEN_WIDTH, SCREEN_HEIGHT;
-
         bool debugOutline = false, debugCenter = false;
 
         mat4 viewMatrix, projectionMatrix;
@@ -99,7 +97,7 @@ namespace Entropy {
             glBindTexture(GL_TEXTURE_2D, frameBuffers[name].Texture);
 
             // Give an empty image to OpenGL ( the last "0" )
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, screen.sizeX*2, screen.sizeY*2, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
             // Poor filtering. Needed !
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -114,21 +112,23 @@ namespace Entropy {
 
             // Always check that our framebuffer is ok
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-                throw "Failed to create frame buffer";
+                throw std::runtime_error("Failed to create frame buffer");
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
         void bindRenderTarget(string name) {
-            glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[name].FrameBuffer);
-
             // Render to our framebuffer
-            glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[name].FrameBuffer);
-            glViewport(0, 0, SCREEN_WIDTH,
-                       SCREEN_HEIGHT);  // Render on the whole framebuffer,
-                                        // complete from the lower left corner
-                                        // to the upper right
+            glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.at(name).FrameBuffer);
+            glViewport(0, 0, screen.sizeX*2, screen.sizeY*2);  // Render on the whole framebuffer,
+                                                                   // complete from the lower left corner
+                                                                   // to the upper right
         };
+
+        void bindRenderTexture(string name) {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, frameBuffers.at(name).Texture);
+        }
 
         /**
          * C is size of data

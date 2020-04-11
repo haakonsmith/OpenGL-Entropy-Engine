@@ -2,6 +2,7 @@
 
 #include <future>
 #include <vector>
+#include <string>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "../Shared.hpp"
@@ -150,8 +151,8 @@ namespace Entropy {
             auto d1 = x1;
             auto d2 = x2;
             
-            d1.xy = x1.xy + normalize(norm(vec2(origin), x1.xy)) * 600.0f;
-            d2.xy = x2.xy + normalize(norm(vec2(origin), x2.xy)) * 600.0f;
+            d1.xy = x1.xy + normalize(norm(vec2(origin), x1.xy)) * 2600.0f;
+            d2.xy = x2.xy + normalize(norm(vec2(origin), x2.xy)) * 2600.0f;
 
             {
                 PROFILE_SCOPE("assembleMesh");
@@ -180,13 +181,23 @@ namespace Entropy {
         std::vector<Renderable *> renderables;
         std::vector<Light *> lights;
         Ref<Shader> shadowShader;
+        Ref<Shader> finalShader;
         Ref<Shader> lightShader;
+
+        virtual void createRenderTarget(string name) = 0;
+
+        virtual void bindRenderTarget(string name) = 0;
+        virtual void bindRenderTexture(string name) = 0;
 
         uint32_t lightVertexCount = 64;
         glm::vec3 pos = glm::vec3(320, 240, 0);
 
+        bool first = true;
+
         std::vector<Vertex> getShadowMesh() {
             PROFILE_FUNCTION();
+
+            
 
             std::vector<Vertex> shadowMesh;
 
@@ -216,6 +227,14 @@ namespace Entropy {
 
         void renderAntiShadows() {
             PROFILE_FUNCTION();
+
+            if (first) {
+                createRenderTarget(std::string("name"));
+                first = false;
+            }
+
+            bindRenderTarget("name");
+            glClear(GL_COLOR_BUFFER_BIT);
 
             auto lightMesh = getShadowMesh();
             GL_LOG("Atrib pointer");
@@ -253,7 +272,7 @@ namespace Entropy {
             lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
             GL_LOG("Atrib pointer");
 
-            glBlendFunc(GL_ONE_MINUS_SRC_COLOR, GL_SRC_ALPHA);
+            glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA);
             glBlendEquation(GL_FUNC_ADD);
 
             for (auto light : lights) {
@@ -302,18 +321,64 @@ namespace Entropy {
             );
             GL_LOG("add buffer data ");
 
-            glBlendFunc(GL_DST_COLOR, GL_DST_COLOR);
+            glBlendFunc(GL_DST_COLOR, GL_DST_ALPHA);
             glBlendEquation(GL_FUNC_SUBTRACT);
             glDrawArrays(GL_TRIANGLES, 0, lightMesh.size());
 
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glBlendEquation(GL_FUNC_ADD);
+          
 
             GL_LOG("draw arrays ");
 
+            
+            GL_LOG("Render");
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+             glViewport(0, 0, 640*2, 480*2);
+            GL_LOG("Atrib pointer");
+
+            finalShader->bind();
+            GL_LOG("Atrib pointer");
+
+            lightSquareBuffer->bind();
+            GL_LOG("Atrib pointer");
+            finalShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
+            GL_LOG("Atrib pointer");
+            finalShader->uniform1i("texSampler", 0);
+
+            bindRenderTexture("name");
+            
+
+            glVertexAttribPointer(0,  // attribute 0. No particular reason for 0,
+                                      // but must match the layout in the shader.
+                                  3,               // size
+                                  GL_FLOAT,        // type
+                                  GL_FALSE,        // normalized?
+                                  sizeof(Vertex),  // stride
+                                  (void *)0        // array buffer offset
+            );
+
+            GL_LOG("Atrib pointer");
+            // 2nd attribute buffer : UVs
+            GL_LOG("draw arrays ");
+            glVertexAttribPointer(1,  // attribute. No particular reason for 1, but
+                                      // must match the layout in the shader.
+                                  2,               // size : U+V => 2
+                                  GL_FLOAT,        // type
+                                  GL_FALSE,        // normalized?
+                                  sizeof(Vertex),  // stride
+                                  (void *)12       // array buffer offset
+            );
+            GL_LOG("add buffer data ");
+            // glBlendFunc(GL_DST_COLOR, GL_ZERO);
+            // glBlendEquation(GL_MIN);
+            glBlendFunc(GL_DST_COLOR, GL_SRC_ALPHA);
+            glBlendEquation(GL_FUNC_ADD);
+            // glFlush();
+            glDrawArrays(GL_TRIANGLES, 0, squareVerts.size());
+
             glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
-            GL_LOG("Render");
+
+
         }
 
         LightRendererAttachment() {
@@ -334,6 +399,9 @@ namespace Entropy {
 
             lightShader = std::make_shared<Shader>("shaders/Builtin/Lighting/mesh.vertexshader",
                                                    "shaders/Builtin/Lighting/light.fragmentshader");
+
+            finalShader = std::make_shared<Shader>("shaders/Builtin/Lighting/mesh.vertexshader",
+                                                   "shaders/Builtin/Lighting/final.fragmentshader");
         }
         ~LightRendererAttachment() {}
     };

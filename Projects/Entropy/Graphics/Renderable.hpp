@@ -27,6 +27,7 @@ namespace Entropy {
 
       protected:
         GLuint vertexBufferID = 0;
+        GLuint vao = 0;
       public:
 
         bool castsShadow = true;

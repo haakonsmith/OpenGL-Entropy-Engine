@@ -32,13 +32,13 @@ struct BufferObject {
     }
 
     ~BufferObject() {
-        unBind();
+        unbind();
         release();
     }
 
     inline void bind() const { glBindBuffer(T, bufferObjectID); }
 
-    inline void unBind() const { glBindBuffer(T, 0); }
+    inline void unbind() const { glBindBuffer(T, 0); }
 
     inline void subBuffer(unsigned int offset, uint32_t size, const void *data) {
         bind();
@@ -60,5 +60,6 @@ struct BufferObject {
             // obj_ is now 0.
             std::swap(bufferObjectID, other.bufferObjectID);
         }
+        return *this;
     }
 };

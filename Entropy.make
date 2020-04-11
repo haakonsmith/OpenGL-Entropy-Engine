@@ -78,6 +78,7 @@ OBJECTS += $(OBJDIR)/Profiler.o
 OBJECTS += $(OBJDIR)/Screen.o
 OBJECTS += $(OBJDIR)/Shader.o
 OBJECTS += $(OBJDIR)/Texture.o
+OBJECTS += $(OBJDIR)/Vertex.o
 OBJECTS += $(OBJDIR)/cute_c2.o
 OBJECTS += $(OBJDIR)/stb_image.o
 
@@ -147,16 +148,19 @@ $(OBJDIR)/Application.o: Projects/Entropy/Application.cpp
 $(OBJDIR)/GameObject.o: Projects/Entropy/Game/GameObject.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/2dRenderer.o: Projects/Entropy/Graphics/2dRenderer.cpp
+$(OBJDIR)/2dRenderer.o: Projects/Entropy/Graphics/src/2dRenderer.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Shader.o: Projects/Entropy/Graphics/Shader.cpp
+$(OBJDIR)/Shader.o: Projects/Entropy/Graphics/src/Shader.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Texture.o: Projects/Entropy/Graphics/Texture.cpp
+$(OBJDIR)/Texture.o: Projects/Entropy/Graphics/src/Texture.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/stb_image.o: Projects/Entropy/Graphics/stb_image.cpp
+$(OBJDIR)/Vertex.o: Projects/Entropy/Graphics/src/Vertex.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/stb_image.o: Projects/Entropy/Graphics/src/stb_image.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/PhysicsEngine.o: Projects/Entropy/Physics/PhysicsEngine.cpp
