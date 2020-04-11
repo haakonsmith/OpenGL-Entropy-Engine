@@ -1,8 +1,8 @@
 #include <OpenGL/gl3.h>
 
 #include <future>
-#include <vector>
 #include <string>
+#include <vector>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "../Shared.hpp"
@@ -150,7 +150,7 @@ namespace Entropy {
 
             auto d1 = x1;
             auto d2 = x2;
-            
+
             d1.xy = x1.xy + normalize(norm(vec2(origin), x1.xy)) * 2600.0f;
             d2.xy = x2.xy + normalize(norm(vec2(origin), x2.xy)) * 2600.0f;
 
@@ -197,8 +197,6 @@ namespace Entropy {
         std::vector<Vertex> getShadowMesh() {
             PROFILE_FUNCTION();
 
-            
-
             std::vector<Vertex> shadowMesh;
 
             // std::vector<std::future<std::vector<Vertex>>> meshes;
@@ -215,7 +213,7 @@ namespace Entropy {
 
             for (auto light : lights) {
                 for (auto r : renderables) {
-                    auto m =(computeLineOfSightVertices(light, r));
+                    auto m = (computeLineOfSightVertices(light, r));
                     shadowMesh.insert(shadowMesh.end(), m.begin(), m.end());
                 }
             }
@@ -325,14 +323,11 @@ namespace Entropy {
             glBlendEquation(GL_FUNC_SUBTRACT);
             glDrawArrays(GL_TRIANGLES, 0, lightMesh.size());
 
-          
-
             GL_LOG("draw arrays ");
 
-            
             GL_LOG("Render");
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-             glViewport(0, 0, 640*2, 480*2);
+            glViewport(0, 0, 640 * 2, 480 * 2);
             GL_LOG("Atrib pointer");
 
             finalShader->bind();
@@ -345,28 +340,8 @@ namespace Entropy {
             finalShader->uniform1i("texSampler", 0);
 
             bindRenderTexture("name");
-            
 
-            glVertexAttribPointer(0,  // attribute 0. No particular reason for 0,
-                                      // but must match the layout in the shader.
-                                  3,               // size
-                                  GL_FLOAT,        // type
-                                  GL_FALSE,        // normalized?
-                                  sizeof(Vertex),  // stride
-                                  (void *)0        // array buffer offset
-            );
-
-            GL_LOG("Atrib pointer");
-            // 2nd attribute buffer : UVs
-            GL_LOG("draw arrays ");
-            glVertexAttribPointer(1,  // attribute. No particular reason for 1, but
-                                      // must match the layout in the shader.
-                                  2,               // size : U+V => 2
-                                  GL_FLOAT,        // type
-                                  GL_FALSE,        // normalized?
-                                  sizeof(Vertex),  // stride
-                                  (void *)12       // array buffer offset
-            );
+            Vertex::assertLayout();
             GL_LOG("add buffer data ");
             // glBlendFunc(GL_DST_COLOR, GL_ZERO);
             // glBlendEquation(GL_MIN);
@@ -377,8 +352,6 @@ namespace Entropy {
 
             glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
-
-
         }
 
         LightRendererAttachment() {

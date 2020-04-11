@@ -44,6 +44,7 @@ void Player::shootBullet() {
         renderer->buffer(bullet_Reference.get());
         bullet_Reference->cleanVBO = false;
         bullet_Reference->setTexture(("bullet.png"));
+        bullet_Reference->setPosition(vec3(320, 240, 0));
         bullet_Reference->setScale(vec3(10, 12, 0));
 
         enemy_Reference->setTexture(("img_test.png"));

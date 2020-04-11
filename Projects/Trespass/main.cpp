@@ -203,6 +203,7 @@ class Trespass : public Entropy::BaseApplication
 
             player->transform.compute();
             renderer->renderCircle(vec3(320,240,0), 10);
+            renderer->renderQuad(vec3(200,240,0), 10, 10);
 
 
 

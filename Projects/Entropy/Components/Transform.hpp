@@ -23,8 +23,6 @@ namespace Entropy {
         Transform() : rotation(0), scale(vec3(1)), Location(vec3(0)) {}
         
         inline void compute() {
-            PROFILE_FUNCTION();
-
             // Model matrix : an identity matrix (model will be at the origin)
             glm::mat4 model = glm::mat4(1.0f);
 
@@ -41,13 +39,13 @@ namespace Entropy {
         inline void setScale(float x, float y) { setScale(vec3(x, y, scale.z)); }
         inline void setScale(float x, float y, float z) { setScale(vec3(x, y, z)); }
         inline void setScale(const vec2 &v) { setScale(vec3(v, scale.z)); }
-        inline vec3 getScale() { return scale; }
+        inline vec3 getScale() const { return scale; }
 
-        inline float getRotation() { return rotation; }
+        inline float getRotation() const { return rotation; }
         inline void setRotation(float r) { rotation = r; }
 
         inline void setModelMatrix(mat4 m) { modelMatrix = m; }
-        inline mat4 getModelMatrix() { return modelMatrix; }
+        inline mat4 getModelMatrix() const { return modelMatrix; }
     };
 
 }  // namespace Entropy

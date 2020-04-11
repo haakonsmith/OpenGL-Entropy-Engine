@@ -5,16 +5,16 @@
 #include <string>
 #include <vector>
 
+#include "../Components/Transform.hpp"
 #include "../Mixins/Geometry.hpp"
 #include "../Mixins/Transform.hpp"
 #include "../Shared.hpp"
+#include "AtribLayout.hpp"
 #include "Shader.hpp"
 #include "Shapes/Shape.hpp"
+#include "Texture.hpp"
 #include "Vertex.hpp"
 #include "glm/glm.hpp"
-#include "Texture.hpp"
-
-#include "../Components/Transform.hpp"
 
 using namespace glm;
 using namespace std;
@@ -28,8 +28,8 @@ namespace Entropy {
       protected:
         GLuint vertexBufferID = 0;
         GLuint vao = 0;
-      public:
 
+      public:
         bool castsShadow = true;
         bool cleanVBO = true;
 
@@ -40,18 +40,20 @@ namespace Entropy {
 
         Transform transform;
 
-        inline vec3 getPosition() { return transform.position; }
+        VertexArray arrayBuffer;
+
+        inline vec3 getPosition() const { return transform.position; }
         inline void setPosition(vec3 const& v) { transform.position = v; }
         inline void setScale(vec3 const& v) { transform.scale = v; }
-        inline mat4 getModelMatrix() { return transform.modelMatrix; }
+        inline mat4 getModelMatrix() const { return transform.modelMatrix; }
 
         bool TextureINIT = false, UVBufferINIT = false, vertexBufferINIT = false;
 
         bool isLight = false;
 
         vector<struct Vertex> Vertices;
-        
-        inline std::vector<Vertex> getVertices() {return Vertices;}
+
+        inline std::vector<Vertex> getVertices() { return Vertices; }
 
         void setTexture(std::string path) {
             texture = Texture(path);
@@ -62,6 +64,7 @@ namespace Entropy {
         // create default Renderable
         Renderable()
             : transform(),
+              arrayBuffer(),
               Polygon2D(vector<Vertex2D>({Vertex2D(-1, -1), Vertex2D(1, -1), Vertex2D(1, 1)})) {
             name = "Renderable";
 
@@ -70,12 +73,12 @@ namespace Entropy {
             Vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1, 1));
         }
 
-        Renderable(Shape shape) : transform() {
+        Renderable(Shape shape) : arrayBuffer(), transform() {
             name = "Renderable";
             Vertices = shape.Vertices;
         }
 
-        Renderable(vector<Vertex> _vertices) : transform() {
+        Renderable(vector<Vertex> _vertices) : arrayBuffer(), transform() {
             name = "Renderable";
             Vertices = _vertices;
         }

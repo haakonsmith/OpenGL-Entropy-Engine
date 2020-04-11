@@ -40,14 +40,14 @@ namespace Entropy {
       private:
         bool debugOutline = false, debugCenter = false;
 
-        mat4 viewMatrix, projectionMatrix;
+        mat4 viewMatrix, projectionMatrix, viewProjectionMatrix;
 
         shared_ptr<Shader> program;
 
         Screen &screen;
 
         shared_ptr<Renderable> debugQuad;
-        GLuint VertexArrayID;
+        VertexArray vertexArray;
         GLuint programID;
         GLuint debugCenterShader;
         shared_ptr<Shader> debugShader;
@@ -75,7 +75,7 @@ namespace Entropy {
             return make_shared<RenderInstance<C>>(renderable);
         }
 
-        inline mat4 getViewProjectionMatrix() { return projectionMatrix * viewMatrix; }
+        inline mat4 getViewProjectionMatrix() { return viewProjectionMatrix; }
 
         map<string, RenderTarget> frameBuffers;
 

@@ -9,8 +9,7 @@ namespace Entropy {
         // created.
         buffer(_renderable);
 
-        if (_renderable->castsShadow)
-            renderables.push_back(_renderable);
+        if (_renderable->castsShadow) renderables.push_back(_renderable);
         objects.push_back(_renderable);
     }
 
@@ -31,8 +30,7 @@ namespace Entropy {
 
         GL_LOG("add renderable, gen buffer " << _renderable->vertexBufferID);
 
-        glGenVertexArrays(1, &_renderable->vao);
-        glBindVertexArray(_renderable->vao);
+        _renderable->arrayBuffer.bind();
 
         glBindBuffer(GL_ARRAY_BUFFER, _renderable->vertexBufferID);
 
@@ -42,14 +40,13 @@ namespace Entropy {
         GL_LOG("add buffer data ");
 
         Vertex::assertLayout();
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        _renderable->arrayBuffer.unbind();
+        GL_LOG("add buffer data ");
+        // glBindBuffer(GL_ARRAY_BUFFER, 0);
         // _renderable->vertexBufferID = (true);
     }
 
     void m_2dRenderer::buffer(Renderable *_renderable) {
-        // renderables don't come prepackaged with MVP, so it needs to be
-        // created
-
         _renderable->transform.compute();
 
         if (!_renderable->vertexBufferINIT) genVertexBuffer(_renderable);
@@ -65,7 +62,6 @@ namespace Entropy {
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     GLuint m_2dRenderer::loadTexture(std::string path) {
-        
         int width, height, channels;
         stbi_set_flip_vertically_on_load(true);
         unsigned char *image = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
@@ -169,71 +165,36 @@ namespace Entropy {
 
     void m_2dRenderer::render(Renderable *_renderable) {
         PROFILE_FUNCTION();
-        // glBindBuffer(GL_ARRAY_BUFFER, _renderable->vertexBufferID);
         _renderable->shader->bind();
-        GL_LOG("bind shader ");
 
-        _renderable->shader->uniformMatrix4fv("MVP", getViewProjectionMatrix() * _renderable->transform.modelMatrix);
+        _renderable->shader->uniformMatrix4fv("MVP", projectionMatrix * viewMatrix * _renderable->transform.modelMatrix);
 
-
-        
         // Bind texture in Texture Unit 0
         _renderable->texture.bind();
 
         // Set texture sampler to use Texture Unit 0
         _renderable->shader->uniform1i("myTextureSampler", 0);
+
+        _renderable->arrayBuffer.bind();
+
+        glDrawArrays(GL_TRIANGLES, 0, _renderable->Vertices.size());
         
-        glBindVertexArray(_renderable->vao);
-
-        GL_LOG("Render");
-        // Draw the triangle !
-        glDrawArrays(GL_TRIANGLES, 0,
-                     _renderable->Vertices.size());  // Starting from vertex 0; 3
-                                                     // Vertices total . 1 RightTriangle
-        // LOG(_renderable->Vertices.size());
-
+        vertexArray.bind();
     }
 
     void m_2dRenderer::renderLine(const vec3 &p1, const vec3 &p2) {
         PROFILE_FUNCTION();
+        vertexArray.bind();
         Vertex verts[] = {Vertex(screen.localSpace(p1)), Vertex(screen.localSpace(p2))};
 
         VertexBuffer vbo(0, sizeof(verts), verts, GL_STREAM_DRAW);
         debugLineShader->bind();
         vbo.bind();
 
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
+        Vertex::assertLayout();
 
-        glVertexAttribPointer(0,  // attribute 0. No particular reason for 0,
-                                  // but must match the layout in the shader.
-                              3,               // size
-                              GL_FLOAT,        // type
-                              GL_FALSE,        // normalized?
-                              sizeof(Vertex),  // stride
-                              (void *)0        // array buffer offset
-        );
-
-        GL_LOG("Atrib pointer");
-        // 2nd attribute buffer : UVs
+        glDrawArrays(GL_LINES, 0, 2);  // Starting from vertex 0; 3 Vertices total . 1 RightTriangle
         GL_LOG("draw arrays ");
-        glVertexAttribPointer(1,  // attribute. No particular reason for 1, but
-                                  // must match the layout in the shader.
-                              2,               // size : U+V => 2
-                              GL_FLOAT,        // type
-                              GL_FALSE,        // normalized?
-                              sizeof(Vertex),  // stride
-                              (void *)12       // array buffer offset
-        );
-        GL_LOG("add buffer data ");
-
-        glDrawArrays(GL_LINES, 0,
-                     2);  // Starting from vertex 0; 3 Vertices total . 1 RightTriangle
-        GL_LOG("draw arrays ");
-
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        GL_LOG("Render");
     }
 
     void m_2dRenderer::renderOutline(const Renderable &_renderable) {
@@ -243,41 +204,10 @@ namespace Entropy {
         debugShader->uniformMatrix4fv("MVP", getViewProjectionMatrix() * _renderable.transform.modelMatrix);
         debugShader->uniform3f("inColor", 1, 1, 0);
 
-        GL_LOG("bind uniform ");
-
-        glBindBuffer(GL_ARRAY_BUFFER, _renderable.vertexBufferID);
-
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-
-        glVertexAttribPointer(0,  // attribute 0. No particular reason for 0,
-                                  // but must match the layout in the shader.
-                              3,               // size
-                              GL_FLOAT,        // type
-                              GL_FALSE,        // normalized?
-                              sizeof(Vertex),  // stride
-                              (void *)0        // array buffer offset
-        );
-
-        GL_LOG("Atrib pointer");
-        // 2nd attribute buffer : UVs
-        GL_LOG("draw arrays ");
-        glVertexAttribPointer(1,  // attribute. No particular reason for 1, but
-                                  // must match the layout in the shader.
-                              2,               // size : U+V => 2
-                              GL_FLOAT,        // type
-                              GL_FALSE,        // normalized?
-                              sizeof(Vertex),  // stride
-                              (void *)12       // array buffer offset
-        );
+        _renderable.arrayBuffer.bind();
 
         glDrawArrays(GL_LINE_LOOP, 0,
                      _renderable.Vertices.size());  // Starting from vertex 0; 3 Vertices
-                                                    // total . 1 RightTriangle
-        GL_LOG("draw arrays ");
-
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
 
         GL_LOG("Render");
     }
@@ -286,7 +216,8 @@ namespace Entropy {
 
     void m_2dRenderer::renderQuad(vec3 position, float width, float height, bool hollow, vec3 colour) {
         PROFILE_FUNCTION();
-        mat4 MVP = projectionMatrix * viewMatrix *
+
+        mat4 MVP = getViewProjectionMatrix() *
                    (glm::translate(mat4(1.0f), (position)) * glm::scale(mat4(1.0f), vec3(width, height, 1)));
 
         debugShader->bind();
@@ -294,36 +225,9 @@ namespace Entropy {
         debugShader->uniformMatrix4fv("MVP", MVP);
         debugShader->uniform3f("inColor", colour.x, colour.y, colour.z);
 
-        glBindBuffer(GL_ARRAY_BUFFER, debugQuad->vertexBufferID);
-
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-
-        glVertexAttribPointer(0,  // attribute 0. No particular reason for 0,
-                                  // but must match the layout in the shader.
-                              3,               // count
-                              GL_FLOAT,        // type
-                              GL_FALSE,        // normalized?
-                              sizeof(Vertex),  // stride
-                              (void *)0        // array buffer offset
-        );
-
-        GL_LOG("Atrib pointer");
-        // 2nd attribute buffer : UVs
-        GL_LOG("draw arrays ");
-        glVertexAttribPointer(1,  // attribute. No particular reason for 1, but
-                                  // must match the layout in the shader.
-                              2,               // size : U+V => 2
-                              GL_FLOAT,        // type
-                              GL_FALSE,        // normalized?
-                              sizeof(Vertex),  // stride
-                              (void *)12       // array buffer offset
-        );
+        debugQuad->arrayBuffer.bind();
 
         glDrawArrays(hollow ? GL_LINE_LOOP : GL_TRIANGLES, 0, debugQuad->Vertices.size());
-
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
     }
 
     void m_2dRenderer::renderCircle(vec3 position, float radius, bool hollow) {
@@ -332,41 +236,15 @@ namespace Entropy {
 
         position.z += 1;
 
-        // mat4 MVP = projectionMatrix * viewMatrix * (translate(mat4(1.0f), position) * scale(mat4(1.0f), vec3(radius)));
-        mat4 MVP = projectionMatrix * viewMatrix * (translate(mat4(1.0f), position) * scale(mat4(1.0f), vec3(radius)));
+        mat4 MVP = getViewProjectionMatrix() * (translate(mat4(1.0f), position) * scale(mat4(1.0f), vec3(radius)));
 
         builtinCircleShader->uniformMatrix4fv("MVP", MVP);
         builtinCircleShader->uniform1i("hollow", hollow);
 
-        // 1st attribute buffer : vertices
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-
-        glBindBuffer(GL_ARRAY_BUFFER, debugQuad->vertexBufferID);
-
-        glVertexAttribPointer(0,  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-                              3,  // size
-                              GL_FLOAT,        // type
-                              GL_FALSE,        // normalized?
-                              sizeof(Vertex),  // stride
-                              (void *)0        // array buffer offset
-        );
-        GL_LOG("Atrib pointer");
-
-        glVertexAttribPointer(1,  // attribute. No particular reason for 1, but must match the layout in the shader.
-                              2,  // size : U+V => 2
-                              GL_FLOAT,        // type
-                              GL_FALSE,        // normalized?
-                              sizeof(Vertex),  // stride
-                              (void *)12       // array buffer offset
-        );
-
-        GL_LOG("draw arrays ");
+        debugQuad->arrayBuffer.bind();
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-
+        vertexArray.bind();
         GL_LOG("Render");
     }
 
@@ -392,8 +270,9 @@ namespace Entropy {
                                            0)  // Head is up (set to 0,-1,0 to look upside-down)
         );
 
-        glGenVertexArrays(1, &VertexArrayID);
-        glBindVertexArray(VertexArrayID);
+        viewProjectionMatrix = projectionMatrix * viewMatrix;
+
+        vertexArray.bind();
         GL_LOG("bind vertex array");
 
         debugQuad = make_shared<Renderable>(Rectangle());
@@ -425,7 +304,6 @@ namespace Entropy {
 
         GLfloat lineWidthRange[2] = {0.0f, 0.0f};
         glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, lineWidthRange);
-        LOG(lineWidthRange[1]);
 
         LOG("!!! HARDWARE INFO !!!");
         LOG("Min line width: " << lineWidthRange[0]);
@@ -437,7 +315,6 @@ namespace Entropy {
         // glDeleteProgram(debugLineShaderID);
         // glDeleteProgram(debugShaderID);
         glDeleteProgram(debugCenterShader);
-        glDeleteVertexArrays(1, &VertexArrayID);
 
         // for (auto v : objects)
         //   if (!dynamic_cast<Renderable>(v))

@@ -64,7 +64,7 @@ namespace Entropy {
 
         ~Shader() { glDeleteProgram(shaderID); }
 
-        inline void bind() {
+        inline void bind() const {
             if (initialised != true) throw std::runtime_error("Cannot bind uninitialised shader.");
             glUseProgram(shaderID);
         }
