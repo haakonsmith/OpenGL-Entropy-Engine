@@ -1,13 +1,1 @@
-{
-    "traceEvents": [
-    {
-    "cat": "function",
-    "dur": "10",
-    "name": "function",
-    "ph": "X",
-    "pid": "0",
-    "tid": "0",
-    "ts": "0"
-    },
-    ]
-}
+{"traceEvents": [{"cat": "function","dur": "7","name": "compute","ph": "X","pid": "0","tid": "0x11ab1c5c0","ts": "227316757592"}],"displayTimeUnit": "ns"}

@@ -71,13 +71,13 @@ namespace Entropy {
                 if (profileCount++ > 0) profileFile << ",";
 
                 profileFile << "{";
-                profileFile << "\"cat\": \"function\",";
-                profileFile << "\"dur\": \"" << (profile.end - profile.start) << "\",";
-                profileFile << "\"name\": \"" << profile.title << "\",";
-                profileFile << "\"ph\": \"X\",";
-                profileFile << "\"pid\": \"0\",";
-                profileFile << "\"tid\": \"" << std::this_thread::get_id() << "\",";
-                profileFile << "\"ts\": \"" << profile.start << "\"";
+                profileFile << "\"cat\":\"function\",";
+                profileFile << "\"dur\":\"" << (profile.end - profile.start) << "\",";
+                profileFile << "\"name\":\"" << profile.title << "\",";
+                profileFile << "\"ph\":\"X\",";
+                profileFile << "\"pid\":\"0\",";
+                profileFile << "\"tid\":\"" << std::this_thread::get_id() << "\",";
+                profileFile << "\"ts\":\"" << profile.start << "\"";
                 profileFile << "}";
 
                 profileFile.flush();
@@ -91,15 +91,15 @@ namespace Entropy {
                 profileFile = ofstream("Tracing/main.json");
 
                 profileFile << "{";
-                profileFile << "\"traceEvents\": [";
+                profileFile << "\"traceEvents\":[";
 
                 profileFile.flush();
             }
             ~Profiler() {
 
                 std::cout << "Done profiling" << std::endl;
-                profileFile << "\t],";
-                profileFile << "\"displayTimeUnit\": \"ns\"";
+                profileFile << "],";
+                profileFile << "\"displayTimeUnit\":\"ns\"";
                 profileFile << "}";
 
                 profileFile.flush();
