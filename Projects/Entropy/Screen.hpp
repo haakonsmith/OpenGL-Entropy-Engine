@@ -18,7 +18,7 @@ namespace Entropy {
             struct {
                 unsigned int sizeX, sizeY;
             };
-            glm::vec2 size;
+            glm::uvec2 size;
         };
 
         ~Screen() {}
@@ -29,6 +29,9 @@ namespace Entropy {
         glm::vec3 localSpace(glm::vec3 worldSpaceCoords) {
             return glm::vec3(localSpace(glm::vec2(worldSpaceCoords)), worldSpaceCoords.z);
         }
+
+        glm::vec2 screenScale(const glm::vec2& coords) { return coords / glm::vec2(size); }
+
         glm::vec2 localSpace(glm::vec2 worldSpaceCoords) {
             worldSpaceCoords.x = ((worldSpaceCoords.x * 2) / sizeX) - 1;
             worldSpaceCoords.y = ((worldSpaceCoords.y * 2) / sizeY) - 1;

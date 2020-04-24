@@ -2,9 +2,12 @@
  * Copyright 2020, Haakon Smith.
  */
 
-struct RenderTarget
-{
-    GLuint FrameBuffer;
-    GLuint TextureID;
-    GLuint Texture;
-};
+#include "Texture.hpp"
+
+namespace Entropy {
+
+    struct RenderTarget {
+        GLuint FrameBuffer;
+        Texture texture;
+    };
+}  // namespace Entropy

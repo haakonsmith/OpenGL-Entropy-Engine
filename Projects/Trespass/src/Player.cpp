@@ -79,6 +79,7 @@ Player::Player() : Entropy::GameObject() {
 
     bullet_Reference = make_shared<Renderable>(Entropy::Rectangle());
     enemy_Reference = make_shared<Renderable>(Entropy::Rectangle());
+    setTexture("img_test.png");
 
     enemy_instance = renderer->getRenderInstance<10>(enemy_Reference);
 

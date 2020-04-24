@@ -125,10 +125,10 @@ namespace Entropy {
             return vNormals;
         }
 
-        static std::vector<Vertex> computeLineOfSightVertices(Light *light, Renderable *r) {
+        std::vector<Vertex> computeLineOfSightVertices(Light *light, Renderable *r) {
+            PROFILE_FUNCTION();
             std::vector<Vertex> shadowMesh;
 
-            PROFILE_FUNCTION();
             auto verts = r->getVertices();
 
             for (size_t i = 0; i < verts.size(); i++) {
@@ -174,10 +174,238 @@ namespace Entropy {
                 shadowMesh.push_back(d2);
             }
 
+            // auto norm = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
+            // auto verts = r->getVertices();
+
+            // for (size_t i = 0; i < verts.size(); i++) {
+            //     PROFILE_SCOPE("ModelMatrixTransform");
+
+            //     verts[i].Position = glm::vec3(r->getModelMatrix() * glm::vec4(verts[i].Position, 1));
+            // }
+
+            // for (auto &vert : verts) {
+            //     c2Ray ray;
+
+            //     auto direction = normalize(norm(vec2(320, 240), vert.Position));
+
+            //     c2v vertPos = c2V(vert.Position.x, vert.Position.y);
+
+            //     ray.t = 200;
+            //     ray.p = c2V(320, 240);
+            //     ray.d = c2V(direction.x, direction.y);
+
+            //     auto dist = rayCollisionCheck(ray);
+
+            //     // LOG(ray.d.x);
+            //     // LOG(ray.d.y);
+
+            //     // LOG(ray.p.x);
+            //     // LOG(Vector2D(vert.Position).c2Vector.y);
+
+            //     // LOG(c2Sub(vertPos, ray.p).x);
+            //     // LOG(c2Sub(vertPos, ray.p).y);
+
+            //     // LOG(dist);
+
+            //     auto point = vec3((vec2(320, 240) + (vec2(ray.d.x, ray.d.y) * dist)), 0);
+            //     renderLine(vec3(320, 240, 0), point);
+
+            //     shadowMesh.push_back(Vertex(point));
+            // }
+
             return shadowMesh;
         }
 
       public:
+        float rayCollisionCheck(c2Ray ray) {
+            std::vector<c2Poly> polys;
+
+            for (auto renderable : renderables) {
+                if (renderable->castsShadow) {
+                    c2Poly poly;
+
+                    poly.count = renderable->Vertices.size();
+
+                    std::transform(renderable->Vertices.begin(), renderable->Vertices.end(), std::begin(poly.verts),
+                                   [renderable](const Vertex2D &a) {
+                                       auto t =
+                                           renderable->transform.getModelMatrix() * vec4(a.position.glmVector, 0, 1);
+
+                                       return Vector2D(vec2(t)).c2Vector;
+                                   });
+
+                    c2MakePoly(&poly);
+
+                    polys.push_back(poly);
+                }
+            }
+
+            float dist = ray.t;
+
+            for (auto poly : polys) {
+                c2Raycast cast;
+
+                // LOG(poly.count);
+                // LOG(poly.verts[0].x);
+
+                if (c2RaytoPoly(ray, &poly, 0, &cast)) dist = std::min(dist, cast.t);
+            }
+
+            return dist;
+        }
+
+        void drawRayLines() {
+            for (auto renderable : renderables) { drawRayLine(renderable); }
+        }
+
+        void drawRayLine(Renderable *renderable) {
+            auto norm = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
+            auto verts = renderable->getVertices();
+
+            for (size_t i = 0; i < verts.size(); i++) {
+                PROFILE_SCOPE("ModelMatrixTransform");
+
+                verts[i].Position = glm::vec3(renderable->getModelMatrix() * glm::vec4(verts[i].Position, 1));
+            }
+
+            for (auto &vert : verts) {
+                c2Ray ray;
+
+                auto direction = normalize(norm(vec2(320, 240), vert.Position));
+
+                c2v vertPos = c2V(vert.Position.x, vert.Position.y);
+
+                ray.t = 200;
+                ray.p = c2V(320, 240);
+                ray.d = c2V(direction.x, direction.y);
+
+                auto dist = rayCollisionCheck(ray);
+
+                // LOG(ray.d.x);
+                // LOG(ray.d.y);
+
+                // LOG(ray.p.x);
+                // LOG(Vector2D(vert.Position).c2Vector.y);
+
+                // LOG(c2Sub(vertPos, ray.p).x);
+                // LOG(c2Sub(vertPos, ray.p).y);
+
+                // LOG(dist);
+
+                auto point = vec3((vec2(320, 240) + (vec2(ray.d.x, ray.d.y) * dist)), 0);
+                renderLine(vec3(320, 240, 0), point);
+            }
+        }
+
+        std::vector<Vertex> getLightMesh(Light *light) {
+            std::vector<Vertex> lightMesh;
+            auto norm = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
+  
+
+            for (auto r : renderables) {
+                auto verts = r->getVertices();
+
+                for (size_t i = 0; i < verts.size(); i++) {
+                    PROFILE_SCOPE("ModelMatrixTransform");
+
+                    verts[i].Position = glm::vec3(r->getModelMatrix() * glm::vec4(verts[i].Position, 1));
+                }
+                lightMesh.reserve(r->getVertices().size() * 2);
+
+                for (auto &vert : verts) {
+                    c2Ray ray;
+
+                    auto direction = normalize(norm(light->position, vert.Position));
+                    auto offset = rotate(direction, radians(90.0f)) / 100.0f;
+
+                    c2v vertPos = c2V(vert.Position.x, vert.Position.y);
+
+                    // ray.t = distance(light->position, vert.Position);
+                    ray.t = 1000;
+                    ray.p = c2V(light->position.x, light->position.y);
+                    ray.d = c2V(direction.x + offset.x, direction.y + offset.y);
+                    // ray.d = c2V(direction.x, direction.y);
+
+
+                    // LOG(ray.d.x);
+                    // LOG(ray.d.y);
+
+                    // LOG(ray.p.x);
+                    // LOG(Vector2D(vert.Position).c2Vector.y);
+
+                    // LOG(c2Sub(vertPos, ray.p).x);
+                    // LOG(c2Sub(vertPos, ray.p).y);
+
+                    // LOG(dist);
+
+                    auto dist = rayCollisionCheck(ray);
+                    auto point = vec3((vec2(light->position) + (vec2(ray.d.x, ray.d.y) * dist)), 0);
+                    // renderLine(light->position, point);
+
+                    lightMesh.push_back(Vertex(point));
+
+                    ray.d = c2V(direction.x - offset.x, direction.y - offset.y);
+                    dist = rayCollisionCheck(ray);
+                    point = vec3((vec2(light->position) + (vec2(ray.d.x, ray.d.y) * dist)), 0);
+                    // renderLine(light->position, point);
+
+                    lightMesh.push_back(Vertex(point));
+                }
+            }
+
+            std::array<Vertex, 4> customs = {
+                Vertex(vec3(0, 0, 0), vec2(0, 0)),
+                Vertex(vec3(640, 0, 0), vec2(1, 0)),
+                Vertex(vec3(640, 480, 0), vec2(1, 1)),
+                Vertex(vec3(0, 480, 0), vec2(0, 1))
+            };
+
+            for (auto &vert : customs) {
+                c2Ray ray;
+
+                auto direction = normalize(norm(light->position, vert.Position));
+                auto offset = rotate(direction, 90.0f) / 1000.0f;
+
+                c2v vertPos = c2V(vert.Position.x, vert.Position.y);
+
+                ray.t = 2000;
+                ray.p = c2V(light->position.x, light->position.y);
+                ray.d = c2V(direction.x + offset.x, direction.y + offset.y);
+
+                auto dist = rayCollisionCheck(ray);
+
+                // LOG(ray.d.x);
+                // LOG(ray.d.y);
+
+                // LOG(ray.p.x);
+                // LOG(Vector2D(vert.Position).c2Vector.y);
+
+                // LOG(c2Sub(vertPos, ray.p).x);
+                // LOG(c2Sub(vertPos, ray.p).y);
+
+                // LOG(dist);
+
+                auto point = vec3((vec2(light->position) + (vec2(ray.d.x, ray.d.y) * dist)), 0);
+                // renderLine(light->position, point);
+
+                lightMesh.push_back(Vertex(point));
+            }
+
+            std::sort(lightMesh.begin(), lightMesh.end(), [light](auto a, auto b) {
+                vec2 observer = vec2(light->position);
+                // return distance(a.xy, vec2(320,240)) * (a.x, a.y) < distance(b.xy, vec2(320,240)) * (b.x + b.y);
+                return atan2((a.x - observer.x), -(a.y - observer.y)) > atan2((b.x - observer.x), -(b.y - observer.y));
+            });
+
+            lightMesh.insert(lightMesh.begin(), lightMesh.back());
+            lightMesh.insert(lightMesh.begin(), Vertex(light->position, (light->position)));
+
+            // LOG(App::screen.size.x);
+            // LOG(lightMesh[0].u);
+
+            return lightMesh;
+        }
+
         std::vector<Renderable *> renderables;
         std::vector<Light *> lights;
         Ref<Shader> shadowShader;
@@ -352,6 +580,51 @@ namespace Entropy {
 
             glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
+
+            // drawRayLines();.
+        }
+
+        void renderLights() {
+            PROFILE_FUNCTION();
+
+            // if (first) {
+            //     createRenderTarget("lightMap");
+            //     first = false;
+            // }
+
+            // bindRenderTarget("lightMap");
+
+            antiShadowBuffer->bind();
+            GL_LOG("Atrib pointer");
+            // antiShadowBuffer->subBuffer(0, lightVertexCount * sizeof(Vertex), mesh.data());
+
+            Vertex::assertLayout();
+            GL_LOG("add buffer data ");
+
+            lightShader->bind();
+            GL_LOG("Atrib pointer");
+
+            lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
+            GL_LOG("Atrib pointer");
+
+            // glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA);
+            // glBlendEquation(GL_FUNC_ADD);
+
+            for (auto light : lights) {
+                auto mesh = getLightMesh(light);
+                // LOG(mesh.size());
+                antiShadowBuffer->subBuffer(0, lightVertexCount * sizeof(Vertex), mesh.data());
+                GL_LOG("Atrib pointer");
+
+                auto lp = App::screen.screenScale(light->position);
+
+                lightShader->uniform3f("light", lp.x, lp.y, 0);
+                GL_LOG("Atrib pointer");
+                glDrawArrays(GL_TRIANGLE_FAN, 0, mesh.size());
+            }
+
+            // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            // glViewport(0, 0, 640 * 2, 480 * 2);
         }
 
         LightRendererAttachment() {

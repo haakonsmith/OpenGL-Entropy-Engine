@@ -8,10 +8,10 @@ using std::cerr;
 using std::endl;
 
 namespace Entropy {
-    GLuint Texture::loadTexture(std::string path) {
+    Texture::Texture(std::string p) : path(p) {
         int width, height, channels;
         stbi_set_flip_vertically_on_load(true);
-        unsigned char *image = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+        unsigned char* image = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
 
         if (image == nullptr)  // Error check
         {
@@ -19,20 +19,30 @@ namespace Entropy {
         }
 
         // Create one OpenGL texture
-        GLuint textureID;
-        glGenTextures(1, &textureID);
+        obj_ = createBlank();
 
         // "Bind" the newly created texture : all future texture functions will
         // modify this texture
-        glBindTexture(GL_TEXTURE_2D, textureID);
+        bind();
+
+        setPoorFiltering();
 
         // Give the image to OpenGL
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        upload(width, height, image);
+    }
 
+    GLuint Texture::createBlank() {
+        GLuint textureID;
+        glGenTextures(1, &textureID);
+        return textureID;
+    }
+
+    void Texture::setPoorFiltering() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    }
 
-        // Return the ID of the texture we just created
-        return textureID;
+    void Texture::upload(int width, int height, const void* data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     }
 }  // namespace Entropy

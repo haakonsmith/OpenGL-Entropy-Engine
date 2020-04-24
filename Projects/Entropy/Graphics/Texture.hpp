@@ -23,8 +23,13 @@ namespace Entropy {
 
       public:
         static GLuint loadTexture(std::string path);
+        static GLuint createBlank();
+        static void setPoorFiltering();
+        inline void upload(int width, int height, const void *data);
+        inline GLuint getID() { return obj_; }
 
-        Texture(std::string p) : path(p) { obj_ = loadTexture(path); }
+        Texture(std::string p);
+        Texture(GLuint id) : obj_(id) {}
         Texture() {}
 
         inline void bind() {

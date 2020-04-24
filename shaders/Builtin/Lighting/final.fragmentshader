@@ -1,7 +1,7 @@
 #version 330 core
 
 // Interpolated values from the vertex shaders
-in vec2 UV;
+in vec3 UV;
 
 uniform vec3 light;
 
@@ -12,5 +12,5 @@ uniform sampler2D texSampler;
 
 void main()
 {
-	color = vec4(texture( texSampler, UV ).rgba);
+	color = vec4(texture( texSampler, UV.xy ).rgba);
 }

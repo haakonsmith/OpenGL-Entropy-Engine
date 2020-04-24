@@ -152,9 +152,19 @@ namespace Entropy {
 
     void m_2dRenderer::renderFrame() {
         PROFILE_FUNCTION();
+
+        // bindRenderTarget("scene");
+
         for (auto obj : objects) { render(obj); }
 
-        renderAntiShadows();
+        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // glViewport(0, 0, 640 * 2, 480 * 2);
+
+        // renderAntiShadows();
+        renderLights();
+
+        
+        // vertexArray.bind();
 
         glUseProgram(programID);
 
@@ -167,7 +177,8 @@ namespace Entropy {
         PROFILE_FUNCTION();
         _renderable->shader->bind();
 
-        _renderable->shader->uniformMatrix4fv("MVP", projectionMatrix * viewMatrix * _renderable->transform.modelMatrix);
+        _renderable->shader->uniformMatrix4fv("MVP",
+                                              projectionMatrix * viewMatrix * _renderable->transform.modelMatrix);
 
         // Bind texture in Texture Unit 0
         _renderable->texture.bind();
@@ -178,7 +189,7 @@ namespace Entropy {
         _renderable->arrayBuffer.bind();
 
         glDrawArrays(GL_TRIANGLES, 0, _renderable->Vertices.size());
-        
+
         vertexArray.bind();
     }
 
@@ -276,6 +287,8 @@ namespace Entropy {
         GL_LOG("bind vertex array");
 
         debugQuad = make_shared<Renderable>(Rectangle());
+
+        createRenderTarget("scene");
 
         buffer(debugQuad.get());
 

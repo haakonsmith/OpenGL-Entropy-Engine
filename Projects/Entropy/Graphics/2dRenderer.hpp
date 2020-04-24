@@ -89,22 +89,20 @@ namespace Entropy {
             glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[name].FrameBuffer);
 
             // The texture we're going to render to
-            frameBuffers[name].Texture = 0;
-            glGenTextures(1, &frameBuffers[name].Texture);
+            frameBuffers[name].texture = Texture(Texture::createBlank());
 
             // "Bind" the newly created texture : all future texture functions
             // will modify this texture
-            glBindTexture(GL_TEXTURE_2D, frameBuffers[name].Texture);
+            frameBuffers[name].texture.bind();
 
-            // Give an empty image to OpenGL ( the last "0" )
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, screen.sizeX*2, screen.sizeY*2, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+            // Give an empty image to OpenGL ( the last NULL )
+            frameBuffers[name].texture.upload(screen.sizeX, screen.sizeY, NULL);
 
             // Poor filtering. Needed !
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            frameBuffers[name].texture.setPoorFiltering();
 
             // Set "renderedTexture" as our colour attachement #0
-            glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, frameBuffers[name].Texture, 0);
+            glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, frameBuffers[name].texture.getID(), 0);
 
             // Set the list of draw buffers.
             GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
@@ -120,15 +118,17 @@ namespace Entropy {
         void bindRenderTarget(string name) {
             // Render to our framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.at(name).FrameBuffer);
-            glViewport(0, 0, screen.sizeX*2, screen.sizeY*2);  // Render on the whole framebuffer,
-                                                                   // complete from the lower left corner
-                                                                   // to the upper right
+            glViewport(0, 0, screen.sizeX, screen.sizeY);  // Render on the whole framebuffer,
+                                                           // complete from the lower left corner
+                                                           // to the upper right
         };
 
-        void bindRenderTexture(string name) {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, frameBuffers.at(name).Texture);
-        }
+        void unbindRenderTarget() {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glViewport(0, 0, 640 * 2, 480 * 2);
+        };
+
+        void bindRenderTexture(string name) { frameBuffers.at(name).texture.bind(); }
 
         /**
          * C is size of data
@@ -153,6 +153,7 @@ namespace Entropy {
 
         /**
          * Draw line between two world space points
+         * !!!Not state safe!!!
          */
         void renderLine(const vec3 &p1, const vec3 &p2);
 

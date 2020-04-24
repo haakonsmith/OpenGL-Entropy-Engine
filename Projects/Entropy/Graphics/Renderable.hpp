@@ -30,7 +30,7 @@ namespace Entropy {
         GLuint vao = 0;
 
       public:
-        bool castsShadow = true;
+        bool castsShadow = false;
         bool cleanVBO = true;
 
         string name;
@@ -53,7 +53,7 @@ namespace Entropy {
 
         vector<struct Vertex> Vertices;
 
-        inline std::vector<Vertex> getVertices() { return Vertices; }
+        inline std::vector<Vertex> getVertices() const { return Vertices; }
 
         void setTexture(std::string path) {
             texture = Texture(path);

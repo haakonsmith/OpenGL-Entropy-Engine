@@ -120,10 +120,11 @@ class Trespass : public Entropy::BaseApplication
 
             quad = make_shared<GameObject>(Rectangle()); 
 
-            quad->setPosition(vec3(320,280,0));
+            quad->setPosition(vec3(350,320,0));
 
             quad->collider.boundingBox.width = 10;
             quad->collider.boundingBox.height = 10;
+            quad->castsShadow = true;
 
             player->collider.boundingBox.width = 10;
             player->collider.boundingBox.height = 10;
@@ -133,9 +134,10 @@ class Trespass : public Entropy::BaseApplication
 
             light = shared_ptr<Light>(new Light());
 
-            light->position = vec3(320,240,0);
+            light->position = vec3(380,240,0);
 
             renderer->addLight(light.get());
+            player->castsShadow = true;
             // light->position = vec3(320,240,0);
 
             
@@ -205,6 +207,16 @@ class Trespass : public Entropy::BaseApplication
             renderer->renderCircle(vec3(320,240,0), 10);
             renderer->renderQuad(vec3(200,240,0), 10, 10);
 
+            c2Ray ray;
+
+            ray.t = 200;
+            ray.d = c2V(-0.5,-0.5);
+            ray.p = c2V(320,240);
+
+
+            auto dist = renderer->rayCollisionCheck(ray);
+
+
 
 
 
@@ -212,6 +224,7 @@ class Trespass : public Entropy::BaseApplication
 
             MouseYPos = (MouseYPos - 480) * -1;
 
+            renderer->renderLine(vec3(320,240,0), vec3((vec2(320, 240)+(vec2(ray.d.x, ray.d.y) * dist)), 0));
 
 
             renderer->renderFrame();
