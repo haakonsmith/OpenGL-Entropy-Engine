@@ -53,6 +53,7 @@ namespace Entropy {
         shared_ptr<Shader> debugShader;
         shared_ptr<Shader> instanceShader;
         shared_ptr<Shader> debugLineShader;
+        shared_ptr<Shader> mergeShader;
         shared_ptr<Shader> builtinCircleShader;
         std::vector<Renderable *> objects = std::vector<Renderable *>();
 
@@ -128,7 +129,10 @@ namespace Entropy {
             glViewport(0, 0, 640 * 2, 480 * 2);
         };
 
-        void bindRenderTexture(string name) { frameBuffers.at(name).texture.bind(); }
+        void bindRenderTexture(string name, GLenum slot) { 
+            frameBuffers.at(name).texture.textureSlot = slot;
+            frameBuffers.at(name).texture.bind();
+        }
 
         /**
          * C is size of data

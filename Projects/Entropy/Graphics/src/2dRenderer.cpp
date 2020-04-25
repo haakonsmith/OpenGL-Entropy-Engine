@@ -153,17 +153,44 @@ namespace Entropy {
     void m_2dRenderer::renderFrame() {
         PROFILE_FUNCTION();
 
-        // bindRenderTarget("scene");
+        bindRenderTarget("scene");
+        glClear(GL_COLOR_BUFFER_BIT);
 
         for (auto obj : objects) { render(obj); }
 
-        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        // glViewport(0, 0, 640 * 2, 480 * 2);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, 640 * 2, 480 * 2);
 
+        bindRenderTarget("light");
+        glClear(GL_COLOR_BUFFER_BIT);
         // renderAntiShadows();
         renderLights();
 
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, 640*4, 480 * 4);
+
+        mat4 MVP = getViewProjectionMatrix() *
+                   (glm::translate(mat4(1.0f), (vec3(320,240,0))) * glm::scale(mat4(1.0f), vec3(320, 240, 1)));
+
+        bindRenderTexture("scene", GL_TEXTURE0);
+        bindRenderTexture("light", GL_TEXTURE1);
+        GL_LOG("bind vertex array");
+
+        mergeShader->bind();
+        GL_LOG("bind vertex array");
+
+        mergeShader->uniformMatrix4fv("VP", MVP);
+        mergeShader->uniform1i("texSampler", 0);
+        mergeShader->uniform1i("texSampler1", 1);
+        // debugShader->uniform3f("inColor", colour.x, colour.y, colour.z);
+
+        debugQuad->arrayBuffer.bind();
+        GL_LOG("bind vertex array");
+
+        glDrawArrays(GL_TRIANGLES, 0, debugQuad->Vertices.size());
+        GL_LOG("bind vertex array");
         
+        glViewport(0, 0, 640 * 2, 480 * 2);
         // vertexArray.bind();
 
         glUseProgram(programID);
@@ -289,6 +316,7 @@ namespace Entropy {
         debugQuad = make_shared<Renderable>(Rectangle());
 
         createRenderTarget("scene");
+        createRenderTarget("light");
 
         buffer(debugQuad.get());
 
@@ -309,6 +337,9 @@ namespace Entropy {
 
         program = shared_ptr<Shader>(
             new Shader("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader"));
+        
+        mergeShader = shared_ptr<Shader>(
+            new Shader("shaders/Builtin/Lighting/mesh.vertexshader", "shaders/Builtin/Lighting/merge.fragmentshader"));
         // instanceShader = shared_ptr<Shader>(new
         // Shader("shaders/Instance.vertexshader",
         // "shaders/Instance.fragmentshader"));

@@ -300,7 +300,6 @@ namespace Entropy {
         std::vector<Vertex> getLightMesh(Light *light) {
             std::vector<Vertex> lightMesh;
             auto norm = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
-  
 
             for (auto r : renderables) {
                 auto verts = r->getVertices();
@@ -325,7 +324,6 @@ namespace Entropy {
                     ray.p = c2V(light->position.x, light->position.y);
                     ray.d = c2V(direction.x + offset.x, direction.y + offset.y);
                     // ray.d = c2V(direction.x, direction.y);
-
 
                     // LOG(ray.d.x);
                     // LOG(ray.d.y);
@@ -353,12 +351,9 @@ namespace Entropy {
                 }
             }
 
-            std::array<Vertex, 4> customs = {
-                Vertex(vec3(0, 0, 0), vec2(0, 0)),
-                Vertex(vec3(640, 0, 0), vec2(1, 0)),
-                Vertex(vec3(640, 480, 0), vec2(1, 1)),
-                Vertex(vec3(0, 480, 0), vec2(0, 1))
-            };
+            std::array<Vertex, 4> customs = {Vertex(vec3(0, 0, 0), vec2(0, 0)), Vertex(vec3(640, 0, 0), vec2(1, 0)),
+                                             Vertex(vec3(640, 480, 0), vec2(1, 1)),
+                                             Vertex(vec3(0, 480, 0), vec2(0, 1))};
 
             for (auto &vert : customs) {
                 c2Ray ray;
@@ -411,11 +406,12 @@ namespace Entropy {
         Ref<Shader> shadowShader;
         Ref<Shader> finalShader;
         Ref<Shader> lightShader;
+        Ref<Shader> objectShader;
 
         virtual void createRenderTarget(string name) = 0;
 
         virtual void bindRenderTarget(string name) = 0;
-        virtual void bindRenderTexture(string name) = 0;
+        virtual void bindRenderTexture(string name, GLenum slot) = 0;
 
         uint32_t lightVertexCount = 64;
         glm::vec3 pos = glm::vec3(320, 240, 0);
@@ -567,7 +563,7 @@ namespace Entropy {
             GL_LOG("Atrib pointer");
             finalShader->uniform1i("texSampler", 0);
 
-            bindRenderTexture("name");
+            bindRenderTexture("name", GL_TEXTURE0);
 
             Vertex::assertLayout();
             GL_LOG("add buffer data ");
@@ -610,9 +606,13 @@ namespace Entropy {
             // glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA);
             // glBlendEquation(GL_FUNC_ADD);
 
+            // glBlendFunc(GL_DST_ALPHA, GL_SRC_ALPHA);
+            // glBlendEquation(GL_FUNC_ADD);
+
             for (auto light : lights) {
+                lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
                 auto mesh = getLightMesh(light);
-                // LOG(mesh.size());
+
                 antiShadowBuffer->subBuffer(0, lightVertexCount * sizeof(Vertex), mesh.data());
                 GL_LOG("Atrib pointer");
 
@@ -621,8 +621,16 @@ namespace Entropy {
                 lightShader->uniform3f("light", lp.x, lp.y, 0);
                 GL_LOG("Atrib pointer");
                 glDrawArrays(GL_TRIANGLE_FAN, 0, mesh.size());
+
+                for (auto renderable : renderables) {
+                    lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix() * renderable->transform.getModelMatrix());
+                    renderable->arrayBuffer.bind();
+
+                    glDrawArrays(GL_TRIANGLES, 0, renderable->Vertices.size());
+                }
             }
 
+            // glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
             // glBindFramebuffer(GL_FRAMEBUFFER, 0);
             // glViewport(0, 0, 640 * 2, 480 * 2);
         }
@@ -647,6 +655,9 @@ namespace Entropy {
                                                    "shaders/Builtin/Lighting/light.fragmentshader");
 
             finalShader = std::make_shared<Shader>("shaders/Builtin/Lighting/mesh.vertexshader",
+                                                   "shaders/Builtin/Lighting/final.fragmentshader");
+
+            objectShader = std::make_shared<Shader>("shaders/Builtin/Lighting/mesh.vertexshader",
                                                    "shaders/Builtin/Lighting/final.fragmentshader");
         }
         ~LightRendererAttachment() {}
