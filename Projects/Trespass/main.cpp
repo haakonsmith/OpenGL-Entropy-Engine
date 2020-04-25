@@ -42,6 +42,9 @@
 using namespace glm;
 
 #define NDEBUG
+#define PROFILE
+#define SUPPRESS
+
 #include <Entropy.hpp>
 #include "src/Bullet.hpp"
 #include "src/Player.hpp"

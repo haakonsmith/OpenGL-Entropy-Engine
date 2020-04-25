@@ -22,11 +22,11 @@ namespace Entropy {
 
       public:
         GLenum textureSlot = GL_TEXTURE0;
-        
+
         static GLuint loadTexture(std::string path);
         static GLuint createBlank();
         static void setPoorFiltering();
-        inline void upload(int width, int height, const void *data);
+        void upload(int width, int height, const void *data);
         inline GLuint getID() { return obj_; }
 
         Texture(std::string p);

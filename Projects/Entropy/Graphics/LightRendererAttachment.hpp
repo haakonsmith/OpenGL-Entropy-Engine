@@ -583,16 +583,8 @@ namespace Entropy {
         void renderLights() {
             PROFILE_FUNCTION();
 
-            // if (first) {
-            //     createRenderTarget("lightMap");
-            //     first = false;
-            // }
-
-            // bindRenderTarget("lightMap");
-
             antiShadowBuffer->bind();
             GL_LOG("Atrib pointer");
-            // antiShadowBuffer->subBuffer(0, lightVertexCount * sizeof(Vertex), mesh.data());
 
             Vertex::assertLayout();
             GL_LOG("add buffer data ");
@@ -602,12 +594,6 @@ namespace Entropy {
 
             lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
             GL_LOG("Atrib pointer");
-
-            // glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA);
-            // glBlendEquation(GL_FUNC_ADD);
-
-            // glBlendFunc(GL_DST_ALPHA, GL_SRC_ALPHA);
-            // glBlendEquation(GL_FUNC_ADD);
 
             for (auto light : lights) {
                 lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
@@ -623,16 +609,13 @@ namespace Entropy {
                 glDrawArrays(GL_TRIANGLE_FAN, 0, mesh.size());
 
                 for (auto renderable : renderables) {
-                    lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix() * renderable->transform.getModelMatrix());
+                    lightShader->uniformMatrix4fv("VP",
+                                                  getViewProjectionMatrix() * renderable->transform.getModelMatrix());
                     renderable->arrayBuffer.bind();
 
                     glDrawArrays(GL_TRIANGLES, 0, renderable->Vertices.size());
                 }
             }
-
-            // glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
-            // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            // glViewport(0, 0, 640 * 2, 480 * 2);
         }
 
         LightRendererAttachment() {
@@ -658,7 +641,7 @@ namespace Entropy {
                                                    "shaders/Builtin/Lighting/final.fragmentshader");
 
             objectShader = std::make_shared<Shader>("shaders/Builtin/Lighting/mesh.vertexshader",
-                                                   "shaders/Builtin/Lighting/final.fragmentshader");
+                                                    "shaders/Builtin/Lighting/final.fragmentshader");
         }
         ~LightRendererAttachment() {}
     };

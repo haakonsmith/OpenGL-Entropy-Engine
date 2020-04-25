@@ -158,16 +158,14 @@ namespace Entropy {
 
         for (auto obj : objects) { render(obj); }
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, 640 * 2, 480 * 2);
+        unbindRenderTarget();
 
         bindRenderTarget("light");
         glClear(GL_COLOR_BUFFER_BIT);
         // renderAntiShadows();
         renderLights();
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, 640*4, 480 * 4);
+        unbindRenderTarget();
 
         mat4 MVP = getViewProjectionMatrix() *
                    (glm::translate(mat4(1.0f), (vec3(320,240,0))) * glm::scale(mat4(1.0f), vec3(320, 240, 1)));

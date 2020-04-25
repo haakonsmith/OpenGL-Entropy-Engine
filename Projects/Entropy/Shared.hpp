@@ -9,10 +9,6 @@
 #include <iostream>
 #include <memory>
 
-#define NDEBUG
-#define PROFILE
-#define SUPPRESS
-
 #ifndef COORDINATES
 #define COORDINATES
 
@@ -22,7 +18,8 @@ enum Coordinates { x, y, z };
 
 #include "Profiler.hpp"
 
-
+#ifndef ENTROPY_MACROS
+#define ENTROPY_MACROS
 
 #define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCTION__)
 
@@ -51,6 +48,7 @@ enum Coordinates { x, y, z };
 #define LOG() \
     do {      \
     } while (0)
+#endif
 #endif
 
 namespace Entropy {
