@@ -153,8 +153,8 @@ namespace Entropy {
     void m_2dRenderer::renderFrame() {
         PROFILE_FUNCTION();
 
-        bindRenderTarget("scene");
-        glClear(GL_COLOR_BUFFER_BIT);
+        // bindRenderTarget("scene");
+        // glClear(GL_COLOR_BUFFER_BIT);
 
         for (auto obj : objects) { render(obj); }
 

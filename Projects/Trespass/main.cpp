@@ -138,6 +138,8 @@ class Trespass : public Entropy::BaseApplication
             light = shared_ptr<Light>(new Light());
 
             light->position = vec3(380,240,0);
+            light->intensity = 10;
+            light->colour = vec3(1, 0, 1);
 
             renderer->addLight(light.get());
             player->castsShadow = true;
@@ -193,22 +195,25 @@ class Trespass : public Entropy::BaseApplication
             // LOG("FPS: " << App::profiler.fps);
             PROFILE_FUNCTION();
             App::profiler.newFrame();
+            {
+
+            PROFILE_SCOPE("Main");
 
             previousFrameTime = glfwGetTime();
             
             glfwSetTime(0);
-
             glfwGetCursorPos(window, &MouseXPos, &MouseYPos);
+
+            glClear(GL_COLOR_BUFFER_BIT);
+            renderer->bindRenderTarget("scene");
 
             glClear(GL_COLOR_BUFFER_BIT);
             glClearColor(0.0, 0.0, 0.0, 0.0); 
 
-
-            // renderer->transform(tri);
-
             player->transform.compute();
             renderer->renderCircle(vec3(320,240,0), 10);
             renderer->renderQuad(vec3(200,240,0), 10, 10);
+            renderer->renderLine(vec3(0),  player->getPosition());
 
             c2Ray ray;
 
@@ -216,22 +221,11 @@ class Trespass : public Entropy::BaseApplication
             ray.d = c2V(-0.5,-0.5);
             ray.p = c2V(320,240);
 
-
             auto dist = renderer->rayCollisionCheck(ray);
-
-
-
-
-
-
 
             MouseYPos = (MouseYPos - 480) * -1;
 
             renderer->renderLine(vec3(320,240,0), vec3((vec2(320, 240)+(vec2(ray.d.x, ray.d.y) * dist)), 0));
-
-
-            renderer->renderFrame();
-
 
             world->timeStep(previousFrameTime);
             renderer->renderLine(( player->data.velocity)  + player->getPosition(), player->getPosition());
@@ -258,7 +252,6 @@ class Trespass : public Entropy::BaseApplication
             {
                 player->data.velocity.x = 100;
             }
-            
 
             auto t_now = std::chrono::high_resolution_clock::now();
 
@@ -275,39 +268,13 @@ class Trespass : public Entropy::BaseApplication
             }
 
             player->update();
-            // glfwSwapBuffers(window);
             
-
-            // LOG(
-            //     "player position:  " << player->getPosition().x << ", " << player->getPosition().y << 
-            //     "  mouse position:  " << MouseXPos << ", " << MouseYPos
-            //     );
-
-            
-
-            
-
-            // renderer->renderLine(vec3(0,0,0), player->getPosition());
-            // glm::mat4 myMatrix = glm::translate(glm::mat4(), glm::vec3(10.0f, 0.0f, 0.0f));
-
-
-            // LOG(renderer->distToNearestPoint(player.get()));
-            renderer->renderLine(vec3(0),  player->getPosition());
-            // LOG((quad->getModelMatrix() * vec4(1,1,1, 1.0f)).x);
-            // LOG((glm::translate(glm::mat4(), glm::vec3(10.0f, 1.0f, 1.0f)) * vec4(1.0f,0.0f,0.0f, 1.0f)).x);
-            // LOG(renderer->worldSpace(vec3(player->translationMatrix * vec4(0.0f,1.0f,0.0f, 1.0f))).x);
-
+            renderer->renderFrame();
             
             glfwSwapBuffers(window);
             glfwPollEvents();
+            }
             App::profiler.endFrame();
-
-
-
-            // auto time = glfwGetTime();
-            // if (time < 0.016)
-            //     usleep((0.016 - time) * 100000 * 3);
-
                 
         }
 

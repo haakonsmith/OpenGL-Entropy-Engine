@@ -86,6 +86,12 @@ namespace Entropy {
 
             glUniform1i(cache[name], a);
         }
+
+        inline void uniform1f(const GLchar *name, float a) {
+            cachePing(name);
+
+            glUniform1f(cache[name], a);
+        }
     };
 
 }  // namespace Entropy

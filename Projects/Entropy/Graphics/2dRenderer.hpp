@@ -80,63 +80,14 @@ namespace Entropy {
 
         map<string, RenderTarget> frameBuffers;
 
-        void createRenderTarget(string name) {
-            // The framebuffer, which regroups 0, 1, or more textures, and 0 or
-            // 1 depth buffer.
-            frameBuffers.insert({name, RenderTarget(screen)});
+        void createRenderTarget(string name) { frameBuffers.insert({name, RenderTarget(screen)}); }
 
-            // frameBuffers[name].frameBuffer = 0;
-            // glGenFramebuffers(1, &frameBuffers[name].frameBuffer);
-            // glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[name].frameBuffer);
+        void bindRenderTarget(string name) { frameBuffers.at(name).bind(); };
 
-            // // The texture we're going to render to
-            // frameBuffers[name].texture = Texture(Texture::createBlank());
-
-            // // "Bind" the newly created texture : all future texture functions
-            // // will modify this texture
-            // frameBuffers[name].texture.bind();
-
-            // // Give an empty image to OpenGL ( the last NULL )
-            // frameBuffers[name].texture.upload(screen.sizeX * 2, screen.sizeY * 2, NULL);
-
-            // // Poor filtering. Needed !
-            // frameBuffers[name].texture.setPoorFiltering();
-
-            // // Set "renderedTexture" as our colour attachement #0
-            // glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, frameBuffers[name].texture.getID(), 0);
-
-            // // Set the list of draw buffers.
-            // GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-            // glDrawBuffers(1, DrawBuffers);  // "1" is the size of DrawBuffers
-
-            // // Always check that our framebuffer is ok
-            // if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            //     throw std::runtime_error("Failed to create frame buffer");
-
-            // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        }
-
-        void bindRenderTarget(string name) {
-            // PROFILE_FUNCTION();
-            // // Render to our framebuffer
-            // glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.at(name).frameBuffer);
-            // glViewport(0, 0, screen.sizeX * 2, screen.sizeY * 2);  // Render on the whole framebuffer,
-            //                                                        // complete from the lower left corner
-            //                                                        // to the upper right
-            frameBuffers.at(name).bind();
-        };
-
-        void unbindRenderTarget() {
-            RenderTarget::unbind();
-            // PROFILE_FUNCTION();
-            // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            // glViewport(0, 0, 640 * 4, 480 * 4);
-        };
+        void unbindRenderTarget() { RenderTarget::unbind(); };
 
         void bindRenderTexture(string name, GLenum slot) {
-            // PROFILE_FUNCTION();
             frameBuffers.at(name).texture.textureSlot = slot;
-            // frameBuffers.at(name).texture.bind();
             frameBuffers.at(name).texture.bind();
         }
 

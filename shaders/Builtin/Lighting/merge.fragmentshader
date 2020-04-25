@@ -11,6 +11,8 @@ uniform sampler2D texSampler1;
 
 void main()
 {
-	color = vec4(texture( texSampler, UV.xy ).rgb * texture( texSampler1, UV.xy ).a, 1);
-	// color = vec4(1,1,1, texture( texSampler1, UV.xy ).a);
+    vec4 srcColour = texture( texSampler, UV.xy );
+    vec4 lightColour = texture( texSampler1, UV.xy );
+
+	color = vec4( srcColour.rgb * lightColour.rgb * lightColour.a, srcColour.a );
 }
