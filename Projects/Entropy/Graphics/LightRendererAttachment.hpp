@@ -35,9 +35,9 @@ namespace Entropy {
     // };
 
     struct Light {
+        vec3 colour;
         vec3 position;
         float intensity;
-        vec4 colour;
 
         Light() : position(vec3(0)), intensity(0), colour(vec4(1)) {}
         Light(vec3 const &v) : position(v), intensity(0), colour(vec4(1)) {}
@@ -300,7 +300,6 @@ namespace Entropy {
         std::vector<Vertex> getLightMesh(Light *light) {
             std::vector<Vertex> lightMesh;
             auto norm = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
-  
 
             for (auto r : renderables) {
                 auto verts = r->getVertices();
@@ -325,7 +324,6 @@ namespace Entropy {
                     ray.p = c2V(light->position.x, light->position.y);
                     ray.d = c2V(direction.x + offset.x, direction.y + offset.y);
                     // ray.d = c2V(direction.x, direction.y);
-
 
                     // LOG(ray.d.x);
                     // LOG(ray.d.y);
@@ -353,18 +351,15 @@ namespace Entropy {
                 }
             }
 
-            std::array<Vertex, 4> customs = {
-                Vertex(vec3(0, 0, 0), vec2(0, 0)),
-                Vertex(vec3(640, 0, 0), vec2(1, 0)),
-                Vertex(vec3(640, 480, 0), vec2(1, 1)),
-                Vertex(vec3(0, 480, 0), vec2(0, 1))
-            };
+            std::array<Vertex, 4> customs = {Vertex(vec3(0, 0, 0), vec2(0, 0)), Vertex(vec3(640, 0, 0), vec2(1, 0)),
+                                             Vertex(vec3(640, 480, 0), vec2(1, 1)),
+                                             Vertex(vec3(0, 480, 0), vec2(0, 1))};
 
             for (auto &vert : customs) {
                 c2Ray ray;
 
                 auto direction = normalize(norm(light->position, vert.Position));
-                auto offset = rotate(direction, 90.0f) / 1000.0f;
+                auto offset = rotate(direction, glm::radians(90.0f)) / 100000.0f;
 
                 c2v vertPos = c2V(vert.Position.x, vert.Position.y);
 
@@ -374,34 +369,18 @@ namespace Entropy {
 
                 auto dist = rayCollisionCheck(ray);
 
-                // LOG(ray.d.x);
-                // LOG(ray.d.y);
-
-                // LOG(ray.p.x);
-                // LOG(Vector2D(vert.Position).c2Vector.y);
-
-                // LOG(c2Sub(vertPos, ray.p).x);
-                // LOG(c2Sub(vertPos, ray.p).y);
-
-                // LOG(dist);
-
                 auto point = vec3((vec2(light->position) + (vec2(ray.d.x, ray.d.y) * dist)), 0);
-                // renderLine(light->position, point);
 
                 lightMesh.push_back(Vertex(point));
             }
 
             std::sort(lightMesh.begin(), lightMesh.end(), [light](auto a, auto b) {
                 vec2 observer = vec2(light->position);
-                // return distance(a.xy, vec2(320,240)) * (a.x, a.y) < distance(b.xy, vec2(320,240)) * (b.x + b.y);
                 return atan2((a.x - observer.x), -(a.y - observer.y)) > atan2((b.x - observer.x), -(b.y - observer.y));
             });
 
             lightMesh.insert(lightMesh.begin(), lightMesh.back());
             lightMesh.insert(lightMesh.begin(), Vertex(light->position, (light->position)));
-
-            // LOG(App::screen.size.x);
-            // LOG(lightMesh[0].u);
 
             return lightMesh;
         }
@@ -411,11 +390,12 @@ namespace Entropy {
         Ref<Shader> shadowShader;
         Ref<Shader> finalShader;
         Ref<Shader> lightShader;
+        Ref<Shader> objectShader;
 
         virtual void createRenderTarget(string name) = 0;
 
         virtual void bindRenderTarget(string name) = 0;
-        virtual void bindRenderTexture(string name) = 0;
+        virtual void bindRenderTexture(string name, GLenum slot) = 0;
 
         uint32_t lightVertexCount = 64;
         glm::vec3 pos = glm::vec3(320, 240, 0);
@@ -426,18 +406,6 @@ namespace Entropy {
             PROFILE_FUNCTION();
 
             std::vector<Vertex> shadowMesh;
-
-            // std::vector<std::future<std::vector<Vertex>>> meshes;
-
-            // for (auto light : lights) {
-            //     for (auto r : renderables) {
-            //         meshes.push_back(std::async(computeLineOfSightVertices, light, r));
-            //     }
-            // }
-            // for (size_t i = 0; i < meshes.size(); i++) {
-            //     auto m = meshes[i].get();
-            //     shadowMesh.insert(shadowMesh.end(), m.begin(), m.end());
-            // }
 
             for (auto light : lights) {
                 for (auto r : renderables) {
@@ -450,6 +418,10 @@ namespace Entropy {
         }
 
         void addLight(Light *light) { lights.push_back(light); }
+        void removeLight(Light *light) {
+            lights.erase(std::remove_if(lights.begin(), lights.end(), [light](Light *node) { return node == light; }),
+                         lights.end());
+        }
 
         void renderAntiShadows() {
             PROFILE_FUNCTION();
@@ -567,7 +539,7 @@ namespace Entropy {
             GL_LOG("Atrib pointer");
             finalShader->uniform1i("texSampler", 0);
 
-            bindRenderTexture("name");
+            bindRenderTexture("name", GL_TEXTURE0);
 
             Vertex::assertLayout();
             GL_LOG("add buffer data ");
@@ -575,7 +547,7 @@ namespace Entropy {
             // glBlendEquation(GL_MIN);
             glBlendFunc(GL_DST_COLOR, GL_SRC_ALPHA);
             glBlendEquation(GL_FUNC_ADD);
-            // glFlush();
+            // gl();
             glDrawArrays(GL_TRIANGLES, 0, squareVerts.size());
 
             glDisableVertexAttribArray(0);
@@ -587,44 +559,43 @@ namespace Entropy {
         void renderLights() {
             PROFILE_FUNCTION();
 
-            // if (first) {
-            //     createRenderTarget("lightMap");
-            //     first = false;
-            // }
-
-            // bindRenderTarget("lightMap");
-
             antiShadowBuffer->bind();
-            GL_LOG("Atrib pointer");
-            // antiShadowBuffer->subBuffer(0, lightVertexCount * sizeof(Vertex), mesh.data());
+            GL_LOG("Bind VBO");
 
             Vertex::assertLayout();
-            GL_LOG("add buffer data ");
+            GL_LOG("Assert buffer layout");
 
             lightShader->bind();
-            GL_LOG("Atrib pointer");
+            GL_LOG("Bind Shader");
 
             lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
-            GL_LOG("Atrib pointer");
-
-            // glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA);
-            // glBlendEquation(GL_FUNC_ADD);
+            GL_LOG("Set VP matirx");
 
             for (auto light : lights) {
+                PROFILE_SCOPE("renderLight");
+                lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
                 auto mesh = getLightMesh(light);
-                // LOG(mesh.size());
+
                 antiShadowBuffer->subBuffer(0, lightVertexCount * sizeof(Vertex), mesh.data());
-                GL_LOG("Atrib pointer");
+                GL_LOG("Update VBO");
 
                 auto lp = App::screen.screenScale(light->position);
 
                 lightShader->uniform3f("light", lp.x, lp.y, 0);
-                GL_LOG("Atrib pointer");
-                glDrawArrays(GL_TRIANGLE_FAN, 0, mesh.size());
-            }
+                lightShader->uniform3f("lightColour", light->colour.r, light->colour.g, light->colour.b);
+                lightShader->uniform1f("intensity", light->intensity);
+                GL_LOG("Uniform setting");
 
-            // glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            // glViewport(0, 0, 640 * 2, 480 * 2);
+                glDrawArrays(GL_TRIANGLE_FAN, 0, mesh.size());
+
+                for (auto renderable : renderables) {
+                    lightShader->uniformMatrix4fv("VP",
+                                                  getViewProjectionMatrix() * renderable->transform.getModelMatrix());
+                    renderable->arrayBuffer.bind();
+
+                    glDrawArrays(GL_TRIANGLES, 0, renderable->Vertices.size());
+                }
+            }
         }
 
         LightRendererAttachment() {
@@ -648,6 +619,9 @@ namespace Entropy {
 
             finalShader = std::make_shared<Shader>("shaders/Builtin/Lighting/mesh.vertexshader",
                                                    "shaders/Builtin/Lighting/final.fragmentshader");
+
+            objectShader = std::make_shared<Shader>("shaders/Builtin/Lighting/mesh.vertexshader",
+                                                    "shaders/Builtin/Lighting/final.fragmentshader");
         }
         ~LightRendererAttachment() {}
     };

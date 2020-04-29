@@ -53,6 +53,7 @@ namespace Entropy {
         shared_ptr<Shader> debugShader;
         shared_ptr<Shader> instanceShader;
         shared_ptr<Shader> debugLineShader;
+        shared_ptr<Shader> mergeShader;
         shared_ptr<Shader> builtinCircleShader;
         std::vector<Renderable *> objects = std::vector<Renderable *>();
 
@@ -79,60 +80,20 @@ namespace Entropy {
 
         map<string, RenderTarget> frameBuffers;
 
-        void createRenderTarget(string name) {
-            // The framebuffer, which regroups 0, 1, or more textures, and 0 or
-            // 1 depth buffer.
-            frameBuffers.insert({name, RenderTarget()});
+        void createRenderTarget(string name) { frameBuffers.insert({name, RenderTarget(screen)}); }
 
-            frameBuffers[name].FrameBuffer = 0;
-            glGenFramebuffers(1, &frameBuffers[name].FrameBuffer);
-            glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[name].FrameBuffer);
+        void bindRenderTarget(string name) { frameBuffers.at(name).bind(); };
 
-            // The texture we're going to render to
-            frameBuffers[name].texture = Texture(Texture::createBlank());
+        void unbindRenderTarget() { RenderTarget::unbind(); };
 
-            // "Bind" the newly created texture : all future texture functions
-            // will modify this texture
-            frameBuffers[name].texture.bind();
-
-            // Give an empty image to OpenGL ( the last NULL )
-            frameBuffers[name].texture.upload(screen.sizeX, screen.sizeY, NULL);
-
-            // Poor filtering. Needed !
-            frameBuffers[name].texture.setPoorFiltering();
-
-            // Set "renderedTexture" as our colour attachement #0
-            glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, frameBuffers[name].texture.getID(), 0);
-
-            // Set the list of draw buffers.
-            GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-            glDrawBuffers(1, DrawBuffers);  // "1" is the size of DrawBuffers
-
-            // Always check that our framebuffer is ok
-            if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-                throw std::runtime_error("Failed to create frame buffer");
-
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        void bindRenderTexture(string name, GLenum slot) {
+            frameBuffers.at(name).texture.textureSlot = slot;
+            frameBuffers.at(name).texture.bind();
         }
-
-        void bindRenderTarget(string name) {
-            // Render to our framebuffer
-            glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers.at(name).FrameBuffer);
-            glViewport(0, 0, screen.sizeX, screen.sizeY);  // Render on the whole framebuffer,
-                                                           // complete from the lower left corner
-                                                           // to the upper right
-        };
-
-        void unbindRenderTarget() {
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glViewport(0, 0, 640 * 2, 480 * 2);
-        };
-
-        void bindRenderTexture(string name) { frameBuffers.at(name).texture.bind(); }
 
         /**
          * C is size of data
-         * Imperfect accuracy, possibly due to floating point precision.
+         * Imperfect position accuracy, possibly due to floating point precision.
          */
         template <uint32 C>
         void renderInstance(const RenderInstance<C> &Instance, uint32 renderCount = C);
