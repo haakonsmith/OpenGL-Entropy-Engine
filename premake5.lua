@@ -2,7 +2,7 @@
 workspace "Premake"
 	-- We set the location of the files Premake will generate
 	-- location ""
-	location ""
+	location "Generated"
 	
 	-- We indicate that all the projects are C++ only
 	language "C++"
@@ -10,17 +10,13 @@ workspace "Premake"
 	-- We will compile for x86_64. You can change this to x86 for 32 bit builds.
 	architecture "x86_64"
 
-	buildoptions {"-Wdeprecated-declarations"}
-
     cppdialect "C++17"
-    defines "PROFILE"
-    
+    defines "PROFILE"   
 	
 	-- Configurations are often used to store some compiler / linker settings together.
     -- The Debug configuration will be used by us while debugging.
     -- The optimized Release configuration will be used when shipping the app.
 	configurations { "Debug", "Release" }
-	
 	
 	filter { "configurations:Debug" }
     -- We want debug symbols in our debug config
@@ -35,17 +31,14 @@ workspace "Premake"
 	
 	-- Reset the filter for other settings
 	filter { }
-
-
-	
 	
 	-- Here we use some "tokens" (the things between %{ ... }). They will be replaced by Premake
 	-- automatically when configuring the projects.
 	-- * %{prj.name} will be replaced by "ExampleLib" / "App" / "UnitTests"
 	--  * %{cfg.longname} will be replaced by "Debug" or "Release" depending on the configuration
 	-- The path is relative to *this* folder
-	-- targetdir ("Build/Bin/%{prj.name}/%{cfg.longname}")
-	targetdir ""
+	targetdir ("Build/Bin/%{prj.name}/%{cfg.longname}")
+	-- targetdir ""
     objdir ("Build/Obj/%{prj.name}/%{cfg.longname}")
     
 -- This function includes GLFW's header files

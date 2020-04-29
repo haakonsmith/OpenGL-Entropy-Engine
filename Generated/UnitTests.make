@@ -27,15 +27,10 @@ endif
 ifeq ($(origin AR), default)
   AR = ar
 endif
-TARGETDIR = .
-TARGET = $(TARGETDIR)/UnitTests
-INCLUDES += -ILibraries/Cute -ILibraries/Catch -ILibraries -IProjects/Entropy
+INCLUDES += -I../Libraries/Cute -I../Libraries/Catch -I../Libraries -I../Projects/Entropy
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-LIBS += libEntropy.dylib -lglfw
-LDDEPS += libEntropy.dylib
-ALL_LDFLAGS += $(LDFLAGS) -LLibraries/GLFW/Lib -Wl,-rpath,'@loader_path/.' -m64
 LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
 define PREBUILDCMDS
 endef
@@ -45,16 +40,26 @@ define POSTBUILDCMDS
 endef
 
 ifeq ($(config),debug)
-OBJDIR = Build/Obj/UnitTests/Debug
+TARGETDIR = ../Build/Bin/UnitTests/Debug
+TARGET = $(TARGETDIR)/UnitTests
+OBJDIR = ../Build/Obj/UnitTests/Debug
 DEFINES += -DPROFILE -DNDEBUG -DCATCH_CPP11_OR_GREATER
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g -Wdeprecated-declarations -ftime-report
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17 -Wdeprecated-declarations -ftime-report
+LIBS += ../Build/Bin/Entropy/Debug/libEntropy.dylib -lglfw
+LDDEPS += ../Build/Bin/Entropy/Debug/libEntropy.dylib
+ALL_LDFLAGS += $(LDFLAGS) -L../Libraries/GLFW/Lib -Wl,-rpath,'@loader_path/../../Entropy/Debug' -m64
 
 else ifeq ($(config),release)
-OBJDIR = Build/Obj/UnitTests/Release
+TARGETDIR = ../Build/Bin/UnitTests/Release
+TARGET = $(TARGETDIR)/UnitTests
+OBJDIR = ../Build/Obj/UnitTests/Release
 DEFINES += -DPROFILE -DCATCH_CPP11_OR_GREATER
-ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -Wdeprecated-declarations
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++17 -Wdeprecated-declarations
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++17
+LIBS += ../Build/Bin/Entropy/Release/libEntropy.dylib -lglfw
+LDDEPS += ../Build/Bin/Entropy/Release/libEntropy.dylib
+ALL_LDFLAGS += $(LDFLAGS) -L../Libraries/GLFW/Lib -Wl,-rpath,'@loader_path/../../Entropy/Release' -m64
 
 else
   $(error "invalid configuration $(config)")
@@ -131,7 +136,7 @@ endif
 # File Rules
 # #############################################
 
-$(OBJDIR)/main.o: Projects/EntropyUnitTests/main.cpp
+$(OBJDIR)/main.o: ../Projects/EntropyUnitTests/main.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 
