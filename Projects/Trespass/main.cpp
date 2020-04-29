@@ -271,8 +271,12 @@ class Trespass : public Entropy::BaseApplication
             
             renderer->renderFrame();
             
-            glfwSwapBuffers(window);
-            glfwPollEvents();
+            {
+                PROFILE_SCOPE("GPU Renderering");
+                glFinish();
+                glfwSwapBuffers(window);
+            }
+            PROFILE_CALL(glfwPollEvents());
             }
             App::profiler.endFrame();
                 

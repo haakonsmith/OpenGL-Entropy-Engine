@@ -419,10 +419,8 @@ namespace Entropy {
 
         void addLight(Light *light) { lights.push_back(light); }
         void removeLight(Light *light) {
-            lights.erase(std::remove_if(lights.begin(), lights.end(),
-                                             // here comes the C++11 lambda:
-                                             [light](Light *node) { return node == light; }),
-                              lights.end());
+            lights.erase(std::remove_if(lights.begin(), lights.end(), [light](Light *node) { return node == light; }),
+                         lights.end());
         }
 
         void renderAntiShadows() {
@@ -549,7 +547,7 @@ namespace Entropy {
             // glBlendEquation(GL_MIN);
             glBlendFunc(GL_DST_COLOR, GL_SRC_ALPHA);
             glBlendEquation(GL_FUNC_ADD);
-            // glFlush();
+            // gl();
             glDrawArrays(GL_TRIANGLES, 0, squareVerts.size());
 
             glDisableVertexAttribArray(0);
@@ -562,30 +560,32 @@ namespace Entropy {
             PROFILE_FUNCTION();
 
             antiShadowBuffer->bind();
-            GL_LOG("Atrib pointer");
+            GL_LOG("Bind VBO");
 
             Vertex::assertLayout();
-            GL_LOG("add buffer data ");
+            GL_LOG("Assert buffer layout");
 
             lightShader->bind();
-            GL_LOG("Atrib pointer");
+            GL_LOG("Bind Shader");
 
             lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
-            GL_LOG("Atrib pointer");
+            GL_LOG("Set VP matirx");
 
             for (auto light : lights) {
+                PROFILE_SCOPE("renderLight");
                 lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
                 auto mesh = getLightMesh(light);
 
                 antiShadowBuffer->subBuffer(0, lightVertexCount * sizeof(Vertex), mesh.data());
-                GL_LOG("Atrib pointer");
+                GL_LOG("Update VBO");
 
                 auto lp = App::screen.screenScale(light->position);
 
                 lightShader->uniform3f("light", lp.x, lp.y, 0);
                 lightShader->uniform3f("lightColour", light->colour.r, light->colour.g, light->colour.b);
                 lightShader->uniform1f("intensity", light->intensity);
-                GL_LOG("Atrib pointer");
+                GL_LOG("Uniform setting");
+
                 glDrawArrays(GL_TRIANGLE_FAN, 0, mesh.size());
 
                 for (auto renderable : renderables) {

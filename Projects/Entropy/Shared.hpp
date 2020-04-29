@@ -21,10 +21,13 @@ enum Coordinates { x, y, z };
 #ifndef ENTROPY_MACROS
 #define ENTROPY_MACROS
 
+#define PROFILE_CALL(CPP_CALL) \
+    { PROFILE_SCOPE(#CPP_CALL);CPP_CALL;}
+
 #define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCTION__)
 
 #ifdef PROFILE
-#define PROFILE_SCOPE(LOCATION) Entropy::Performance::Timer timer(LOCATION)
+#define PROFILE_SCOPE(LOCATION) Entropy::Performance::Timer entropy_performance_timer(LOCATION)
 
 #else
 #define PROFILE_SCOPE() \

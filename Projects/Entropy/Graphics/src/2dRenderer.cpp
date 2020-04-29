@@ -189,7 +189,7 @@ namespace Entropy {
         GL_LOG("bind vertex array");
         
         glViewport(0, 0, 640 * 2, 480 * 2);
-        // vertexArray.bind();
+        vertexArray.bind();
 
         glUseProgram(programID);
 
