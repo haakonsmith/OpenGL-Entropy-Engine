@@ -1,8 +1,6 @@
 #include "Application.hpp"
 
-#include <chrono>
-
-#include "Profiler.hpp"
+#include "pch.gch"
 
 namespace Entropy {
 

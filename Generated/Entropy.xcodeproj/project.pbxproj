@@ -1,0 +1,315 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		03D857E25F19AB543273F622 /* Screen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 62959FEA79A83B1C69C4362A /* Screen.cpp */; };
+		1E5857AAB0E6219C19BEC5EA /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2C86E3296342FE4D4D7D472 /* Application.cpp */; };
+		2A59FEBEBCE7C8B025C06CFE /* cute_c2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C7DB7A268B473BD8C9EAE066 /* cute_c2.cpp */; };
+		6143A2A6D59DE798538170E6 /* PhysicsEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 75F2598E881C3640BC0D1FCE /* PhysicsEngine.cpp */; };
+		663B14738107832584D81AB3 /* 2dRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2D74C6DB9A9CD54D9C2FC51B /* 2dRenderer.cpp */; };
+		7191B68F50AED0C12CB82CCF /* stb_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 227BE637B509B0291DE25477 /* stb_image.cpp */; };
+		89CBD708838D937ABD8C9548 /* Profiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C5AE35B00E1F19E252BDEBF0 /* Profiler.cpp */; };
+		A0B0480DB2DA24BFE6CB0E4D /* GameObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDD8D5F5E79A926721999435 /* GameObject.cpp */; };
+		A4BA02B98A5109EB4D9618F9 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6AB85C150AC9CB317F39401 /* OpenGL.framework */; };
+		C1415C15D36B38C7075C2255 /* Vertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 586E535D52300FCF8C2F119D /* Vertex.cpp */; };
+		D8668B684CC0D05ACAA459A8 /* PhysicsObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D871D306FB0F9E2A3A1E370 /* PhysicsObject.cpp */; };
+		E5DC029B29EFD3CD1DC158DB /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7B5D1183EC7FB275A2465FC3 /* Texture.cpp */; };
+		F63D68C7086745793C582F07 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA5B87EFF41D44612E1C462F /* Shader.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		227BE637B509B0291DE25477 /* stb_image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = stb_image.cpp; path = ../Projects/Entropy/Graphics/src/stb_image.cpp; sourceTree = "<group>"; };
+		2D74C6DB9A9CD54D9C2FC51B /* 2dRenderer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = 2dRenderer.cpp; path = ../Projects/Entropy/Graphics/src/2dRenderer.cpp; sourceTree = "<group>"; };
+		586E535D52300FCF8C2F119D /* Vertex.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Vertex.cpp; path = ../Projects/Entropy/Graphics/src/Vertex.cpp; sourceTree = "<group>"; };
+		5D871D306FB0F9E2A3A1E370 /* PhysicsObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PhysicsObject.cpp; path = ../Projects/Entropy/Physics/PhysicsObject.cpp; sourceTree = "<group>"; };
+		62959FEA79A83B1C69C4362A /* Screen.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Screen.cpp; path = ../Projects/Entropy/Screen.cpp; sourceTree = "<group>"; };
+		75F2598E881C3640BC0D1FCE /* PhysicsEngine.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PhysicsEngine.cpp; path = ../Projects/Entropy/Physics/PhysicsEngine.cpp; sourceTree = "<group>"; };
+		7B5D1183EC7FB275A2465FC3 /* Texture.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Texture.cpp; path = ../Projects/Entropy/Graphics/src/Texture.cpp; sourceTree = "<group>"; };
+		A8F6FB9393E32185DBC8E9D3 /* libEntropy.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; name = libEntropy.dylib; path = libEntropy.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		C5AE35B00E1F19E252BDEBF0 /* Profiler.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Profiler.cpp; path = ../Projects/Entropy/Profiler.cpp; sourceTree = "<group>"; };
+		C7DB7A268B473BD8C9EAE066 /* cute_c2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = cute_c2.cpp; path = ../Projects/Entropy/Physics/cute_c2.cpp; sourceTree = "<group>"; };
+		D2C86E3296342FE4D4D7D472 /* Application.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Application.cpp; path = ../Projects/Entropy/Application.cpp; sourceTree = "<group>"; };
+		EDD8D5F5E79A926721999435 /* GameObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GameObject.cpp; path = ../Projects/Entropy/Game/GameObject.cpp; sourceTree = "<group>"; };
+		F6AB85C150AC9CB317F39401 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks//System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		FA5B87EFF41D44612E1C462F /* Shader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Shader.cpp; path = ../Projects/Entropy/Graphics/src/Shader.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FECC1F83FF7F1C757360EDC3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A4BA02B98A5109EB4D9618F9 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2183102A24F3E25CA660866A /* Graphics */ = {
+			isa = PBXGroup;
+			children = (
+				BD209078EBC6E46A45083EB8 /* src */,
+			);
+			name = Graphics;
+			sourceTree = "<group>";
+		};
+		52E56BEEF73809A00970522E /* Physics */ = {
+			isa = PBXGroup;
+			children = (
+				75F2598E881C3640BC0D1FCE /* PhysicsEngine.cpp */,
+				5D871D306FB0F9E2A3A1E370 /* PhysicsObject.cpp */,
+				C7DB7A268B473BD8C9EAE066 /* cute_c2.cpp */,
+			);
+			name = Physics;
+			sourceTree = "<group>";
+		};
+		A6C936B49B3FADE6EA134CF4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A8F6FB9393E32185DBC8E9D3 /* libEntropy.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BBF76781A7E87333FA200DC1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F6AB85C150AC9CB317F39401 /* OpenGL.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BD209078EBC6E46A45083EB8 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				2D74C6DB9A9CD54D9C2FC51B /* 2dRenderer.cpp */,
+				FA5B87EFF41D44612E1C462F /* Shader.cpp */,
+				7B5D1183EC7FB275A2465FC3 /* Texture.cpp */,
+				586E535D52300FCF8C2F119D /* Vertex.cpp */,
+				227BE637B509B0291DE25477 /* stb_image.cpp */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		D6B9B77C831C77AE41A4EDBC /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				EDD8D5F5E79A926721999435 /* GameObject.cpp */,
+			);
+			name = Game;
+			sourceTree = "<group>";
+		};
+		E3616ED1766CC7C3BEA1BD11 /* Entropy */ = {
+			isa = PBXGroup;
+			children = (
+				D2C86E3296342FE4D4D7D472 /* Application.cpp */,
+				D6B9B77C831C77AE41A4EDBC /* Game */,
+				2183102A24F3E25CA660866A /* Graphics */,
+				52E56BEEF73809A00970522E /* Physics */,
+				C5AE35B00E1F19E252BDEBF0 /* Profiler.cpp */,
+				62959FEA79A83B1C69C4362A /* Screen.cpp */,
+				BBF76781A7E87333FA200DC1 /* Frameworks */,
+				A6C936B49B3FADE6EA134CF4 /* Products */,
+			);
+			name = Entropy;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E8342D190E5A5CCB75615359 /* Entropy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED0767E2EDBA64D4619C3622 /* Build configuration list for PBXNativeTarget "Entropy" */;
+			buildPhases = (
+				6EB3A0236F669D15E3486E63 /* Resources */,
+				D860B97AD913B66C4CF587BA /* Sources */,
+				FECC1F83FF7F1C757360EDC3 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Entropy;
+			productName = Entropy;
+			productReference = A8F6FB9393E32185DBC8E9D3 /* libEntropy.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "Entropy" */;
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 1;
+			mainGroup = E3616ED1766CC7C3BEA1BD11 /* Entropy */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E8342D190E5A5CCB75615359 /* libEntropy.dylib */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6EB3A0236F669D15E3486E63 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D860B97AD913B66C4CF587BA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E5857AAB0E6219C19BEC5EA /* Application.cpp in Sources */,
+				A0B0480DB2DA24BFE6CB0E4D /* GameObject.cpp in Sources */,
+				663B14738107832584D81AB3 /* 2dRenderer.cpp in Sources */,
+				F63D68C7086745793C582F07 /* Shader.cpp in Sources */,
+				E5DC029B29EFD3CD1DC158DB /* Texture.cpp in Sources */,
+				C1415C15D36B38C7075C2255 /* Vertex.cpp in Sources */,
+				7191B68F50AED0C12CB82CCF /* stb_image.cpp in Sources */,
+				6143A2A6D59DE798538170E6 /* PhysicsEngine.cpp in Sources */,
+				D8668B684CC0D05ACAA459A8 /* PhysicsObject.cpp in Sources */,
+				2A59FEBEBCE7C8B025C06CFE /* cute_c2.cpp in Sources */,
+				89CBD708838D937ABD8C9548 /* Profiler.cpp in Sources */,
+				03D857E25F19AB543273F622 /* Screen.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1F5E04A2191FC114531EC2E2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../Build/Bin/Entropy/Release;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = Entropy;
+			};
+			name = Release;
+		};
+		46045FA876E8579A8A008DE8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../Build/Bin/Entropy/Debug;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = Entropy;
+			};
+			name = Debug;
+		};
+		CE9B1A8071E6A3B28CB770C0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++1z";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					PROFILE,
+					NDEBUG,
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LIBRARY_SEARCH_PATHS = (
+					../Libraries/GLFW/Lib,
+				);
+				OBJROOT = ../Build/Obj/Entropy/Debug;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"-Wdeprecated-declarations",
+					"-ftime-report",
+				);
+				OTHER_LDFLAGS = (
+					"-lglfw",
+				);
+				SYMROOT = ../Build/Bin/Entropy/Debug;
+				USER_HEADER_SEARCH_PATHS = (
+					../Libraries/GLFW/Include,
+					../Libraries,
+					../Libraries/Cute,
+				);
+			};
+			name = Debug;
+		};
+		D63394BA7A86326C8CBE7AFA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++1z";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					PROFILE,
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LIBRARY_SEARCH_PATHS = (
+					../Libraries/GLFW/Lib,
+				);
+				OBJROOT = ../Build/Obj/Entropy/Release;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-lglfw",
+				);
+				SYMROOT = ../Build/Bin/Entropy/Release;
+				USER_HEADER_SEARCH_PATHS = (
+					../Libraries/GLFW/Include,
+					../Libraries,
+					../Libraries/Cute,
+				);
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "Entropy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE9B1A8071E6A3B28CB770C0 /* Debug */,
+				D63394BA7A86326C8CBE7AFA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		ED0767E2EDBA64D4619C3622 /* Build configuration list for PBXNativeTarget "libEntropy.dylib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				46045FA876E8579A8A008DE8 /* Debug */,
+				1F5E04A2191FC114531EC2E2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+};
+rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

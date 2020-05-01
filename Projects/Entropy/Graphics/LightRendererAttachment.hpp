@@ -1,8 +1,8 @@
 #include <OpenGL/gl3.h>
 
 #include <future>
-#include <string>
-#include <vector>
+
+#include "../pch.gch"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "../Shared.hpp"
@@ -11,14 +11,7 @@
 #include "Shader.hpp"
 #include "Vertex.hpp"
 #include "VertexBuffer.hpp"
-#include "glm/glm.hpp"
-#include "glm/gtx/projection.hpp"
-#include "glm/gtx/rotate_vector.hpp"
-#include "glm/gtx/vector_angle.hpp"
-#include "glm/mat4x4.hpp"
-#include "glm/vec2.hpp"
-#include "glm/vec3.hpp"
-#include "glm/vec4.hpp"
+
 
 using glm::vec2;
 using glm::vec3;

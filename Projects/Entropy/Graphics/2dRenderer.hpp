@@ -6,15 +6,8 @@
 #define GL_SILENCE_DEPRECATION
 #define M_2DRENDERER
 #include <GLFW/glfw3.h>
-#include <OpenGL/gl3.h>
 
-#include <fstream>
-#include <iosfwd>
-#include <map>
-#include <sstream>
-#include <string>
-#include <vector>
-
+#include "../pch.gch"
 #include "2dRenderInstance.hpp"
 #include "2dRenderInterface.hpp"
 #include "RenderTarget.hpp"
@@ -23,8 +16,6 @@
 #include "Vertex.hpp"
 #include "VertexBuffer.hpp"
 // #define GLM_ENABLE_EXPERIMENTAL
-#include "glm/glm.hpp"
-// #include <glm/gtx/string_cast.hpp>
 #include "../Screen.hpp"
 #include "../Shared.hpp"
 #include "LightRendererAttachment.hpp"
@@ -53,7 +44,6 @@ namespace Entropy {
         shared_ptr<Shader> debugShader;
         shared_ptr<Shader> instanceShader;
         shared_ptr<Shader> debugLineShader;
-        shared_ptr<Shader> mergeShader;
         shared_ptr<Shader> builtinCircleShader;
         std::vector<Renderable *> objects = std::vector<Renderable *>();
 
@@ -71,6 +61,8 @@ namespace Entropy {
         void genUVBuffer(Renderable *_renderable);
 
       public:
+        shared_ptr<Shader> mergeShader;
+
         template <uint32 C>
         Ref<RenderInstance<C>> getRenderInstance(Ref<Renderable> renderable) {
             return make_shared<RenderInstance<C>>(renderable);
@@ -78,7 +70,8 @@ namespace Entropy {
 
         inline mat4 getViewProjectionMatrix() { return viewProjectionMatrix; }
 
-        map<string, RenderTarget> frameBuffers;
+        std::map<string, RenderTarget> frameBuffers;
+        std::set<string> layerTextures;
 
         void createRenderTarget(string name) { frameBuffers.insert({name, RenderTarget(screen)}); }
 
@@ -90,6 +83,27 @@ namespace Entropy {
             frameBuffers.at(name).texture.textureSlot = slot;
             frameBuffers.at(name).texture.bind();
         }
+
+        inline void clear() const { glClear(GL_COLOR_BUFFER_BIT); }
+
+        void beginLayer(string name) {
+            PROFILE_FUNCTION();
+            if (frameBuffers.find(name) != frameBuffers.end()) createRenderTarget(name);
+
+            bindRenderTarget(name);
+            clear();
+        }
+
+        void endLayer() {
+            PROFILE_FUNCTION();
+            unbindRenderTarget();
+        }
+
+        void blendLayers(string layer1, string layer2, shared_ptr<Shader> layerMergeShader) {
+            compositeTextures(frameBuffers.at(layer1).texture, frameBuffers.at(layer2).texture, layerMergeShader);
+        }
+
+        void compositeTextures(Texture &texture1, Texture &texture2, shared_ptr<Shader> layerMergeShader);
 
         /**
          * C is size of data

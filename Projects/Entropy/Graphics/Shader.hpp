@@ -19,14 +19,13 @@
 
 namespace Entropy {
 
+
     /*
      * Get File extension from File path or File Name
      */
     std::string getFileExtension(std::string filePath);
 
-    GLuint LoadShaders(const char *vertex_file_path,
-
-                       const char *fragment_file_path);
+    GLuint LoadShaders(const char *vertex_file_path, const char *fragment_file_path);
     class Shader {
       private:
         GLuint shaderID;
@@ -50,13 +49,12 @@ namespace Entropy {
         bool initialised = false;
         static std::string fragmentShaderExtension, vertexShaderExtension;
 
-        Shader() : initialised(true) {
-            shaderID =
-                LoadShaders("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader");
-        }
+        Shader() : Shader("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader") {}
 
         Shader(const std::string &vertexShader, const std::string &fragmentShader)
-            : initialised(true), fragmentShaderPath(fragmentShader), vertexShaderPath(vertexShader) {
+            : initialised(true),
+              fragmentShaderPath(std::string(App::shaderAssetPath) + "/" + fragmentShader),
+              vertexShaderPath(std::string(App::shaderAssetPath) + "/" + vertexShader) {
             shaderID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
 
             checkExtensions(vertexShader, fragmentShader);

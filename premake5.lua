@@ -81,7 +81,8 @@ project "Entropy"
 	-- It would be better to separate header files in a folder and sources
 	-- in another, but for our simple project we will put everything in the same place.
 	-- Note: ** means recurse in subdirectories, so it will get all the files in ExampleLib/
-	files "Projects/Entropy/**"
+	files ("Projects/Entropy/**.cpp", "Projects/Entropy/pch.gch")
+
 
 	filter { "system:macosx" }
 		links { "/System/Library/Frameworks/OpenGL.framework" }

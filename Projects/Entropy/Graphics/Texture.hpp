@@ -33,10 +33,16 @@ namespace Entropy {
         Texture(GLuint id) : obj_(id) {}
         Texture() {}
 
-        inline void bind() {
+        inline void bind() const {
             glActiveTexture(textureSlot);
             glBindTexture(GL_TEXTURE_2D, obj_);
         }
+
+        inline void bind(GLenum slot) {
+            textureSlot = slot;
+            bind();
+        }
+
         // Free up the texture.
         ~Texture() { Release(); }
 
@@ -58,5 +64,7 @@ namespace Entropy {
             return *this;
         }
     };
-
+    namespace App {
+        inline constexpr std::string_view texureAssetPath = "../Resources/Assets/images";
+    }
 }  // namespace Entropy

@@ -159,36 +159,8 @@ namespace Entropy {
         for (auto obj : objects) { render(obj); }
 
         unbindRenderTarget();
-
-        bindRenderTarget("light");
-        glClear(GL_COLOR_BUFFER_BIT);
-        // renderAntiShadows();
-        renderLights();
-
-        unbindRenderTarget();
-
-        mat4 MVP = getViewProjectionMatrix() *
-                   (glm::translate(mat4(1.0f), (vec3(320,240,0))) * glm::scale(mat4(1.0f), vec3(320, 240, 1)));
-
-        bindRenderTexture("scene", GL_TEXTURE0);
-        bindRenderTexture("light", GL_TEXTURE1);
-        GL_LOG("bind vertex array");
-
-        mergeShader->bind();
-        GL_LOG("bind vertex array");
-
-        mergeShader->uniformMatrix4fv("VP", MVP);
-        mergeShader->uniform1i("texSampler", 0);
-        mergeShader->uniform1i("texSampler1", 1);
-        // debugShader->uniform3f("inColor", colour.x, colour.y, colour.z);
-
-        debugQuad->arrayBuffer.bind();
-        GL_LOG("bind vertex array");
-
-        glDrawArrays(GL_TRIANGLES, 0, debugQuad->Vertices.size());
-        GL_LOG("bind vertex array");
         
-        glViewport(0, 0, 640 * 2, 480 * 2);
+        // glViewport(0, 0, 640 * 2, 480 * 2);
         vertexArray.bind();
 
         glUseProgram(programID);
@@ -219,18 +191,18 @@ namespace Entropy {
     }
 
     void m_2dRenderer::renderLine(const vec3 &p1, const vec3 &p2) {
-        PROFILE_FUNCTION();
-        vertexArray.bind();
-        Vertex verts[] = {Vertex(screen.localSpace(p1)), Vertex(screen.localSpace(p2))};
+        // PROFILE_FUNCTION();
+        // vertexArray.bind();
+        // Vertex verts[] = {Vertex(screen.localSpace(p1)), Vertex(screen.localSpace(p2))};
 
-        VertexBuffer vbo(0, sizeof(verts), verts, GL_STREAM_DRAW);
-        debugLineShader->bind();
-        vbo.bind();
+        // VertexBuffer vbo(0, sizeof(verts), verts, GL_STREAM_DRAW);
+        // debugLineShader->bind();
+        // vbo.bind();
 
-        Vertex::assertLayout();
+        // Vertex::assertLayout();
 
-        glDrawArrays(GL_LINES, 0, 2);  // Starting from vertex 0; 3 Vertices total . 1 RightTriangle
-        GL_LOG("draw arrays ");
+        // glDrawArrays(GL_LINES, 0, 2);  // Starting from vertex 0; 3 Vertices total . 1 RightTriangle
+        // GL_LOG("draw arrays ");
     }
 
     void m_2dRenderer::renderOutline(const Renderable &_renderable) {
@@ -253,7 +225,7 @@ namespace Entropy {
     void m_2dRenderer::renderQuad(vec3 position, float width, float height, bool hollow, vec3 colour) {
         PROFILE_FUNCTION();
 
-        mat4 MVP = getViewProjectionMatrix() *
+        const mat4 MVP = getViewProjectionMatrix() *
                    (glm::translate(mat4(1.0f), (position)) * glm::scale(mat4(1.0f), vec3(width, height, 1)));
 
         debugShader->bind();
@@ -283,6 +255,29 @@ namespace Entropy {
         vertexArray.bind();
         GL_LOG("Render");
     }
+
+    void m_2dRenderer::compositeTextures(Texture &texture1, Texture &texture2, shared_ptr<Shader> layerMergeShader) {
+            PROFILE_FUNCTION();
+            const mat4 MVP = getViewProjectionMatrix() * (glm::translate(mat4(1.0f), (vec3(320, 240, 0))) *
+                                                          glm::scale(mat4(1.0f), vec3(320, 240, 1)));
+
+            texture1.bind(GL_TEXTURE0);
+            texture2.bind(GL_TEXTURE1);
+            GL_LOG("bind vertex array");
+
+            layerMergeShader->bind();
+            GL_LOG("bind vertex array");
+
+            layerMergeShader->uniformMatrix4fv("VP", MVP);
+            layerMergeShader->uniform1i("texSampler", 0);
+            layerMergeShader->uniform1i("texSampler1", 1);
+
+            debugQuad->arrayBuffer.bind();
+            GL_LOG("bind vertex array");
+
+            glDrawArrays(GL_TRIANGLES, 0, debugQuad->Vertices.size());
+            GL_LOG("bind vertex array");
+        }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////// Class commands //////////////////////////////////

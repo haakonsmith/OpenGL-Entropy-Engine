@@ -8,7 +8,7 @@ using std::cerr;
 using std::endl;
 
 namespace Entropy {
-    Texture::Texture(std::string p) : path(p) {
+    Texture::Texture(std::string p) : path(std::string(App::texureAssetPath) + "/" + p) {
         int width, height, channels;
         stbi_set_flip_vertically_on_load(true);
         unsigned char* image = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
@@ -45,4 +45,5 @@ namespace Entropy {
     void Texture::upload(int width, int height, const void* data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     }
+
 }  // namespace Entropy

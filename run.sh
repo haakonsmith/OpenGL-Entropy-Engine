@@ -1,1 +1,2 @@
-./Build/Bin/Trespass/Debug/play.app
+./Build/Bin/Trespass/Debug/Mac/Trespass.app/Contents/MacOS/Trespass
+# open Build/Bin/Trespass/Debug/Mac/Trespass.app
