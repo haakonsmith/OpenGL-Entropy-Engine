@@ -19,6 +19,9 @@
 
 namespace Entropy {
 
+    namespace App {
+        inline constexpr std::string_view shaderAssetPath = "../Resources/Assets/";
+    }
 
     /*
      * Get File extension from File path or File Name
@@ -53,8 +56,10 @@ namespace Entropy {
 
         Shader(const std::string &vertexShader, const std::string &fragmentShader)
             : initialised(true),
-              fragmentShaderPath(std::string(App::shaderAssetPath) + "/" + fragmentShader),
-              vertexShaderPath(std::string(App::shaderAssetPath) + "/" + vertexShader) {
+              fragmentShaderPath(std::string(App::shaderAssetPath) + fragmentShader)    ,
+              vertexShaderPath(std::string(App::shaderAssetPath) + vertexShader) {
+
+            std::cout << "test" << (std::string(App::shaderAssetPath)) << std::endl;
             shaderID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
 
             checkExtensions(vertexShader, fragmentShader);

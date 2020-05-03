@@ -64,6 +64,7 @@ namespace Entropy {
             return *this;
         }
     };
+    
     namespace App {
         inline constexpr std::string_view texureAssetPath = "../Resources/Assets/images";
     }

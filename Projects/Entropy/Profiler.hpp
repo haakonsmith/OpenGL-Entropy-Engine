@@ -105,7 +105,7 @@ namespace Entropy {
                 profileFile.flush();
                 profileFile.close();
 
-                system("python Tracing/pack_zip.py");
+                system("python3 Tracing/pack_zip.py");
             }
         };
 

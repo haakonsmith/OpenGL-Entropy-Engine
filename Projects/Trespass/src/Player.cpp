@@ -23,7 +23,7 @@ void Player::update() {
             world->removeObject(enemies[i].get());
             enemies.erase(enemies.begin() + i);
         }
-        
+
         enemies[i]->data.velocity = normalize(getPosition() - enemies[i]->getPosition()) * 100.0f;
     }
 
@@ -55,8 +55,9 @@ void Player::shootBullet() {
         enemy_Reference->transform.compute();
     }
 
-    vec3 direction = vec3(vec3(
-        glm::rotate(mat4(1.0f), glm::radians((float)transform.rotation - 45), glm::vec3(0.0f, 0.0f, 1.0f)) * vec4(1, 0, 0, 0)));
+    vec3 direction =
+        vec3(vec3(glm::rotate(mat4(1.0f), glm::radians((float)transform.rotation - 45), glm::vec3(0.0f, 0.0f, 1.0f)) *
+                  vec4(1, 0, 0, 0)));
 
     shared_ptr<Bullet> bullet = make_shared<Bullet>(getPosition(), direction);
 
@@ -85,7 +86,6 @@ Player::Player() : Entropy::GameObject() {
 
     GL_LOG("create ");
 
-    
     enemy_Reference->shader = make_shared<Entropy::Shader>("shaders/Instance.vertexshader", "shaders/Instance.fragmentshader");
 }
 

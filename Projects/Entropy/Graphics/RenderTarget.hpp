@@ -47,9 +47,9 @@ namespace Entropy {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
-        static void unbind() {
+        static void unbind(const Screen& screen) {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glViewport(0, 0, 640 * 4, 480 * 4);
+            glViewport(0, 0, screen.sizeX * 2, screen.sizeY * 2);
         }
 
         inline void bind() {

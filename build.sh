@@ -16,7 +16,7 @@ assemble_app_file()
     CMD_EXEC="./Build/Bin/Trespass/Debug/play.app"
     APP_NAME="Trespass"
     APP="./Build/Bin/Trespass/Debug/Mac/Trespass"
-    mkdir -vp ${APP}.app/Contents/MacOS ${APP}.app/Contents/Resources # Create the folders.
+    mkdir -vp ${APP}.app/Contents/MacOS ${APP}.app/Contents/Resources ${APP}.app/Contents/Resources/lib ${APP}.app/Contents/MacOS/Tracing # Create the folders.
     PATH="$PATH:/usr/libexec" # Make sure PlistBuddy is in the PATH.
 
     # printf '#!/usr/bin/osascript\ntell application "Terminal"\n\tactivate\n\tdo script "top"\nend tell\n' > ${APP}.app/Contents/MacOS/${APP_NAME}

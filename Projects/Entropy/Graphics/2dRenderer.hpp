@@ -39,8 +39,6 @@ namespace Entropy {
 
         shared_ptr<Renderable> debugQuad;
         VertexArray vertexArray;
-        GLuint programID;
-        GLuint debugCenterShader;
         shared_ptr<Shader> debugShader;
         shared_ptr<Shader> instanceShader;
         shared_ptr<Shader> debugLineShader;
@@ -77,7 +75,7 @@ namespace Entropy {
 
         void bindRenderTarget(string name) { frameBuffers.at(name).bind(); };
 
-        void unbindRenderTarget() { RenderTarget::unbind(); };
+        void unbindRenderTarget() { RenderTarget::unbind(screen); };
 
         void bindRenderTexture(string name, GLenum slot) {
             frameBuffers.at(name).texture.textureSlot = slot;

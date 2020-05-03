@@ -163,7 +163,7 @@ namespace Entropy {
         // glViewport(0, 0, 640 * 2, 480 * 2);
         vertexArray.bind();
 
-        glUseProgram(programID);
+        program->bind();
 
         if (debugOutline) {
             for (auto obj : objects) renderOutline(*obj);
@@ -191,18 +191,18 @@ namespace Entropy {
     }
 
     void m_2dRenderer::renderLine(const vec3 &p1, const vec3 &p2) {
-        // PROFILE_FUNCTION();
-        // vertexArray.bind();
-        // Vertex verts[] = {Vertex(screen.localSpace(p1)), Vertex(screen.localSpace(p2))};
+        PROFILE_FUNCTION();
+        vertexArray.bind();
+        Vertex verts[] = {Vertex(screen.localSpace(p1)), Vertex(screen.localSpace(p2))};
 
-        // VertexBuffer vbo(0, sizeof(verts), verts, GL_STREAM_DRAW);
-        // debugLineShader->bind();
-        // vbo.bind();
+        VertexBuffer vbo(0, sizeof(verts), verts, GL_STREAM_DRAW);
+        debugLineShader->bind();
+        vbo.bind();
 
-        // Vertex::assertLayout();
+        Vertex::assertLayout();
 
-        // glDrawArrays(GL_LINES, 0, 2);  // Starting from vertex 0; 3 Vertices total . 1 RightTriangle
-        // GL_LOG("draw arrays ");
+        glDrawArrays(GL_LINES, 0, 2);  // Starting from vertex 0; 3 Vertices total . 1 RightTriangle
+        GL_LOG("draw arrays ");
     }
 
     void m_2dRenderer::renderOutline(const Renderable &_renderable) {
@@ -315,11 +315,6 @@ namespace Entropy {
 
         std::cout << "starting renderer init" << std::endl;
 
-        programID =
-            LoadShaders("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader");
-
-        debugCenterShader = LoadShaders("shaders/centerDebug.vertexshader", "shaders/centerDebug.fragmentshader");
-
         debugShader =
             shared_ptr<Shader>(new Shader("shaders/debug/red.vertexshader", "shaders/debug/red.fragmentshader"));
         debugLineShader =
@@ -348,15 +343,6 @@ namespace Entropy {
     }
 
     m_2dRenderer::~m_2dRenderer() {
-        // glDeleteProgram(programID);
-        // glDeleteProgram(debugLineShaderID);
-        // glDeleteProgram(debugShaderID);
-        glDeleteProgram(debugCenterShader);
-
-        // for (auto v : objects)
-        //   if (!dynamic_cast<Renderable>(v))
-        //     delete v;
-
         objects.clear();
 
         std::cout << "Cleaning up renderer" << std::endl;
