@@ -191,18 +191,18 @@ namespace Entropy {
     }
 
     void m_2dRenderer::renderLine(const vec3 &p1, const vec3 &p2) {
-        PROFILE_FUNCTION();
-        vertexArray.bind();
-        Vertex verts[] = {Vertex(screen.localSpace(p1)), Vertex(screen.localSpace(p2))};
+        // PROFILE_FUNCTION();
+        // vertexArray.bind();
+        // Vertex verts[] = {Vertex(screen.localSpace(p1)), Vertex(screen.localSpace(p2))};
 
-        VertexBuffer vbo(0, sizeof(verts), verts, GL_STREAM_DRAW);
-        debugLineShader->bind();
-        vbo.bind();
+        // VertexBuffer vbo(0, sizeof(verts), verts, GL_STREAM_DRAW);
+        // debugLineShader->bind();
+        // vbo.bind();
 
-        Vertex::assertLayout();
+        // Vertex::assertLayout();
 
-        glDrawArrays(GL_LINES, 0, 2);  // Starting from vertex 0; 3 Vertices total . 1 RightTriangle
-        GL_LOG("draw arrays ");
+        // glDrawArrays(GL_LINES, 0, 2);  // Starting from vertex 0; 3 Vertices total . 1 RightTriangle
+        // GL_LOG("draw arrays ");
     }
 
     void m_2dRenderer::renderOutline(const Renderable &_renderable) {

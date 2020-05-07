@@ -14,5 +14,6 @@ void main()
     vec4 srcColour = texture( texSampler, UV.xy );
     vec4 lightColour = texture( texSampler1, UV.xy );
 
-	color = vec4( srcColour.rgb * lightColour.rgb * lightColour.a, srcColour.a );
+	// color = vec4( srcColour.rgb * lightColour.rgb * lightColour.a, srcColour.a );
+	color = vec4( srcColour.rgb, srcColour.a );
 }

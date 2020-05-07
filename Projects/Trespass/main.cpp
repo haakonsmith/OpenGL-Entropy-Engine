@@ -61,7 +61,7 @@ class Trespass : public Entropy::BaseApplication {
 
     Entropy::m_2dRenderer* renderer;
 
-    Renderable* tri;
+    shared_ptr<Renderable> tri;
 
     Entropy::PhysicsEngine* world;
 
@@ -102,7 +102,7 @@ class Trespass : public Entropy::BaseApplication {
             Vertex(-1.0f, 1.0f, 0.0f),   // x,y,z vertex 3
         };
 
-        tri = new Renderable(Rectangle());
+        tri = shared_ptr<Renderable>(new Renderable(Rectangle()));
 
         tri->setPosition(vec3(320.0f, 240.0f, 0.0f));
         tri->setScale(vec3(320, 240, 0));
@@ -135,7 +135,7 @@ class Trespass : public Entropy::BaseApplication {
 
         quad->setScale(vec3(10.0f, 10.0f, 0.1f));
         renderer->addRenderable(quad.get());
-        renderer->addRenderable(tri);
+        renderer->addRenderable(tri.get());
         player->setScale(vec3(10.0f, 10.0f, 0.1f));
         renderer->addRenderable(player.get());
 
@@ -255,7 +255,7 @@ class Trespass : public Entropy::BaseApplication {
 
             {
                 PROFILE_SCOPE("GPU Renderering");
-                glFinish();
+                // glFinish();
                 glfwSwapBuffers(window);
             }
             PROFILE_CALL(glfwPollEvents());

@@ -3,7 +3,17 @@ MAKE_COMMAND="make -C Generated/"
 
 case $1 in
     "Trespass")
-        eval $MAKE_COMMAND $1
+        case $2 in
+            "release")
+                echo "Args: ${@:3}"
+                eval $MAKE_COMMAND "${@:3}" "config=release"
+                assemble_app_file release
+            ;;
+            "debug")
+                eval $MAKE_COMMAND "${@:3}" "config=debug"
+                assemble_app_file debug
+            ;;
+        esac
         ;;
     "Clean")
         eval "$(rm -rf Build/Obj/Entropy/*)"
@@ -13,9 +23,9 @@ esac
 
 assemble_app_file()
 {
-    CMD_EXEC="./Build/Bin/Trespass/Debug/play.app"
+    CMD_EXEC="./Build/Bin/Trespass/${$1}/play.app"
     APP_NAME="Trespass"
-    APP="./Build/Bin/Trespass/Debug/Mac/Trespass"
+    APP="./Build/Bin/Trespass/${$1}/Mac/Trespass"
     mkdir -vp ${APP}.app/Contents/MacOS ${APP}.app/Contents/Resources ${APP}.app/Contents/Resources/lib ${APP}.app/Contents/MacOS/Tracing # Create the folders.
     PATH="$PATH:/usr/libexec" # Make sure PlistBuddy is in the PATH.
 
@@ -30,7 +40,7 @@ assemble_app_file()
     cp ${CMD_EXEC} ${APP}.app/Contents/MacOS/${APP_NAME}
     
     echo "Updating assets..."
-    rsync -avzh -p -u ./Assets/ ./${APP}.app/Contents/Resources/Assets/
+    rsync -t -v -h -r -P ./Assets/ ./${APP}.app/Contents/Resources/Assets/
 
     chmod +x ${APP}.app/Contents/MacOS/${APP_NAME} # Sets the executable flag.
     
@@ -48,4 +58,3 @@ assemble_app_file()
     # open ${APP}.app # Run the app
 }
 
-assemble_app_file

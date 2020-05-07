@@ -30,7 +30,7 @@ enum Coordinates { x, y, z };
 #define PROFILE_SCOPE(LOCATION) Entropy::Performance::Timer entropy_performance_timer(LOCATION)
 
 #else
-#define PROFILE_SCOPE() \
+#define PROFILE_SCOPE(LOCATION) \
     do {                \
     } while (0)
 #endif
@@ -40,7 +40,7 @@ enum Coordinates { x, y, z };
     if (auto error = glGetError()) \
     std::cout << "OpenGL error " << error << " at " << LOCATION << " " << __LINE__ << std::endl
 #else
-#define GL_LOG() \
+#define GL_LOG(LOCATION) \
     do {         \
     } while (0)
 #endif
@@ -48,7 +48,7 @@ enum Coordinates { x, y, z };
 #ifdef NDEBUG
 #define LOG(MESSAGE) std::cout << MESSAGE << " at line:" << __LINE__ << std::endl
 #else
-#define LOG() \
+#define LOG(MESSAGE) \
     do {      \
     } while (0)
 #endif
