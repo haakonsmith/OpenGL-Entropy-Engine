@@ -1,0 +1,24 @@
+#version 330 core
+
+// Interpolated values from the vertex shaders
+in vec3 UV;
+
+uniform vec3 light;
+
+uniform vec3 lightColour;
+uniform float intensity;
+const float spread = 1;
+
+// Output data
+out vec4 color;
+
+void main()
+{
+    vec2 screenUV = vec2((UV.xy / UV.z) * 0.5f + 0.5f);
+
+    float dist = distance(light.xy, screenUV);
+
+    float attenuation = 1.0 / (1.0 + spread*dist + (10/intensity)*(dist*dist));
+
+	color = vec4(lightColour, attenuation);
+}

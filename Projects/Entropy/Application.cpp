@@ -2,12 +2,13 @@
 
 #include <GLFW/glfw3.h>
 
-#include <iostream>
+#include <iosfwd>
 #include <stdexcept>
 
 using namespace std;
 
 namespace Entropy {
+    
     void BaseApplication::mainLoop() {
         while (!glfwWindowShouldClose(window)) { loop(); }
     }
@@ -32,21 +33,21 @@ namespace Entropy {
             throw std::runtime_error("GLFW failed");
         }
 
-        glClearColor(0.0, 0.0, 0.0, 0.0);               // Set the cleared screen colour to black
-        glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);  // This sets up the viewport so that the
+        // glClearColor(0.0, 0.0, 0.0, 0.0);               // Set the cleared screen colour to black
+        // glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);  // This sets up the viewport so that the
                                                         // coordinates (0, 0) are at the top left of
                                                         // the window
 
         // Set up the orthographic projection so that coordinates (0, 0) are in
         // the top left and the minimum and maximum depth is -10 and 10. To
         // enable depth just put in glEnable(GL_DEPTH_TEST)
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -10, 10);
+        // glMatrixMode(GL_PROJECTION);
+        // glLoadIdentity();
+        // glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -10, 10);
 
         // Back to the modelview so we can draw stuff
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+        // glMatrixMode(GL_MODELVIEW);
+        // glLoadIdentity();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear the screen and depth buffer
 
         glfwMakeContextCurrent(window);
@@ -55,6 +56,7 @@ namespace Entropy {
     }
 
     BaseApplication::BaseApplication() {
+        App::screen = Screen(640, 480);
         cout << "Starting initialization... " << endl;
 
         glfwSetErrorCallback(&glfwError);

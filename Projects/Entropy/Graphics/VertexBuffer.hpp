@@ -19,8 +19,8 @@ namespace Entropy {
         VertexBuffer(unsigned int vbo, int size, Vertex *vertices, GLenum drawType)
             : BufferObject<GL_ARRAY_BUFFER>(vbo, size, vertices, drawType) {}
 
-        void BufferData(uint32_t size, const void *data, GLenum drawType) override {
-            BufferObject<GL_ARRAY_BUFFER>::BufferData(size, data, drawType);
+        void bufferData(uint32_t size, const void *data, GLenum drawType) override {
+            BufferObject<GL_ARRAY_BUFFER>::bufferData(size, data, drawType);
         }
     };
 }  // namespace Entropy

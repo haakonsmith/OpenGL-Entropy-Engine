@@ -9,20 +9,26 @@
 #define GL_SILENCE_DEPRECATION
 #include <GLFW/glfw3.h>
 
-#include <iostream>
+#include <iosfwd>
+
+#include "Screen.hpp"
+#include "Shared.hpp"
 #else
 #error "BaseApplication included twice"
 #endif
 
+#pragma once
+
 namespace Entropy {
     class BaseApplication {
-      private:
+      protected:
+
         void initWindow(unsigned int SCREEN_WIDTH, unsigned int SCREEN_HEIGHT);
 
       public:
-        static void glfwError(int id, const char *description) {
-            std::cout << description << std::endl;
-        }
+        static void glfwError(int id, const char *description) { std::cout << description << std::endl; }
+
+        static Screen &getScreen() { return App::screen; }
 
         static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 

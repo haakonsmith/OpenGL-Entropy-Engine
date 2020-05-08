@@ -7,4 +7,7 @@
 	<FileRef
 		location = "group:Trespass.xcodeproj">
 	</FileRef>
+	<FileRef
+		location = "group:UnitTests.xcodeproj">
+	</FileRef>
 </Workspace>

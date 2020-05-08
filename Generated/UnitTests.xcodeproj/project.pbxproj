@@ -1,0 +1,302 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9071C6BC7608CDEE394DDCFC /* libEntropy.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F568B7A44F69CE9616B0C5E4 /* libEntropy.dylib */; };
+		B68AC1CC0D182C3EE591400C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E21F5234E590246666FCC874 /* main.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2563FC737BF166E5546A7AB3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F260E602245A30B49E396C42 /* Entropy.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A8F6FB9393E32185DBC8E9D3;
+			remoteInfo = libEntropy.dylib;
+		};
+		779E6F0CCE2BD97EA6A4ED4C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F260E602245A30B49E396C42 /* Entropy.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = E8342D190E5A5CCB75615359;
+			remoteInfo = libEntropy.dylib;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		88A3BEDC8C14910E0D81351C /* UnitTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = UnitTests; path = UnitTests; sourceTree = BUILT_PRODUCTS_DIR; };
+		CCCC4276FDB03A6810C870B6 /* Texture.hpp */ = {isa = PBXFileReference; lastKnownFileType = text; name = Texture.hpp; path = ../Projects/EntropyUnitTests/Graphics/Texture.hpp; sourceTree = "<group>"; };
+		E21F5234E590246666FCC874 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../Projects/EntropyUnitTests/main.cpp; sourceTree = "<group>"; };
+		F260E602245A30B49E396C42 /* libEntropy.dylib */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Entropy.xcodeproj"; path = Entropy.xcodeproj; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A570A64C48BC2F7E638CFC8C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9071C6BC7608CDEE394DDCFC /* libEntropy.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2183102A24F3E25CA660866A /* Graphics */ = {
+			isa = PBXGroup;
+			children = (
+				CCCC4276FDB03A6810C870B6 /* Texture.hpp */,
+			);
+			name = Graphics;
+			sourceTree = "<group>";
+		};
+		9D968EAA920D05DCE0E0A4EA /* Projects */ = {
+			isa = PBXGroup;
+			children = (
+				F260E602245A30B49E396C42 /* Entropy.xcodeproj */,
+			);
+			name = Projects;
+			sourceTree = "<group>";
+		};
+		A6C936B49B3FADE6EA134CF4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				88A3BEDC8C14910E0D81351C /* UnitTests */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C85C475310CD2B85556BFD93 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F568B7A44F69CE9616B0C5E4 /* libEntropy.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F8779B337BBCF8A5A5047973 /* UnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				2183102A24F3E25CA660866A /* Graphics */,
+				E21F5234E590246666FCC874 /* main.cpp */,
+				A6C936B49B3FADE6EA134CF4 /* Products */,
+				9D968EAA920D05DCE0E0A4EA /* Projects */,
+			);
+			name = UnitTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		06412B4234E77F348E28D982 /* UnitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93ABEEAB36F777DD51C844EB /* Build configuration list for PBXNativeTarget "UnitTests" */;
+			buildPhases = (
+				155826ECB8A3B01ED3747D2C /* Resources */,
+				7F0540432250C9753D219683 /* Sources */,
+				A570A64C48BC2F7E638CFC8C /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B614845CFE85688E43243A9C /* PBXTargetDependency */,
+			);
+			name = UnitTests;
+			productInstallPath = "$(HOME)/bin";
+			productName = UnitTests;
+			productReference = 88A3BEDC8C14910E0D81351C /* UnitTests */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "UnitTests" */;
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 1;
+			mainGroup = F8779B337BBCF8A5A5047973 /* UnitTests */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = C85C475310CD2B85556BFD93 /* Products */;
+					ProjectRef = F260E602245A30B49E396C42 /* Entropy.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				06412B4234E77F348E28D982 /* UnitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		F568B7A44F69CE9616B0C5E4 /* libEntropy.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libEntropy.dylib;
+			remoteRef = 2563FC737BF166E5546A7AB3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		155826ECB8A3B01ED3747D2C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7F0540432250C9753D219683 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B68AC1CC0D182C3EE591400C /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B614845CFE85688E43243A9C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libEntropy.dylib;
+			targetProxy = 779E6F0CCE2BD97EA6A4ED4C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		13405BF15BB14023A0501231 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../Build/Bin/UnitTests/Debug;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_DYNAMIC_NO_PIC = NO;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = UnitTests;
+			};
+			name = Debug;
+		};
+		2B8A372B53C4EFDD3B607D6B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../Build/Bin/UnitTests/Release;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_DYNAMIC_NO_PIC = NO;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = UnitTests;
+			};
+			name = Release;
+		};
+		596E5522FDC0F2D40FF93B62 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++1z";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					PROFILE,
+					NDEBUG,
+					CATCH_CPP11_OR_GREATER,
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LIBRARY_SEARCH_PATHS = (
+					../Libraries/GLFW/Lib,
+				);
+				OBJROOT = ../Build/Obj/UnitTests/Debug;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = (
+					"-Wdeprecated-declarations",
+					"-ftime-report",
+				);
+				OTHER_LDFLAGS = (
+					"-lglfw",
+				);
+				SYMROOT = ../Build/Bin/UnitTests/Debug;
+				USER_HEADER_SEARCH_PATHS = (
+					../Libraries/Cute,
+					../Libraries/Catch,
+					../Libraries,
+					../Projects/Entropy,
+				);
+			};
+			name = Debug;
+		};
+		62BFFFDC6630D20EE79D761C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++1z";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					PROFILE,
+					CATCH_CPP11_OR_GREATER,
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LIBRARY_SEARCH_PATHS = (
+					../Libraries/GLFW/Lib,
+				);
+				OBJROOT = ../Build/Obj/UnitTests/Release;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-lglfw",
+				);
+				SYMROOT = ../Build/Bin/UnitTests/Release;
+				USER_HEADER_SEARCH_PATHS = (
+					../Libraries/Cute,
+					../Libraries/Catch,
+					../Libraries,
+					../Projects/Entropy,
+				);
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "UnitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				596E5522FDC0F2D40FF93B62 /* Debug */,
+				62BFFFDC6630D20EE79D761C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		93ABEEAB36F777DD51C844EB /* Build configuration list for PBXNativeTarget "UnitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				13405BF15BB14023A0501231 /* Debug */,
+				2B8A372B53C4EFDD3B607D6B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+};
+rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

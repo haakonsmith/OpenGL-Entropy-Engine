@@ -6,25 +6,19 @@
 #define GL_SILENCE_DEPRECATION
 #define M_2DRENDERER
 #include <GLFW/glfw3.h>
-#include <OpenGL/gl3.h>
 
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <sstream>
-#include <string>
-#include <vector>
-
-#include "RenderInstance.hpp"
+#include "../pch.gch"
+#include "2dRenderInstance.hpp"
+#include "2dRenderInterface.hpp"
 #include "RenderTarget.hpp"
 #include "Renderable.hpp"
 #include "Shader.hpp"
 #include "Vertex.hpp"
 #include "VertexBuffer.hpp"
 // #define GLM_ENABLE_EXPERIMENTAL
-#include "glm/glm.hpp"
-// #include <glm/gtx/string_cast.hpp>
+#include "../Screen.hpp"
 #include "../Shared.hpp"
+#include "LightRendererAttachment.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #else
@@ -33,23 +27,22 @@
 
 #pragma once
 namespace Entropy {
-    class m_2dRenderer {
+    class m_2dRenderer : public LightRendererAttachment {
       private:
-        unsigned int SCREEN_WIDTH, SCREEN_HEIGHT;
-
         bool debugOutline = false, debugCenter = false;
 
-        mat4 viewMatrix, projectionMatrix;
+        mat4 viewMatrix, projectionMatrix, viewProjectionMatrix;
 
         shared_ptr<Shader> program;
 
+        Screen &screen;
+
         shared_ptr<Renderable> debugQuad;
-        GLuint VertexArrayID;
-        GLuint programID;
-        GLuint debugCenterShader;
+        VertexArray vertexArray;
         shared_ptr<Shader> debugShader;
         shared_ptr<Shader> instanceShader;
         shared_ptr<Shader> debugLineShader;
+        shared_ptr<Shader> builtinCircleShader;
         std::vector<Renderable *> objects = std::vector<Renderable *>();
 
         /**
@@ -66,75 +59,56 @@ namespace Entropy {
         void genUVBuffer(Renderable *_renderable);
 
       public:
+        shared_ptr<Shader> mergeShader;
+
         template <uint32 C>
         Ref<RenderInstance<C>> getRenderInstance(Ref<Renderable> renderable) {
             return make_shared<RenderInstance<C>>(renderable);
         }
 
-        map<string, RenderTarget> frameBuffers;
+        inline mat4 getViewProjectionMatrix() { return viewProjectionMatrix; }
 
-        void createRenderTarget(string name) {
-            // The framebuffer, which regroups 0, 1, or more textures, and 0 or
-            // 1 depth buffer.
-            frameBuffers.insert({name, RenderTarget()});
+        std::map<string, RenderTarget> frameBuffers;
+        std::set<string> layerTextures;
 
-            frameBuffers[name].FrameBuffer = 0;
-            glGenFramebuffers(1, &frameBuffers[name].FrameBuffer);
-            glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[name].FrameBuffer);
+        void createRenderTarget(string name) { frameBuffers.insert({name, RenderTarget(screen)}); }
 
-            // The texture we're going to render to
-            frameBuffers[name].Texture = 0;
-            glGenTextures(1, &frameBuffers[name].Texture);
+        void bindRenderTarget(string name) { frameBuffers.at(name).bind(); };
 
-            // "Bind" the newly created texture : all future texture functions
-            // will modify this texture
-            glBindTexture(GL_TEXTURE_2D, frameBuffers[name].Texture);
+        void unbindRenderTarget() { RenderTarget::unbind(screen); };
 
-            // Give an empty image to OpenGL ( the last "0" )
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-
-            // Poor filtering. Needed !
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-            // Set "renderedTexture" as our colour attachement #0
-            glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, frameBuffers[name].Texture, 0);
-
-            // Set the list of draw buffers.
-            GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-            glDrawBuffers(1, DrawBuffers);  // "1" is the size of DrawBuffers
-
-            // Always check that our framebuffer is ok
-            if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-                throw "Failed to create frame buffer";
-
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        void bindRenderTexture(string name, GLenum slot) {
+            frameBuffers.at(name).texture.textureSlot = slot;
+            frameBuffers.at(name).texture.bind();
         }
 
-        void bindRenderTarget(string name) {
-            glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[name].FrameBuffer);
+        inline void clear() const { glClear(GL_COLOR_BUFFER_BIT); }
 
-            // Render to our framebuffer
-            glBindFramebuffer(GL_FRAMEBUFFER, frameBuffers[name].FrameBuffer);
-            glViewport(0, 0, SCREEN_WIDTH,
-                       SCREEN_HEIGHT);  // Render on the whole framebuffer,
-                                        // complete from the lower left corner
-                                        // to the upper right
-        };
+        void beginLayer(string name) {
+            PROFILE_FUNCTION();
+            if (frameBuffers.find(name) != frameBuffers.end()) createRenderTarget(name);
+
+            bindRenderTarget(name);
+            clear();
+        }
+
+        void endLayer() {
+            PROFILE_FUNCTION();
+            unbindRenderTarget();
+        }
+
+        void blendLayers(string layer1, string layer2, shared_ptr<Shader> layerMergeShader) {
+            compositeTextures(frameBuffers.at(layer1).texture, frameBuffers.at(layer2).texture, layerMergeShader);
+        }
+
+        void compositeTextures(Texture &texture1, Texture &texture2, shared_ptr<Shader> layerMergeShader);
 
         /**
          * C is size of data
-         * Imperfect accuracy, possibly due to floating point precision.
+         * Imperfect position accuracy, possibly due to floating point precision.
          */
         template <uint32 C>
         void renderInstance(const RenderInstance<C> &Instance, uint32 renderCount = C);
-
-        /**
-         * Converts coordinate vector coordinate to OpenGL float space
-         */
-        glm::vec3 modelSpace(glm::vec3 coords);
-
-        glm::vec3 worldSpace(glm::vec3 coords);
 
         void removeRenderable(Renderable *renderable);
         /**
@@ -152,6 +126,7 @@ namespace Entropy {
 
         /**
          * Draw line between two world space points
+         * !!!Not state safe!!!
          */
         void renderLine(const vec3 &p1, const vec3 &p2);
 
@@ -185,12 +160,9 @@ namespace Entropy {
          */
         void drawOutline(bool val) { debugOutline = val; };
 
-        /**
-         * Update renderable model view matrix
-         */
-        void transform(Renderable *obj);
+        void renderCircle(vec3 position, float radius, bool hollow = false);
 
-        m_2dRenderer(unsigned int width, unsigned int height);
+        m_2dRenderer(Screen &_s);
         ~m_2dRenderer();
     };
 }  // namespace Entropy

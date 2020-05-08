@@ -7,16 +7,16 @@
 
 #define GL_SILENCE_DEPRECATION
 
-
-#include <vector>
-#include <map>
-#include <algorithm>
 #include <math.h>
-#include <cstring>
-#include <chrono>
-#include <thread>
-#include <functional>
 #include <unistd.h>
+
+#include <algorithm>
+#include <chrono>
+#include <cstring>
+#include <functional>
+#include <map>
+#include <thread>
+#include <vector>
 
 #define PI 3.1415926535897932384626433832795028841971693993
 
@@ -36,285 +36,249 @@
 // Include GLFW
 #include <GLFW/glfw3.h>
 
-#include <type_traits> 
-
+#include <type_traits>
 
 using namespace glm;
 
 #define NDEBUG
+#define PROFILE
+#define SUPPRESS
+
 #include <Entropy.hpp>
+
 #include "src/Bullet.hpp"
 #include "src/Player.hpp"
-
-
-
 
 using namespace Entropy;
 using namespace std;
 
-
-
-
 bool done = false;
 
-class Trespass : public Entropy::BaseApplication
-{
+class Trespass : public Entropy::BaseApplication {
+    double MouseXPos, MouseYPos;
 
-        double MouseXPos, MouseYPos;
+    int state;
 
-        int state;
-    
-        Entropy::m_2dRenderer* renderer;
+    Entropy::m_2dRenderer* renderer;
 
-        Renderable* tri;
+    shared_ptr<Renderable> tri;
 
-        Entropy::PhysicsEngine* world;
+    Entropy::PhysicsEngine* world;
 
-        shared_ptr<Player> player;
+    shared_ptr<Player> player;
 
-        shared_ptr<GameObject> quad;
-        shared_ptr<PhysicsObject> leftwall;
-        shared_ptr<PhysicsObject> rightwall;
-        shared_ptr<PhysicsObject> topwall;
-        shared_ptr<PhysicsObject> bottomwall;
+    shared_ptr<GameObject> quad;
+    shared_ptr<PhysicsObject> leftwall;
+    shared_ptr<PhysicsObject> rightwall;
+    shared_ptr<PhysicsObject> topwall;
+    shared_ptr<PhysicsObject> bottomwall;
 
-        double previousFrameTime;
+    shared_ptr<Light> light;
 
-        int i = 0;
+    double previousFrameTime;
 
-        std::chrono::time_point<std::chrono::high_resolution_clock> t_start;
-        std::chrono::time_point<std::chrono::high_resolution_clock> ent_start;
+    int i = 0;
 
+    std::chrono::time_point<std::chrono::high_resolution_clock> t_start;
+    std::chrono::time_point<std::chrono::high_resolution_clock> ent_start;
 
-    public:
+  public:
+    void init() override {
+        t_start = std::chrono::high_resolution_clock::now();
+        ent_start = std::chrono::high_resolution_clock::now();
+        player = make_shared<Player>();
 
-        void init() override {
-            t_start = std::chrono::high_resolution_clock::now();
-            ent_start = std::chrono::high_resolution_clock::now();
-            player = make_shared<Player>();
+        player->setPosition(vec3(320, 240, 0));
 
-            player->setPosition(vec3(320,240,0));
+        // Ensure we can capture the escape key being pressed below
+        glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
+        renderer = new Entropy::m_2dRenderer(getScreen());
+        // renderer->drawOutline(true);
+        std::vector<Vertex> vertices = {
+            Vertex(-1.0f, -1.0f, 0.0f),  // x,y,z vertex 1
+            Vertex(1.0f, -1.0f, 0.0f),   // x,y,z vertex 2
+            Vertex(1.0f, 1.0f, 0.0f),    // x,y,z vertex 3
+            Vertex(-1.0f, 1.0f, 0.0f),   // x,y,z vertex 3
+        };
 
-            // Ensure we can capture the escape key being pressed below
-            glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+        tri = shared_ptr<Renderable>(new Renderable(Rectangle()));
 
-            renderer = new Entropy::m_2dRenderer(640, 480);
-            renderer->drawOutline(true);
-            std::vector<Vertex> vertices = {
-                Vertex(-1.0f, -1.0f, 0.0f), // x,y,z vertex 1
-                Vertex(1.0f, -1.0f, 0.0f),  // x,y,z vertex 2
-                Vertex(1.0f, 1.0f, 0.0f),   // x,y,z vertex 3
-                Vertex(-1.0f, 1.0f, 0.0f),  // x,y,z vertex 3
-            };
+        tri->setPosition(vec3(320.0f, 240.0f, 0.0f));
+        tri->setScale(vec3(320, 240, 0));
+        tri->setTexture("floor.png");
+        tri->castsShadow = false;
 
-        
+        quad = make_shared<GameObject>(Rectangle());
 
-            tri = new Renderable(Rectangle());
+        quad->setPosition(vec3(350, 320, 0));
 
-            tri->setPosition(vec3(320.0f, 240.0f, 0.0f));
-            tri->setScale(320,240);
-            tri->setTexture(renderer->loadTexture("floor.png"));
+        quad->collider.boundingBox.width = 10;
+        quad->collider.boundingBox.height = 10;
+        quad->castsShadow = true;
 
-            quad = make_shared<GameObject>(Rectangle()); 
+        player->collider.boundingBox.width = 10;
+        player->collider.boundingBox.height = 10;
 
-            quad->setPosition(vec3(320,280,0));
+        player->data.physicsType = ACTIVE;
+        // renderer->drawOutline(true);
 
-            quad->PhysicsObject::Vertices = vertices;
+        light = shared_ptr<Light>(new Light());
 
-            quad->boundingBox.width = 10;
-            quad->boundingBox.height = 10;
+        light->position = vec3(380, 240, 0);
+        light->intensity = 10;
+        light->colour = vec3(1, 0, 1);
 
-            player->boundingBox.width = 10;
-            player->boundingBox.height = 10;
+        renderer->addLight(light.get());
+        player->castsShadow = true;
+        // light->position = vec3(320,240,0);
 
-            player->physicsType = ACTIVE;
-            GLuint positionBufferID;
-            glGenBuffers(1, &positionBufferID);
-            // renderer->drawOutline(true);
+        quad->setScale(vec3(10.0f, 10.0f, 0.1f));
+        renderer->addRenderable(quad.get());
+        renderer->addRenderable(tri.get());
+        player->setScale(vec3(10.0f, 10.0f, 0.1f));
+        renderer->addRenderable(player.get());
 
-            
+        leftwall = make_shared<PhysicsObject>();
+        leftwall->collider.boundingBox.height = 240;
+        leftwall->collider.boundingBox.width = 20;
+        leftwall->setPosition(vec3(-10, 240, 0));
 
+        rightwall = make_shared<PhysicsObject>();
+        rightwall->collider.boundingBox.height = 240;
+        rightwall->collider.boundingBox.width = 20;
+        rightwall->setPosition(vec3(650, 240, 0));
 
-            quad->setScale(10.0f,10.0f,0.1f);
-            renderer->addRenderable(quad.get());
-            renderer->addRenderable(tri);
-            player->setScale(10.0f,10.0f,0.1f);
-            renderer->addRenderable(player.get());
+        topwall = make_shared<PhysicsObject>();
+        topwall->collider.boundingBox.height = 20;
+        topwall->collider.boundingBox.width = 320;
+        topwall->setPosition(vec3(320, 490, 0));
 
-            leftwall = make_shared<PhysicsObject>();
-            leftwall->boundingBox.height = 240;
-            leftwall->boundingBox.width = 20;
-            leftwall->setPosition(vec3(-10,240,0));
+        bottomwall = make_shared<PhysicsObject>();
+        bottomwall->collider.boundingBox.height = 20;
+        bottomwall->collider.boundingBox.width = 320;
+        bottomwall->setPosition(vec3(320, -10, 0));
 
-            rightwall = make_shared<PhysicsObject>();
-            rightwall->boundingBox.height = 240;
-            rightwall->boundingBox.width = 20;
-            rightwall->setPosition(vec3(650,240,0));
+        world = new Entropy::PhysicsEngine(*renderer, getScreen());
 
-            topwall = make_shared<PhysicsObject>();
-            topwall->boundingBox.height = 20;
-            topwall->boundingBox.width = 320;
-            topwall->setPosition(vec3(320,490,0));
+        world->addObject(player.get());
+        world->addObject(quad.get());
+        world->addObject(leftwall.get());
+        world->addObject(rightwall.get());
+        world->addObject(topwall.get());
+        world->addObject(bottomwall.get());
+        // world->debug = true;
 
-            bottomwall = make_shared<PhysicsObject>();
-            bottomwall->boundingBox.height = 20;
-            bottomwall->boundingBox.width = 320;
-            bottomwall->setPosition(vec3(320,-10,0));
+        player->renderer = renderer;
+        player->world = world;
 
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    }
 
-    
-
-
-            // quad->setMVP( quad->Renderable::MVP);
-            // renderer->addRenderable(new Renderable(vertices, glm::vec3(100,100,-10)));
-
-            world = new Entropy::PhysicsEngine(*renderer);
-
-            world->addObject(player.get());
-            world->addObject(quad.get());
-            world->addObject(leftwall.get());
-            world->addObject(rightwall.get());
-            world->addObject(topwall.get());
-            world->addObject(bottomwall.get());
-            world->debug = true;
-
-            player->renderer = renderer;
-            player->world = world;
-
-            // LOG(quad->Renderable::MVP[0].x);
-            // LOG(quad->PhysicsObject::MVP[0].x);
-            
-            
-            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        }
-
-        void loop() override {
+    void loop() override {
+        // LOG("FPS: " << App::profiler.fps);
+        PROFILE_FUNCTION();
+        App::profiler.newFrame();
+        {
+            PROFILE_SCOPE("Main");
 
             previousFrameTime = glfwGetTime();
-            
-            glfwSetTime(0);
 
+            glfwSetTime(0);
             glfwGetCursorPos(window, &MouseXPos, &MouseYPos);
 
             glClear(GL_COLOR_BUFFER_BIT);
-            glClearColor(0.0, 0.0, 0.0, 0.0); 
+            renderer->beginLayer("scene");
 
+            glClear(GL_COLOR_BUFFER_BIT);
+            glClearColor(0.0, 0.0, 0.0, 0.0);
 
-            // renderer->transform(tri);
+            player->transform.compute();
+            renderer->renderCircle(vec3(320, 240, 0), 10);
+            renderer->renderQuad(vec3(200, 240, 0), 10, 10);
+            renderer->renderLine(vec3(0), player->getPosition());
 
-            renderer->transform(player.get());
+            c2Ray ray;
 
+            ray.t = 200;
+            ray.d = c2V(-0.5, -0.5);
+            ray.p = c2V(320, 240);
 
-
-
-
+            auto dist = renderer->rayCollisionCheck(ray);
 
             MouseYPos = (MouseYPos - 480) * -1;
 
-
-
-            renderer->renderFrame();
-            // renderer->renderQuad(player->getPosition(), 10,10);
-            // renderer->renderQuad(quad->getPosition(), 10,10);
+            renderer->renderLine(vec3(320, 240, 0), vec3((vec2(320, 240) + (vec2(ray.d.x, ray.d.y) * dist)), 0));
 
             world->timeStep(previousFrameTime);
-            renderer->renderLine(( player->velocity)  + player->getPosition(), player->getPosition());
+            renderer->renderLine((player->data.velocity) + player->getPosition(), player->getPosition());
 
-            player->rotation = glm::degrees(atan2((MouseYPos - player->getPosition().y), (MouseXPos - player->getPosition().x)) * -1) * -1 + 45;
-            
+            player->transform.rotation =
+                glm::degrees(atan2((MouseYPos - player->getPosition().y), (MouseXPos - player->getPosition().x)) * -1) *
+                    -1 +
+                45;
+
             state = glfwGetKey(window, GLFW_KEY_W);
-            if (state == GLFW_PRESS)
-            {
-                player->velocity.y = 100;
-            }
+            if (state == GLFW_PRESS) { player->data.velocity.y = 100; }
             state = glfwGetKey(window, GLFW_KEY_S);
-            if (state == GLFW_PRESS)
-            {
-                player->velocity.y = -100;
-            }
+            if (state == GLFW_PRESS) { player->data.velocity.y = -100; }
             state = glfwGetKey(window, GLFW_KEY_A);
-            if (state == GLFW_PRESS)
-            {
-                player->velocity.x = -100;
-            }
+            if (state == GLFW_PRESS) { player->data.velocity.x = -100; }
             state = glfwGetKey(window, GLFW_KEY_D);
-            if (state == GLFW_PRESS)
-            {
-                player->velocity.x = 100;
-            }
-
-            // bool pressed = false;
-
-            
+            if (state == GLFW_PRESS) { player->data.velocity.x = 100; }
 
             auto t_now = std::chrono::high_resolution_clock::now();
 
             state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1);
             if (std::chrono::duration_cast<std::chrono::duration<float>>(t_now - ent_start).count() > 0.3) {
-                player->createEnemy(vec3(rand() % 440 + 100,rand() % 220 + 100,0));
+                player->createEnemy(vec3(rand() % 440 + 100, rand() % 220 + 100, 0));
                 ent_start = t_now;
             }
-            if (state == GLFW_PRESS && std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count() > 0.3)
-            {
+            if (state == GLFW_PRESS &&
+                std::chrono::duration_cast<std::chrono::duration<float>>(t_now - t_start).count() > 0.05) {
                 t_start = t_now;
                 player->shouldCreate = true;
                 player->shootBullet();
             }
 
             player->update();
-            // glfwSwapBuffers(window);
-            
-
-            // LOG(
-            //     "player position:  " << player->getPosition().x << ", " << player->getPosition().y << 
-            //     "  mouse position:  " << MouseXPos << ", " << MouseYPos
-            //     );
 
             
+            renderer->renderFrame();
+            renderer->endLayer();
 
-            
+            renderer->beginLayer("light");
+            renderer->renderLights();
+            renderer->endLayer();
 
-            // renderer->renderLine(vec3(0,0,0), player->getPosition());
-            // glm::mat4 myMatrix = glm::translate(glm::mat4(), glm::vec3(10.0f, 0.0f, 0.0f));
+            renderer->blendLayers("light", "scene", renderer->mergeShader);
 
-
-            // LOG(renderer->distToNearestPoint(player.get()));
-            renderer->renderLine(vec3(0),  player->getPosition());
-            // LOG((quad->getModelMatrix() * vec4(1,1,1, 1.0f)).x);
-            // LOG((glm::translate(glm::mat4(), glm::vec3(10.0f, 1.0f, 1.0f)) * vec4(1.0f,0.0f,0.0f, 1.0f)).x);
-            // LOG(renderer->worldSpace(vec3(player->translationMatrix * vec4(0.0f,1.0f,0.0f, 1.0f))).x);
-
-            
-            glfwSwapBuffers(window);
-            glfwPollEvents();
-
-
-
-            auto time = glfwGetTime();
-            if (time < 0.016)
-                usleep((0.016 - time) * 100000);
+            {
+                PROFILE_SCOPE("GPU Renderering");
+                // glFinish();
+                glfwSwapBuffers(window);
+            }
+            PROFILE_CALL(glfwPollEvents());
         }
+        App::profiler.endFrame();
+    }
 
-        Trespass() : Entropy::BaseApplication() {
-            init();
+    Trespass() : Entropy::BaseApplication() {
+        init();
 
-            std::cout << "Finished custom initialization. " << std::endl;
+        std::cout << "Finished custom initialization. " << std::endl;
 
-            mainLoop();
-        }
-        ~Trespass() {
-            // delete player;
-            // delete tri;
-            delete world;
-            delete renderer;
-        }
+        mainLoop();
+    }
+    ~Trespass() {
+        // delete player;
+        // delete tri;
+        delete world;
+        delete renderer;
+    }
 };
 
-
 int main() {
-
     Trespass* app = new Trespass();
     delete app;
 }
-

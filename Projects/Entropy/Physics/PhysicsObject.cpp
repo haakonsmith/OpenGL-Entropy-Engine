@@ -2,13 +2,10 @@
 
 namespace Entropy {
 
-    PhysicsObject::PhysicsObject()
-        : position(0, 0, 0), velocity(0, 0, 0), collisionType(AABBCOLLISION) {
-        Vertices = {
-            Vertex(-1.0f, -1.0f, 0.0f),  // x,y,z vertex 1
-            Vertex(1.0f, -1.0f, 0.0f),   // x,y,z vertex 2
-            Vertex(1.0f, 1.0f, 0.0f),    // x,y,z vertex 3
-        };
+    PhysicsObject::PhysicsObject() {
+        data.position = vec3(0);
+        data.velocity = vec3(0);
+        data.physicsType = ACTIVE;
         name = "PhysicsObject";
     }
 

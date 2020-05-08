@@ -1,54 +1,51 @@
 #define GL_SILENCE_DEPRECATION
 #include <OpenGL/gl3.h>
 
-#include <iostream>
+#include <iosfwd>
 #include <string>
 #include <vector>
 
+#include "../Components/Transform.hpp"
+#include "../Mixins/Geometry.hpp"
+#include "../Mixins/Transform.hpp"
+#include "../Shared.hpp"
+#include "AtribLayout.hpp"
 #include "Shader.hpp"
 #include "Shapes/Shape.hpp"
+#include "Texture.hpp"
 #include "Vertex.hpp"
 #include "glm/glm.hpp"
 
 using namespace glm;
 using namespace std;
 
-#define NDEBUG
-
-#ifdef NDEBUG
-#define GL_LOG(LOCATION)           \
-    if (auto error = glGetError()) \
-    std::cout << "OpenGL error " << error << " at " << LOCATION << " " << __LINE__ << std::endl
-#else
-#define GL_LOG() \
-    do {         \
-    } while (0)
-#endif
-
 #pragma once
 
-class m_2dRenderer {};
 namespace Entropy {
-
-    class Renderable {
+    class Renderable : public Polygon2D {
         friend class m_2dRenderer;
 
       protected:
         GLuint vertexBufferID = 0;
-        GLuint TextureID = 0;
-        vec3 position;
-        vec3 scale;
+        GLuint vao = 0;
 
       public:
+        bool castsShadow = false;
         bool cleanVBO = true;
-        string name;
-        shared_ptr<Shader> shader;
-        double rotation;
-        mat4 MVP;
-        mat4 modelMatrix;
-        mat4 scaleMatrix, translationMatrix, rotationMatrix;
 
-        GLuint texture;
+        string name;
+        Ref<Shader> shader;
+
+        Texture texture;
+
+        Transform transform;
+
+        VertexArray arrayBuffer;
+
+        inline vec3 getPosition() const { return transform.position; }
+        inline void setPosition(vec3 const& v) { transform.position = v; }
+        inline void setScale(vec3 const& v) { transform.scale = v; }
+        inline mat4 getModelMatrix() const { return transform.modelMatrix; }
 
         bool TextureINIT = false, UVBufferINIT = false, vertexBufferINIT = false;
 
@@ -56,36 +53,19 @@ namespace Entropy {
 
         vector<struct Vertex> Vertices;
 
-        short id;
+        inline std::vector<Vertex> getVertices() const { return Vertices; }
 
-        // Getters and Setters
-        // clang-format off
-        virtual void setPosition(const vec3 &v) { position = v; }
-        inline virtual void setPosition(const vec2 &v) { setPosition(vec3(v, position.z)); }
-        inline virtual void setPosition(float x, float y) { setPosition(vec3(x, y, position.z)); }
-        inline virtual void setPosition(float x, float y, float z) { setPosition(vec3(x, y, z)); }
-        virtual vec3 getPosition() { return position; }
-
-        virtual void setScale(const vec3 &v) { scale = v; }
-        inline virtual void setScale(float x, float y) { setScale(vec3(x, y, scale.z)); }
-        inline virtual void setScale(float x, float y, float z) { setScale(vec3(x, y, z)); }
-        inline virtual void setScale(const vec2 &v) { setScale(vec3(v, scale.z)); }
-        virtual vec3 getScale() { return scale; }
-
-        virtual void setMVP(mat4 mvp) { MVP = mvp; }
-        virtual mat4 getMVP() { return MVP; }
-
-        virtual void setModelMatrix(mat4 m) { modelMatrix = m; }
-        virtual mat4 getModelMatrix() { return modelMatrix; }
-        // clang-format on
-
-        void setTexture(GLuint tex) {
-            texture = tex;
+        void setTexture(std::string path) {
+            texture = Texture(path);
+            GL_LOG("Set Texture");
             TextureINIT = true;
         }
 
         // create default Renderable
-        Renderable() : position(0, 0, 0), scale(1, 1, 1), rotation(0) {
+        Renderable()
+            : transform(),
+              arrayBuffer(),
+              Polygon2D(vector<Vertex2D>({Vertex2D(-1, -1), Vertex2D(1, -1), Vertex2D(1, 1)})) {
             name = "Renderable";
 
             Vertices.push_back(Vertex(-1.0f, -1.0f, 0.0f, 0, 0));
@@ -93,28 +73,21 @@ namespace Entropy {
             Vertices.push_back(Vertex(1.0f, 1.0f, 0.0f, 1, 1));
         }
 
-        Renderable(Shape shape) : position(0, 0, 0), scale(1, 1, 1), rotation(0) {
+        Renderable(Shape shape) : arrayBuffer(), transform() {
+            name = "Renderable";
             Vertices = shape.Vertices;
-            name = "Renderable";
         }
 
-        Renderable(vector<Vertex> _vertices) : position(0, 0, 0), scale(1, 1, 1), rotation(0) {
+        Renderable(vector<Vertex> _vertices) : arrayBuffer(), transform() {
             name = "Renderable";
             Vertices = _vertices;
-        }
-
-        // change Renderable Position
-        Renderable(vector<Vertex> _vertices, vec3 _position) : scale(1, 1, 1), rotation(0) {
-            Vertices = _vertices;
-            position = _position;
-            name = "Renderable";
         }
 
         ~Renderable() {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             if (cleanVBO) glDeleteBuffers(1, &vertexBufferID);
             // glDeleteBuffers(1, &UVBufferID);
-            glDeleteTextures(1, &texture);
+            // glDeleteTextures(1, &texture);
         }
     };
 
