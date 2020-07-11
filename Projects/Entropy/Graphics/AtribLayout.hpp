@@ -2,39 +2,6 @@
 
 #pragma once
 namespace Entropy {
-    // struct AtribLayoutPartial {
-    //     // The atrib location, identical to that of the shader.
-    //     const unsigned int location;
-
-    //     // Number of values in partial.
-    //     const unsigned int count;
-
-    //     // The distance to the start of the next partial in the GPU.
-    //     const unsigned int stride;
-
-    //     // Offset in the GPU buffer/array.
-    //     const unsigned int offset;
-
-    //     constexpr AtribLayoutPartial(unsigned int atribLocation, unsigned int numMembers, unsigned int dataSize,
-    //                                  unsigned int membersSize)
-    //         : location(atribLocation), count(numMembers), stride(dataSize), offset(membersSize) {}
-
-    //     inline void bind() {}
-    // };
-
-    template <unsigned int location, unsigned int count, unsigned int stride, unsigned int offset>
-    struct AtribLayout {
-        // Requires that it is enabled.
-        inline void bind() {
-            glVertexAttribPointer(location,       // but must match the layout in the shader.
-                                  count,          // Count. Size = 3 * 4 = 12
-                                  GL_FLOAT,       // Type
-                                  GL_FALSE,       // Normalized?
-                                  stride,         // stride
-                                  (void *)offset  // Array buffer offset
-            );
-        }
-    };
 
     struct VertexArray {
         GLuint obj_ = 0;  // Cannot leave this uninitialised

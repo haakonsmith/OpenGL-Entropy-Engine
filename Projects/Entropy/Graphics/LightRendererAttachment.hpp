@@ -7,11 +7,11 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "../Shared.hpp"
 #include "Cute/cute_c2.hpp"
+#include "Light.hpp"
 #include "Renderable.hpp"
 #include "Shader.hpp"
 #include "Vertex.hpp"
 #include "VertexBuffer.hpp"
-
 
 using glm::vec2;
 using glm::vec3;
@@ -20,21 +20,6 @@ using glm::vec4;
 #pragma once
 
 namespace Entropy {
-
-    // class OcclusionObject : public virtual Mixin::Geometry2D, public virtual Mixin::Transform {
-    //   public:
-    //     virtual std::vector<Vertex> getVertices() = 0;
-    //     virtual glm::mat4 getModelMatrix() = 0;
-    // };
-
-    struct Light {
-        vec3 colour;
-        vec3 position;
-        float intensity;
-
-        Light() : position(vec3(0)), intensity(0), colour(vec4(1)) {}
-        Light(vec3 const &v) : position(v), intensity(0), colour(vec4(1)) {}
-    };
 
     class LightRendererAttachment {
       protected:
@@ -166,45 +151,6 @@ namespace Entropy {
                 shadowMesh.push_back(d1);
                 shadowMesh.push_back(d2);
             }
-
-            // auto norm = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
-            // auto verts = r->getVertices();
-
-            // for (size_t i = 0; i < verts.size(); i++) {
-            //     PROFILE_SCOPE("ModelMatrixTransform");
-
-            //     verts[i].Position = glm::vec3(r->getModelMatrix() * glm::vec4(verts[i].Position, 1));
-            // }
-
-            // for (auto &vert : verts) {
-            //     c2Ray ray;
-
-            //     auto direction = normalize(norm(vec2(320, 240), vert.Position));
-
-            //     c2v vertPos = c2V(vert.Position.x, vert.Position.y);
-
-            //     ray.t = 200;
-            //     ray.p = c2V(320, 240);
-            //     ray.d = c2V(direction.x, direction.y);
-
-            //     auto dist = rayCollisionCheck(ray);
-
-            //     // LOG(ray.d.x);
-            //     // LOG(ray.d.y);
-
-            //     // LOG(ray.p.x);
-            //     // LOG(Vector2D(vert.Position).c2Vector.y);
-
-            //     // LOG(c2Sub(vertPos, ray.p).x);
-            //     // LOG(c2Sub(vertPos, ray.p).y);
-
-            //     // LOG(dist);
-
-            //     auto point = vec3((vec2(320, 240) + (vec2(ray.d.x, ray.d.y) * dist)), 0);
-            //     renderLine(vec3(320, 240, 0), point);
-
-            //     shadowMesh.push_back(Vertex(point));
-            // }
 
             return shadowMesh;
         }
@@ -390,8 +336,10 @@ namespace Entropy {
         virtual void bindRenderTarget(string name) = 0;
         virtual void bindRenderTexture(string name, GLenum slot) = 0;
 
-        uint32_t lightVertexCount = 64;
-        glm::vec3 pos = glm::vec3(320, 240, 0);
+        uint32_t lightVertexCount = 600;
+
+        VertexArray vertexArray;
+        // glm::vec3 pos = glm::vec3(320, 240, 0);
 
         bool first = true;
 
@@ -552,6 +500,9 @@ namespace Entropy {
         void renderLights() {
             PROFILE_FUNCTION();
 
+            glBlendEquation(GL_MAX);
+            glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
+
             antiShadowBuffer->bind();
             GL_LOG("Bind VBO");
 
@@ -565,30 +516,37 @@ namespace Entropy {
             GL_LOG("Set VP matirx");
 
             for (auto light : lights) {
+                // vertexArray.bind();
                 PROFILE_SCOPE("renderLight");
                 lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix());
                 auto mesh = getLightMesh(light);
-
                 antiShadowBuffer->subBuffer(0, lightVertexCount * sizeof(Vertex), mesh.data());
                 GL_LOG("Update VBO");
 
                 auto lp = App::screen.screenScale(light->position);
 
-                lightShader->uniform3f("light", lp.x, lp.y, 0);
+                LOG(light->position.x);
+                LOG(lights.size());
+
+                lightShader->uniform3f("light", lp.x - 0.1, lp.y, 0);
                 lightShader->uniform3f("lightColour", light->colour.r, light->colour.g, light->colour.b);
                 lightShader->uniform1f("intensity", light->intensity);
                 GL_LOG("Uniform setting");
 
                 glDrawArrays(GL_TRIANGLE_FAN, 0, mesh.size());
 
-                for (auto renderable : renderables) {
-                    lightShader->uniformMatrix4fv("VP",
-                                                  getViewProjectionMatrix() * renderable->transform.getModelMatrix());
-                    renderable->arrayBuffer.bind();
-
-                    glDrawArrays(GL_TRIANGLES, 0, renderable->Vertices.size());
-                }
             }
+
+            // Render objects over light
+            for (auto renderable : renderables) {
+                lightShader->uniformMatrix4fv("VP", getViewProjectionMatrix() * renderable->transform.getModelMatrix());
+                renderable->arrayBuffer.bind();
+
+                glDrawArrays(GL_TRIANGLES, 0, renderable->Vertices.size());
+            }
+
+            glBlendEquation(GL_FUNC_ADD);
+            vertexArray.bind();
         }
 
         LightRendererAttachment() {

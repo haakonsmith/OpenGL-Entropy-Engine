@@ -20,9 +20,10 @@ workspace "Premake"
 	
 	filter { "configurations:Debug" }
     -- We want debug symbols in our debug config
-        defines "NDEBUG"
+        defines {"NDEBUG", "PROFILE", "SUPRESS"}
         symbols "On"
-        buildoptions {"-Wdeprecated-declarations", "-ftime-report"}
+		buildoptions {"-Wdeprecated-declarations"}
+		-- , "-ftime-report"
 	
 	-- We now only set settings for Release
 	filter { "configurations:Release" }
@@ -45,6 +46,10 @@ workspace "Premake"
 function includeGLFW()
 	includedirs "Libraries/GLFW/Include"
 end	
+
+function includeEntt()
+	includedirs "Libraries/Entt/single_include"
+end
 
 -- This function includes GLM's header files
 function includeGLM()
@@ -93,6 +98,8 @@ project "Entropy"
 	includeGLFW()
 	
 	includeGLM()
+
+	includeEntt()
 
 	linkGLFW()
 

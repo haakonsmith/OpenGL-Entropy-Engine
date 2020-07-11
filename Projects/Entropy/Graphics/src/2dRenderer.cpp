@@ -159,7 +159,7 @@ namespace Entropy {
         for (auto obj : objects) { render(obj); }
 
         unbindRenderTarget();
-        
+
         // glViewport(0, 0, 640 * 2, 480 * 2);
         vertexArray.bind();
 
@@ -205,6 +205,29 @@ namespace Entropy {
         // GL_LOG("draw arrays ");
     }
 
+    void m_2dRenderer::render(entt::entity entity, entt::registry& context) {
+        PROFILE_FUNCTION();
+
+        auto& transform = context.get<Transform>(entity);
+        auto& renderData = context.get<RenderData>(entity);
+        renderData.shader->bind();
+
+        renderData.shader->uniformMatrix4fv("MVP",
+                                              projectionMatrix * viewMatrix * transform.modelMatrix);
+
+        // Bind texture in Texture Unit 0
+        renderData.texture.bind();
+
+        // Set texture sampler to use Texture Unit 0
+        renderData.shader->uniform1i("myTextureSampler", 0);
+
+        renderData.arrayBuffer.bind();
+
+        glDrawArrays(GL_TRIANGLES, 0, renderData.Vertices.size());
+
+        vertexArray.bind();
+    }
+
     void m_2dRenderer::renderOutline(const Renderable &_renderable) {
         PROFILE_FUNCTION();
         debugShader->bind();
@@ -226,7 +249,7 @@ namespace Entropy {
         PROFILE_FUNCTION();
 
         const mat4 MVP = getViewProjectionMatrix() *
-                   (glm::translate(mat4(1.0f), (position)) * glm::scale(mat4(1.0f), vec3(width, height, 1)));
+                         (glm::translate(mat4(1.0f), (position)) * glm::scale(mat4(1.0f), vec3(width, height, 1)));
 
         debugShader->bind();
 
@@ -257,27 +280,27 @@ namespace Entropy {
     }
 
     void m_2dRenderer::compositeTextures(Texture &texture1, Texture &texture2, shared_ptr<Shader> layerMergeShader) {
-            PROFILE_FUNCTION();
-            const mat4 MVP = getViewProjectionMatrix() * (glm::translate(mat4(1.0f), (vec3(320, 240, 0))) *
-                                                          glm::scale(mat4(1.0f), vec3(320, 240, 1)));
+        PROFILE_FUNCTION();
+        const mat4 MVP = getViewProjectionMatrix() *
+                         (glm::translate(mat4(1.0f), (vec3(320, 240, 0))) * glm::scale(mat4(1.0f), vec3(320, 240, 1)));
 
-            texture1.bind(GL_TEXTURE0);
-            texture2.bind(GL_TEXTURE1);
-            GL_LOG("bind vertex array");
+        texture1.bind(GL_TEXTURE0);
+        texture2.bind(GL_TEXTURE1);
+        GL_LOG("bind vertex array");
 
-            layerMergeShader->bind();
-            GL_LOG("bind vertex array");
+        layerMergeShader->bind();
+        GL_LOG("bind vertex array");
 
-            layerMergeShader->uniformMatrix4fv("VP", MVP);
-            layerMergeShader->uniform1i("texSampler", 0);
-            layerMergeShader->uniform1i("texSampler1", 1);
+        layerMergeShader->uniformMatrix4fv("VP", MVP);
+        layerMergeShader->uniform1i("texSampler", 0);
+        layerMergeShader->uniform1i("texSampler1", 1);
 
-            debugQuad->arrayBuffer.bind();
-            GL_LOG("bind vertex array");
+        debugQuad->arrayBuffer.bind();
+        GL_LOG("bind vertex array");
 
-            glDrawArrays(GL_TRIANGLES, 0, debugQuad->Vertices.size());
-            GL_LOG("bind vertex array");
-        }
+        glDrawArrays(GL_TRIANGLES, 0, debugQuad->Vertices.size());
+        GL_LOG("bind vertex array");
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////// Class commands //////////////////////////////////
@@ -285,6 +308,10 @@ namespace Entropy {
 
     m_2dRenderer::m_2dRenderer(Screen &_s) : screen(_s), LightRendererAttachment() {
         glEnable(GL_BLEND);
+        glScissor(0, 0, screen.sizeX * 2, screen.sizeY * 2);
+        glViewport(0, 0, screen.sizeX * 2, screen.sizeY * 2);
+        glEnable(GL_SCISSOR_TEST);
+        glEnable(GL_MULTISAMPLE);  
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         projectionMatrix = glm::ortho(0.0f,                 // left
                                       (float)screen.sizeX,  // right
@@ -325,7 +352,7 @@ namespace Entropy {
 
         program = shared_ptr<Shader>(
             new Shader("shaders/SimpleVertexShader.vertexshader", "shaders/SimpleFragmentShader.fragmentshader"));
-        
+
         mergeShader = shared_ptr<Shader>(
             new Shader("shaders/Builtin/Lighting/mesh.vertexshader", "shaders/Builtin/Lighting/merge.fragmentshader"));
         // instanceShader = shared_ptr<Shader>(new

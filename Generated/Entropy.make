@@ -27,7 +27,7 @@ endif
 ifeq ($(origin AR), default)
   AR = ar
 endif
-INCLUDES += -I../Libraries/GLFW/Include -I../Libraries -I../Libraries/Cute
+INCLUDES += -I../Libraries/GLFW/Include -I../Libraries -I../Libraries/Entt/single_include -I../Libraries/Cute
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
@@ -46,9 +46,9 @@ ifeq ($(config),debug)
 TARGETDIR = ../Build/Bin/Entropy/Debug
 TARGET = $(TARGETDIR)/libEntropy.dylib
 OBJDIR = ../Build/Obj/Entropy/Debug
-DEFINES += -DPROFILE -DNDEBUG
-ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -fPIC -g -Wdeprecated-declarations -ftime-report
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -fPIC -g -std=c++17 -Wdeprecated-declarations -ftime-report
+DEFINES += -DNDEBUG -DPROFILE -DSUPRESS
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -fPIC -g -Wdeprecated-declarations
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -fPIC -g -std=c++17 -Wdeprecated-declarations
 
 else ifeq ($(config),release)
 TARGETDIR = ../Build/Bin/Entropy/Release

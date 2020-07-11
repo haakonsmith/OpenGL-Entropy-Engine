@@ -1,6 +1,7 @@
 #include <iosfwd>
 
 #include "Game/GameObject.hpp"
+#include "Graphics/Light.hpp"
 #include "Physics/CollisionData.hpp"
 
 #pragma once
@@ -10,6 +11,8 @@ class Bullet : public Entropy::PhysicsObject {
     float rotation;
     float speed;
     bool shouldDie = false;
+
+    shared_ptr<Entropy::Light> light;
 
     void customPrePhysicsStep(double deltaTime) override;
     inline void collide(vec3 prePos, PhysicsObject* collided, Entropy::CollisionData data) override;

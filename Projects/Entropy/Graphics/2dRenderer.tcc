@@ -5,6 +5,8 @@ namespace Entropy {
 
     template <uint32 C>
     void m_2dRenderer::renderInstance(const RenderInstance<C> &Instance, uint32 renderCount) {
+
+        vertexArray.bind();
         PROFILE_FUNCTION();
         glBindBuffer(GL_ARRAY_BUFFER, Instance.Instanced->vertexBufferID);
 
@@ -77,5 +79,7 @@ namespace Entropy {
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);
+
+        vertexArray.bind();
     }
 }  // namespace Entropy

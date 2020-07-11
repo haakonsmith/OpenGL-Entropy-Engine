@@ -1,13 +1,16 @@
 /*
  * Copyright 2020, Haakon Smith.
  *
- * Base application. Declares basic GLFW wrapper and game loop.
+ * Base application. Declares basic GLFW wrapper, game loop, and registry.
  */
 
 #ifndef BASEAPPLICATION
 #define BASEAPPLICATION
 #define GL_SILENCE_DEPRECATION
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
+#include "pch.gch"
+
+
 
 #include <iosfwd>
 
@@ -20,12 +23,15 @@
 #pragma once
 
 namespace Entropy {
+
     class BaseApplication {
       protected:
 
         void initWindow(unsigned int SCREEN_WIDTH, unsigned int SCREEN_HEIGHT);
 
       public:
+        entt::registry registry;
+
         static void glfwError(int id, const char *description) { std::cout << description << std::endl; }
 
         static Screen &getScreen() { return App::screen; }

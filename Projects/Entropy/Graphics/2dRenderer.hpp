@@ -21,6 +21,7 @@
 #include "LightRendererAttachment.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "../Components/RenderData.hpp"
 #else
 #error "2d renderer included twice"
 #endif
@@ -123,6 +124,8 @@ namespace Entropy {
         float distToNearestPoint(Renderable *_renderable);
 
         void renderQuad(vec3 position, float width, float height, bool hollow = false, vec3 color = vec3(1, 0, 0));
+
+        void render(entt::entity entity, entt::registry& context);
 
         /**
          * Draw line between two world space points

@@ -5,8 +5,10 @@
 void Player::update() {
     glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
     for (size_t i = 0; i < bullets.size(); i++) {
-        bullets[i]->setPosition(bullets[i]->getPosition());
+        // bullets[i]->setPosition(bullets[i]->getPosition());
+
         if (bullets[i]->shouldDie) {
+            renderer->removeLight(bullets[i]->light.get());
             world->removeObject(bullets[i].get());
             bullets.erase(bullets.begin() + i);
         }
@@ -55,6 +57,7 @@ void Player::shootBullet() {
         enemy_Reference->transform.compute();
     }
 
+    
     vec3 direction =
         vec3(vec3(glm::rotate(mat4(1.0f), glm::radians((float)transform.rotation - 45), glm::vec3(0.0f, 0.0f, 1.0f)) *
                   vec4(1, 0, 0, 0)));
@@ -70,6 +73,7 @@ void Player::shootBullet() {
     bullet->collider.boundingBox.height = 10;
 
     world->addObject(bullet.get());
+    renderer->addLight(bullet->light.get());
 
     bullets.push_back(bullet);
 }
@@ -85,6 +89,8 @@ Player::Player() : Entropy::GameObject() {
     enemy_instance = renderer->getRenderInstance<10>(enemy_Reference);
 
     GL_LOG("create ");
+    
+    
 
     enemy_Reference->shader = make_shared<Entropy::Shader>("shaders/Instance.vertexshader", "shaders/Instance.fragmentshader");
 }

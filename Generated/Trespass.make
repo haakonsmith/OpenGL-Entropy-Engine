@@ -43,9 +43,9 @@ ifeq ($(config),debug)
 TARGETDIR = ../Build/Bin/Trespass/Debug
 TARGET = $(TARGETDIR)/play.app
 OBJDIR = ../Build/Obj/Trespass/Debug
-DEFINES += -DPROFILE -DNDEBUG
-ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g -Wdeprecated-declarations -ftime-report
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17 -Wdeprecated-declarations -ftime-report
+DEFINES += -DNDEBUG -DPROFILE -DSUPRESS
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g -Wdeprecated-declarations
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17 -Wdeprecated-declarations
 LIBS += ../Build/Bin/Entropy/Debug/libEntropy.dylib -framework OpenGL -lglfw
 LDDEPS += ../Build/Bin/Entropy/Debug/libEntropy.dylib
 ALL_LDFLAGS += $(LDFLAGS) -L../Libraries/GLFW/Lib -Wl,-rpath,'@loader_path/../../Entropy/Debug' -m64
