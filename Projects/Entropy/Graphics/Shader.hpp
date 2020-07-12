@@ -32,7 +32,6 @@ namespace Entropy {
     class Shader {
       private:
         GLuint shaderID;
-        std::string fragmentShaderPath, vertexShaderPath;
 
         std::unordered_map<const GLchar *, GLuint> cache;
 
@@ -49,6 +48,7 @@ namespace Entropy {
         }
 
       public:
+        std::string fragmentShaderPath, vertexShaderPath;
         bool initialised = false;
         static std::string fragmentShaderExtension, vertexShaderExtension;
 

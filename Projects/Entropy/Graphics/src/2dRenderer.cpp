@@ -205,27 +205,28 @@ namespace Entropy {
         // GL_LOG("draw arrays ");
     }
 
-    void m_2dRenderer::render(entt::entity entity, entt::registry& context) {
+    void m_2dRenderer::render(entt::entity entity) {
         PROFILE_FUNCTION();
 
-        auto& transform = context.get<Transform>(entity);
-        auto& renderData = context.get<RenderData>(entity);
+        auto &transform = registry.get<Transform>(entity);
+        auto &renderData = registry.get<RenderData>(entity);
         renderData.shader->bind();
 
-        renderData.shader->uniformMatrix4fv("MVP",
-                                              projectionMatrix * viewMatrix * transform.modelMatrix);
+        renderData.shader->uniformMatrix4fv("MVP", projectionMatrix * viewMatrix * transform.modelMatrix);
 
         // Bind texture in Texture Unit 0
         renderData.texture.bind();
+        GL_LOG("bind vertex array");    
 
         // Set texture sampler to use Texture Unit 0
         renderData.shader->uniform1i("myTextureSampler", 0);
 
         renderData.arrayBuffer.bind();
 
-        glDrawArrays(GL_TRIANGLES, 0, renderData.Vertices.size());
+        glDrawArrays(GL_TRIANGLES, 0, renderData.vertices.size());
 
         vertexArray.bind();
+        GL_LOG("bind vertex array");
     }
 
     void m_2dRenderer::renderOutline(const Renderable &_renderable) {
@@ -306,12 +307,13 @@ namespace Entropy {
     ////////////////////////////////////////////// Class commands //////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    m_2dRenderer::m_2dRenderer(Screen &_s) : screen(_s), LightRendererAttachment() {
+    m_2dRenderer::m_2dRenderer(Screen &_s, entt::registry &_registry)
+        : registry(_registry), screen(_s), LightRendererAttachment() {
         glEnable(GL_BLEND);
         glScissor(0, 0, screen.sizeX * 2, screen.sizeY * 2);
         glViewport(0, 0, screen.sizeX * 2, screen.sizeY * 2);
         glEnable(GL_SCISSOR_TEST);
-        glEnable(GL_MULTISAMPLE);  
+        glEnable(GL_MULTISAMPLE);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         projectionMatrix = glm::ortho(0.0f,                 // left
                                       (float)screen.sizeX,  // right

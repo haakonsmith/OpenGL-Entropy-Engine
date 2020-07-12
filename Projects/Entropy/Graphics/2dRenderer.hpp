@@ -38,6 +38,8 @@ namespace Entropy {
 
         Screen &screen;
 
+        entt::registry& registry;
+
         shared_ptr<Renderable> debugQuad;
         VertexArray vertexArray;
         shared_ptr<Shader> debugShader;
@@ -125,7 +127,7 @@ namespace Entropy {
 
         void renderQuad(vec3 position, float width, float height, bool hollow = false, vec3 color = vec3(1, 0, 0));
 
-        void render(entt::entity entity, entt::registry& context);
+        void render(entt::entity entity);
 
         /**
          * Draw line between two world space points
@@ -165,7 +167,7 @@ namespace Entropy {
 
         void renderCircle(vec3 position, float radius, bool hollow = false);
 
-        m_2dRenderer(Screen &_s);
+        m_2dRenderer(Screen &_s, entt::registry& _registry);
         ~m_2dRenderer();
     };
 }  // namespace Entropy

@@ -20,7 +20,7 @@ namespace Entropy {
         mat4 scaleMatrix, translationMatrix, rotationMatrix;
 
 
-        Transform() : rotation(0), scale(vec3(1)), Location(vec3(0)) {}
+        Transform() : rotation(0), scale(vec3(10)), Location(vec3(0)) { compute(); }
         
         inline void compute() {
             // Model matrix : an identity matrix (model will be at the origin)

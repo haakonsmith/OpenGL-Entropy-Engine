@@ -35,8 +35,8 @@ namespace Entropy {
             throw std::runtime_error("GLFW failed");
         }
 
-        // glClearColor(0.0, 0.0, 0.0, 0.0);               // Set the cleared screen colour to black
-        // glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);  // This sets up the viewport so that the
+        glClearColor(0.0, 0.0, 0.0, 0.0);               // Set the cleared screen colour to black
+        glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);  // This sets up the viewport so that the
                                                         // coordinates (0, 0) are at the top left of
                                                         // the window
 

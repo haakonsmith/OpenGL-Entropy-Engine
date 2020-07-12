@@ -7,5 +7,9 @@ case $1 in
     $"release")
         ./Build/Bin/Trespass/Release/Mac/Trespass.app/Contents/MacOS/Trespass
     ;;
+
+    $"debugger")
+        lldb Build/Bin/Trespass/Debug/Mac/Trespass.app/Contents/MacOS/Trespass
+    ;;
 # open Build/Bin/Trespass/Debug/Mac/Trespass.app
 esac
