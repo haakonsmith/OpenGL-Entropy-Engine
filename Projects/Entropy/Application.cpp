@@ -14,13 +14,14 @@ namespace Entropy {
     }
 
     void BaseApplication::initWindow(unsigned int SCREEN_WIDTH, unsigned int SCREEN_HEIGHT) {
-        glfwWindowHint(GLFW_SAMPLES, 4);
+        // glfwWindowHint(GLFW_SAMPLES, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);  // To make MacOS happy; should not be needed
         glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
         glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
 
         // Open a window and create its OpenGL context
         window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Game", NULL, NULL);
@@ -35,8 +36,8 @@ namespace Entropy {
             throw std::runtime_error("GLFW failed");
         }
 
-        glClearColor(0.0, 0.0, 0.0, 0.0);               // Set the cleared screen colour to black
-        glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);  // This sets up the viewport so that the
+        // glClearColor(0.0, 0.0, 0.0, 0.0);               // Set the cleared screen colour to black
+        // glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);  // This sets up the viewport so that the
                                                         // coordinates (0, 0) are at the top left of
                                                         // the window
 
@@ -51,10 +52,13 @@ namespace Entropy {
         // glMatrixMode(GL_MODELVIEW);
         // glLoadIdentity();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // Clear the screen and depth buffer
-
+        
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+        glViewport(0, 0, width, height);
         glfwMakeContextCurrent(window);
-
-        printf("GLFW window initialized\n");
+        // glfwSwapInterval(0);
+        printf("GLFW window initialized: %i, %i\n", width, height);
     }
 
     BaseApplication::BaseApplication() {
@@ -73,7 +77,7 @@ namespace Entropy {
 
         initialized = true;
 
-        initWindow(640, 480);
+        initWindow(App::screen.x, App::screen.y);
 
         cout << "initialized window" << endl;
     }

@@ -225,8 +225,8 @@ namespace Entropy {
 
         glDrawArrays(GL_TRIANGLES, 0, renderData.vertices.size());
 
-        vertexArray.bind();
-        GL_LOG("bind vertex array");
+        // vertexArray.bind();
+        // GL_LOG("bind vertex array");
     }
 
     void m_2dRenderer::renderOutline(const Renderable &_renderable) {
@@ -310,10 +310,10 @@ namespace Entropy {
     m_2dRenderer::m_2dRenderer(Screen &_s, entt::registry &_registry)
         : registry(_registry), screen(_s), LightRendererAttachment() {
         glEnable(GL_BLEND);
-        glScissor(0, 0, screen.sizeX * 2, screen.sizeY * 2);
-        glViewport(0, 0, screen.sizeX * 2, screen.sizeY * 2);
-        glEnable(GL_SCISSOR_TEST);
-        glEnable(GL_MULTISAMPLE);
+        // glScissor(0, 0, screen.sizeX * 2, screen.sizeY * 2);
+        // glViewport(0, 0, screen.sizeX * 2, screen.sizeY * 2);
+        // glEnable(GL_SCISSOR_TEST);
+        // glEnable(GL_MULTISAMPLE);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         projectionMatrix = glm::ortho(0.0f,                 // left
                                       (float)screen.sizeX,  // right

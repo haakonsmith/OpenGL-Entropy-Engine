@@ -54,10 +54,12 @@ bool done = false;
 class Trespass : public Entropy::BaseApplication {
     Entropy::m_2dRenderer* renderer;
 
-    entt::entity quad = registry.create();
-    ;
+    entt::entity player = registry.create();
 
-    shared_ptr<Renderable> tri;
+    entt::entity tri = registry.create();
+
+
+    int state;
 
   public:
     void init() override {
@@ -65,58 +67,58 @@ class Trespass : public Entropy::BaseApplication {
 
         renderer = new Entropy::m_2dRenderer(getScreen(), registry);
 
-        registry.emplace<Transform>(quad);
-        registry.emplace<RenderData>(quad);
+        registry.emplace<Transform>(player, Transform({240, 100, 0}));
+        registry.emplace<RenderData>(player);
 
-        auto& quad_t = registry.get<Transform>(quad);
-        quad_t = Transform();
+        registry.emplace<Transform>(tri, Transform({320.0f, 240.0f, 0.0f}, 0.0f, {320, 240, 0}));
+        registry.emplace<RenderData>(tri, RenderData(Rectangle().Vertices)).setTexture("floor.png");
 
-        quad_t.setPosition({240, 100, 0});
-        quad_t.compute();
-
-        auto& quad_r = registry.get<RenderData>(quad);
-        quad_r = RenderData();
-
-        std::vector<Vertex> vertices = {
-            Vertex(-1.0f, -1.0f, 0.0f),  // x,y,z vertex 1
-            Vertex(1.0f, -1.0f, 0.0f),   // x,y,z vertex 2
-            Vertex(1.0f, 1.0f, 0.0f),    // x,y,z vertex 3
-            Vertex(-1.0f, 1.0f, 0.0f),   // x,y,z vertex 3
-        };
-
-        tri = shared_ptr<Renderable>(new Renderable(Rectangle()));
-
-        tri->setPosition(vec3(320.0f, 240.0f, 0.0f));
-        tri->setScale(vec3(320, 240, 0));
-        tri->setTexture("floor.png");
-        tri->castsShadow = false;
-        renderer->buffer(tri.get());
-
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
     void loop() override {
         // LOG("FPS: " << App::profiler.fps);
-        // PROFILE_FUNCTION();
-        App::profiler.newFrame();
-        {
-            //     glfwSetTime(0);
+        PROFILE_FUNCTION();
+        // App::profiler.newFrame();
+        // {
+            glfwSetTime(0);
             // renderer->beginLayer("scene");
 
             glClear(GL_COLOR_BUFFER_BIT);
 
-            renderer->render(tri.get());
-            renderer->render(quad);
+            state = glfwGetKey(window, GLFW_KEY_W);
+            if (state == GLFW_PRESS) { registry.get<Transform>(player).position.y += 10; }
+            state = glfwGetKey(window, GLFW_KEY_S);
+            if (state == GLFW_PRESS) { registry.get<Transform>(player).position.y += -10; }
+            state = glfwGetKey(window, GLFW_KEY_A);
+            if (state == GLFW_PRESS) { registry.get<Transform>(player).position.x += -10; }
+            state = glfwGetKey(window, GLFW_KEY_D);
+            if (state == GLFW_PRESS) { registry.get<Transform>(player).position.x += 10; }
+
+            registry.get<Transform>(player).compute();
+
+            // renderer->render(tri);
+            for (size_t i = 0; i < 1000; i++)
+            {
+                for (size_t j = 0; j < 100; j++)
+                {
+                    renderer->renderQuad({j*2,i*2,0}, 20, 20, false, {1,1,0});
+                }
+                
+            }
+            
+            // renderer->render(player);
+
             // renderer->endLayer();
             // renderer->beginLayer("light");
             // renderer->renderLights();
             // renderer->endLayer();
 
             // renderer->blendLayers("light", "scene", renderer->mergeShader);
-            glfwSwapBuffers(window);
+            PROFILE_CALL(glfwSwapBuffers(window));
             glfwPollEvents();
-        }
-        App::profiler.endFrame();
+        // }
+        // App::profiler.endFrame();
     }
 
     Trespass() : Entropy::BaseApplication() {

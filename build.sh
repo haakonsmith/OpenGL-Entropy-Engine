@@ -31,6 +31,8 @@ assemble_app_file()
     echo ""
     echo "Building plist..."
     PlistBuddy ${APP}.app/Contents/Info.plist -c "add CFBundleDisplayName string ${APP_NAME}"
+    PlistBuddy ${APP}.app/Contents/Info.plist -c 'Add NSHighResolutionCapable bool "True"' 
+    PlistBuddy ${APP}.app/Contents/Info.plist -c 'Add NSSupportsAutomaticGraphicsSwitching bool "True"' 
     PlistBuddy ${APP}.app/Contents/version.plist -c "add ProjectName string ${APP_NAME}"
 
     # Change dylib location

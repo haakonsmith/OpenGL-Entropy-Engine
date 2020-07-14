@@ -29,7 +29,7 @@ namespace Entropy {
         };
         // clang-format off
         Vertex(float x, float y, float z, float u, float v) : x(x), y(y), z(z), u(u), v(v) {}
-        Vertex(float x, float y, float z) : x(x), y(y), z(z), u(0), v(0) {}
+        Vertex(float x, float y, float z) : x(x), y(y), z(z), u(x), v(y) {}
         Vertex(const glm::vec3 &position, const glm::vec2 &uv) : Position(position), UV(uv) {}
         Vertex(const glm::vec3 &position) : Position(position), UV(glm::vec2(1, 1)) {}
         // clang-format on

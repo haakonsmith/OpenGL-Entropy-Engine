@@ -26,14 +26,31 @@ namespace Entropy {
 
             arrayBuffer.bind();
 
-            vertexBuffer = std::make_shared<VertexBuffer>(bufferObject, vertices.size() * sizeof(Vertex), vertices.data(),
-                                                     GL_STATIC_DRAW);
+            vertexBuffer = std::make_shared<VertexBuffer>(bufferObject, vertices.size() * sizeof(Vertex),
+                                                          vertices.data(), GL_STATIC_DRAW);
 
             Vertex::assertLayout();
             arrayBuffer.unbind();
 
-            shader = std::make_shared<Shader>("shaders/Builtin/default.vertexshader", "shaders/Builtin/default.fragmentshader");
+            shader = std::make_shared<Shader>("shaders/Builtin/default.vertexshader",
+                                              "shaders/Builtin/default.fragmentshader");
         }
+
+        RenderData(const vector<struct Vertex> &_vertices)
+            : vertices(_vertices), arrayBuffer(), texture("img_test.png") {
+            arrayBuffer.bind();
+
+            vertexBuffer = std::make_shared<VertexBuffer>(bufferObject, vertices.size() * sizeof(Vertex),
+                                                          vertices.data(), GL_STATIC_DRAW);
+
+            Vertex::assertLayout();
+            arrayBuffer.unbind();
+
+            shader = std::make_shared<Shader>("shaders/Builtin/default.vertexshader",
+                                              "shaders/Builtin/default.fragmentshader");
+        }
+
+        void setTexture(std::string path) { texture = Texture(path); }
     };
 
 }  // namespace Entropy

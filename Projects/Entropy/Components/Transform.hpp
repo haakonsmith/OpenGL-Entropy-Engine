@@ -21,6 +21,7 @@ namespace Entropy {
 
 
         Transform() : rotation(0), scale(vec3(10)), Location(vec3(0)) { compute(); }
+        Transform(vec3 _position, float _rotation = 0, vec3 _scale = vec3(10)) : rotation(_rotation), scale(_scale), Location(_position) { compute(); }
         
         inline void compute() {
             // Model matrix : an identity matrix (model will be at the origin)
