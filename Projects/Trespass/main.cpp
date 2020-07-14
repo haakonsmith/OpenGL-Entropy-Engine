@@ -61,6 +61,8 @@ class Trespass : public Entropy::BaseApplication {
 
     int state;
 
+    dvec2 mouse_position;
+
   public:
     void init() override {
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -81,6 +83,9 @@ class Trespass : public Entropy::BaseApplication {
         PROFILE_FUNCTION();
         // App::profiler.newFrame();
         // {
+
+            glfwGetCursorPos(window, &mouse_position.x, &mouse_position.y);
+            mouse_position.y = (mouse_position.y - 480) * -1;
             glfwSetTime(0);
             // renderer->beginLayer("scene");
 
@@ -95,19 +100,24 @@ class Trespass : public Entropy::BaseApplication {
             state = glfwGetKey(window, GLFW_KEY_D);
             if (state == GLFW_PRESS) { registry.get<Transform>(player).position.x += 10; }
 
+            registry.get<Transform>(player).rotation =
+                glm::degrees(atan2((mouse_position.y - registry.get<Transform>(player).position.y), (mouse_position.x - registry.get<Transform>(player).position.x)) * -1) *
+                    -1 +
+                45;
+
             registry.get<Transform>(player).compute();
 
-            // renderer->render(tri);
-            for (size_t i = 0; i < 1000; i++)
-            {
-                for (size_t j = 0; j < 100; j++)
-                {
-                    renderer->renderQuad({j*2,i*2,0}, 20, 20, false, {1,1,0});
-                }
+            renderer->render(tri);
+            // for (size_t i = 0; i < 1000; i++)
+            // {
+            //     for (size_t j = 0; j < 100; j++)
+            //     {
+            //         renderer->renderQuad({j*2,i*2,0}, 20, 20, false, {1,1,0});
+            //     }
                 
-            }
+            // }
             
-            // renderer->render(player);
+            renderer->render(player);
 
             // renderer->endLayer();
             // renderer->beginLayer("light");
