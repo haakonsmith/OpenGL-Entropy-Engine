@@ -24,7 +24,7 @@ namespace Entropy {
         friend class PhysicsEngine;
 
       public:
-        PhysicsData data;
+        PhysicsSimData data;
 
         BoundingBoxCollider collider;
 

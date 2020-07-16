@@ -8,6 +8,7 @@
 #include "../Graphics/2dRenderer.hpp"
 #include "CollisionData.hpp"
 #include "Cute/cute_c2.hpp"
+#include "Entt/single_include/entt/entt.hpp"
 #include "PhysicsObject.hpp"
 #include "glm/glm.hpp"
 
@@ -16,6 +17,8 @@
 namespace Entropy {
 
     class PhysicsEngine {
+        entt::registry &registry;
+
       public:
         m_2dRenderer &renderer;
 
@@ -30,7 +33,7 @@ namespace Entropy {
 
         void checkForCollisions(PhysicsObject &obj, vec3 &prePos);
 
-        void checkForCollision(PhysicsObject &obj, PhysicsObject &_obj, vec3 const& objPrePos);
+        void checkForCollision(PhysicsObject &obj, PhysicsObject &_obj, vec3 const &objPrePos);
 
         bool debug = false;
 
@@ -68,7 +71,7 @@ namespace Entropy {
             return c2V((p.x - screen.sizeX) * screen.sizeX, (p.y - screen.sizeY) * screen.sizeY);
         }
 
-        PhysicsEngine(m_2dRenderer &_renderer, Screen &_screen);
+        PhysicsEngine(m_2dRenderer &_renderer, Screen &_screen, entt::registry &_registry);
         ~PhysicsEngine();
     };
 

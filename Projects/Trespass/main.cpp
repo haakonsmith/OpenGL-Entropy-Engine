@@ -53,13 +53,14 @@ bool done = false;
 
 class Trespass : public Entropy::BaseApplication {
     Entropy::m_2dRenderer* renderer;
+    std::unique_ptr<PhysicsEngine> world;
 
     entt::entity player = registry.create();
 
     entt::entity tri = registry.create();
 
-
     int state;
+    double previousFrameTime;
 
     dvec2 mouse_position;
 
@@ -69,7 +70,10 @@ class Trespass : public Entropy::BaseApplication {
 
         renderer = new Entropy::m_2dRenderer(getScreen(), registry);
 
+        world = make_unique<PhysicsEngine>(*renderer, getScreen(), registry);
+
         registry.emplace<Transform>(player, Transform({240, 100, 0}));
+        registry.emplace<PhysicsData>(player, PhysicsData(vec3(0), vec3(0), 5));
         registry.emplace<RenderData>(player);
 
         registry.emplace<Transform>(tri, Transform({320.0f, 240.0f, 0.0f}, 0.0f, {320, 240, 0}));
@@ -81,52 +85,60 @@ class Trespass : public Entropy::BaseApplication {
     void loop() override {
         // LOG("FPS: " << App::profiler.fps);
         PROFILE_FUNCTION();
+
+        previousFrameTime = glfwGetTime();
+
+        glfwSetTime(0);
+
+        world->timeStep(previousFrameTime);
         // App::profiler.newFrame();
         // {
 
-            glfwGetCursorPos(window, &mouse_position.x, &mouse_position.y);
-            mouse_position.y = (mouse_position.y - 480) * -1;
-            glfwSetTime(0);
-            // renderer->beginLayer("scene");
+        glfwGetCursorPos(window, &mouse_position.x, &mouse_position.y);
+        mouse_position.y = (mouse_position.y - 480) * -1;
+        glfwSetTime(0);
+        // renderer->beginLayer("scene");
 
-            glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
 
-            state = glfwGetKey(window, GLFW_KEY_W);
-            if (state == GLFW_PRESS) { registry.get<Transform>(player).position.y += 10; }
-            state = glfwGetKey(window, GLFW_KEY_S);
-            if (state == GLFW_PRESS) { registry.get<Transform>(player).position.y += -10; }
-            state = glfwGetKey(window, GLFW_KEY_A);
-            if (state == GLFW_PRESS) { registry.get<Transform>(player).position.x += -10; }
-            state = glfwGetKey(window, GLFW_KEY_D);
-            if (state == GLFW_PRESS) { registry.get<Transform>(player).position.x += 10; }
+        state = glfwGetKey(window, GLFW_KEY_W);
+        if (state == GLFW_PRESS) { registry.get<PhysicsData>(player).velocity.y += 40; }
+        state = glfwGetKey(window, GLFW_KEY_S);
+        if (state == GLFW_PRESS) { registry.get<PhysicsData>(player).velocity.y += -40; }
+        state = glfwGetKey(window, GLFW_KEY_A);
+        if (state == GLFW_PRESS) { registry.get<PhysicsData>(player).velocity.x += -40; }
+        state = glfwGetKey(window, GLFW_KEY_D);
+        if (state == GLFW_PRESS) { registry.get<PhysicsData>(player).velocity.x += 40; }
 
-            registry.get<Transform>(player).rotation =
-                glm::degrees(atan2((mouse_position.y - registry.get<Transform>(player).position.y), (mouse_position.x - registry.get<Transform>(player).position.x)) * -1) *
-                    -1 +
-                45;
+        registry.get<Transform>(player).rotation =
+            glm::degrees(atan2((mouse_position.y - registry.get<Transform>(player).position.y),
+                               (mouse_position.x - registry.get<Transform>(player).position.x)) *
+                         -1) *
+                -1 +
+            45;
 
-            registry.get<Transform>(player).compute();
+        registry.get<Transform>(player).compute();
 
-            renderer->render(tri);
-            // for (size_t i = 0; i < 1000; i++)
-            // {
-            //     for (size_t j = 0; j < 100; j++)
-            //     {
-            //         renderer->renderQuad({j*2,i*2,0}, 20, 20, false, {1,1,0});
-            //     }
-                
-            // }
-            
-            renderer->render(player);
+        renderer->render(tri);
+        // for (size_t i = 0; i < 1000; i++)
+        // {
+        //     for (size_t j = 0; j < 100; j++)
+        //     {
+        //         renderer->renderQuad({j*2,i*2,0}, 20, 20, false, {1,1,0});
+        //     }
 
-            // renderer->endLayer();
-            // renderer->beginLayer("light");
-            // renderer->renderLights();
-            // renderer->endLayer();
+        // }
 
-            // renderer->blendLayers("light", "scene", renderer->mergeShader);
-            PROFILE_CALL(glfwSwapBuffers(window));
-            glfwPollEvents();
+        renderer->render(player);
+
+        // renderer->endLayer();
+        // renderer->beginLayer("light");
+        // renderer->renderLights();
+        // renderer->endLayer();
+
+        // renderer->blendLayers("light", "scene", renderer->mergeShader);
+        PROFILE_CALL(glfwSwapBuffers(window));
+        glfwPollEvents();
         // }
         // App::profiler.endFrame();
     }
