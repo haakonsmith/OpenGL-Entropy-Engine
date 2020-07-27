@@ -15,6 +15,6 @@ namespace Entropy {
         float intensity;
 
         Light() : position(vec3(0)), intensity(10), colour(vec3(1)) {}
-        Light(vec3 const &v) : position(v), intensity(0), colour(vec3(1)) {}
+        Light(vec3 const &v) : position(v), intensity(10), colour(vec3(1)) {}
     };
 }  // namespace Entropy

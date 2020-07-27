@@ -9,7 +9,6 @@ namespace Entropy {
         // created.
         buffer(_renderable);
 
-        if (_renderable->castsShadow) renderables.push_back(_renderable);
         objects.push_back(_renderable);
     }
 
@@ -212,7 +211,7 @@ namespace Entropy {
         auto &renderData = registry.get<RenderData>(entity);
         renderData.shader->bind();
 
-        renderData.shader->uniformMatrix4fv("MVP", projectionMatrix * viewMatrix * transform.modelMatrix);
+        renderData.shader->uniformMatrix4fv("MVP", projectionMatrix * viewMatrix * transform.getModelMatrix());
 
         // Bind texture in Texture Unit 0
         renderData.texture.bind();
@@ -237,7 +236,6 @@ namespace Entropy {
         // }
 
         auto &transform = entity.get<Transform>();
-        // auto &renderData = entity.get<RenderData>();
 
         auto &mesh2D  = entity.get<Mesh2D>();
         auto &texture = entity.get<Texture>();
@@ -313,7 +311,7 @@ namespace Entropy {
         GL_LOG("Render");
     }
 
-    void m_2dRenderer::compositeTextures(Texture &texture1, Texture &texture2, shared_ptr<Shader> layerMergeShader) {
+    void m_2dRenderer::compositeTextures(Texture &texture1, Texture &texture2, Ref<Shader> layerMergeShader) {
         PROFILE_FUNCTION();
         const mat4 MVP = getViewProjectionMatrix() *
                          (glm::translate(mat4(1.0f), (vec3(320, 240, 0))) * glm::scale(mat4(1.0f), vec3(320, 240, 1)));
@@ -343,6 +341,7 @@ namespace Entropy {
     m_2dRenderer::m_2dRenderer(Screen &_s, entt::registry &_registry)
         : registry(_registry), screen(_s), LightRendererAttachment(_registry) {
         glEnable(GL_BLEND);
+        glEnable(GL_DITHER);
         // glScissor(0, 0, screen.sizeX * 2, screen.sizeY * 2);
         // glViewport(0, 0, screen.sizeX * 2, screen.sizeY * 2);
         // glEnable(GL_SCISSOR_TEST);

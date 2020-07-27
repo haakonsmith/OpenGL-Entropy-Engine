@@ -28,12 +28,12 @@ namespace Entropy {
             texture.bind();
 
             // Give an empty image to OpenGL ( the last NULL )
-            texture.upload(screen.sizeX, screen.sizeY, NULL);
+            texture.upload(screen.sizeX, screen.sizeY, NULL, Texture::m_32bits);
 
             // Poor filtering. Needed !
             texture.setPoorFiltering();
 
-            // Set "renderedTexture" as our colour attachement #0
+            // Set "renderedTexture" as our colour attachment #0
             glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, texture.getID(), 0);
 
             // Set the list of draw buffers.
@@ -49,13 +49,14 @@ namespace Entropy {
 
         static void unbind(const Screen& screen) {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glViewport(0, 0, screen.sizeX * 4, screen.sizeY * 4);
+            glViewport(0, 0, screen.sizeX * 2, screen.sizeY * 2);
+            LOG(screen.sizeX);
         }
 
         inline void bind() {
             // Render to our framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-            glViewport(0, 0, screen.sizeX, screen.sizeY);  // Render on the whole framebuffer,
+            glViewport(0, 0, screen.sizeX * 2, screen.sizeY * 2);  // Render on the whole framebuffer,
                                                            // complete from the lower left corner
                                                            // to the upper right
         }

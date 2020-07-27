@@ -41,16 +41,19 @@ namespace Entropy {
         float rayCollisionCheck(c2Ray ray) {
             std::vector<c2Poly> polys;
 
-            for (auto renderable : renderables) {
-                if (renderable->castsShadow) {
+            auto meshGroup = registry.group<Mesh2D, Transform>();
+
+            meshGroup.each([&](auto entity, auto &mesh, auto &transform){
+
+                if (mesh.castsShadow) {
                     c2Poly poly;
 
-                    poly.count = renderable->Vertices.size();
+                    poly.count = mesh.vertices.size();
 
-                    std::transform(renderable->Vertices.begin(), renderable->Vertices.end(), std::begin(poly.verts),
-                                   [renderable](const Vertex2D &a) {
+                    std::transform(mesh.vertices.begin(), mesh.vertices.end(), std::begin(poly.verts),
+                                   [&](const Vertex2D &a) {
                                        auto t =
-                                           renderable->transform.getModelMatrix() * vec4(a.position.glmVector, 0, 1);
+                                           transform.getModelMatrix() * vec4(a.position.glmVector, 0, 1);
 
                                        return Vector2D(vec2(t)).c2Vector;
                                    });
@@ -59,7 +62,8 @@ namespace Entropy {
 
                     polys.push_back(poly);
                 }
-            }
+            });
+            
 
             float dist = ray.t;
 
@@ -76,17 +80,22 @@ namespace Entropy {
         }
 
         void drawRayLines() {
-            for (auto renderable : renderables) { drawRayLine(renderable); }
+            auto meshGroup = registry.view<Mesh2D, Transform>();
+
+            for (auto entity : meshGroup) {
+                auto [mesh, transform] = meshGroup.get<Mesh2D, Transform>(entity);
+                drawRayLine(mesh, transform);
+            }
         }
 
-        void drawRayLine(Renderable *renderable) {
-            auto norm  = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
-            auto verts = renderable->getVertices();
+        void drawRayLine(const Mesh2D &mesh, const Transform &transform) {
+            auto                norm  = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
+            std::vector<Vertex> verts = mesh.vertices;
 
             for (size_t i = 0; i < verts.size(); i++) {
                 PROFILE_SCOPE("ModelMatrixTransform");
 
-                verts[i].Position = glm::vec3(renderable->getModelMatrix() * glm::vec4(verts[i].Position, 1));
+                verts[i].Position = glm::vec3(transform.getModelMatrix() * glm::vec4(verts[i].Position, 1));
             }
 
             for (auto &vert : verts) {
@@ -118,15 +127,15 @@ namespace Entropy {
             }
         }
 
-        std::vector<Vertex> getLightMesh(const Light& light) {
+        std::vector<Vertex> getLightMesh(const Light &light) {
             std::vector<Vertex> lightMesh;
             auto                norm = [](vec2 v1, vec2 v2) { return vec2(v2.x - v1.x, v2.y - v1.y); };
 
             auto meshGroup = registry.view<Mesh2D, Transform>();
 
-            for(auto entity: meshGroup) {
+            for (auto entity : meshGroup) {
                 auto [mesh, transform] = meshGroup.get<Mesh2D, Transform>(entity);
-  
+                
                 auto verts = mesh.vertices;
 
                 for (size_t i = 0; i < verts.size(); i++) {
@@ -159,7 +168,6 @@ namespace Entropy {
                     ray.d = c2V(direction.x - offset.x, direction.y - offset.y);
                     dist  = rayCollisionCheck(ray);
                     point = vec3((vec2(light.position) + (vec2(ray.d.x, ray.d.y) * dist)), 0);
-                    // renderLine(light->position, point);
 
                     lightMesh.push_back(Vertex(point));
                 }
@@ -199,8 +207,6 @@ namespace Entropy {
             return lightMesh;
         }
 
-        std::vector<Renderable *> renderables;
-        std::vector<Light *>      lights;
         Ref<Shader>               shadowShader;
         Ref<Shader>               finalShader;
         Ref<Shader>               lightShader;
@@ -214,9 +220,6 @@ namespace Entropy {
         uint32_t lightVertexCount = 600;
 
         VertexArray vertexArray;
-        // glm::vec3 pos = glm::vec3(320, 240, 0);
-
-        bool first = true;
 
         void renderLights() {
             PROFILE_FUNCTION();
@@ -246,12 +249,13 @@ namespace Entropy {
 
                 auto lp = App::screen.screenScale(light.position);
 
-                lightShader->uniform3f("light", lp.x - 0.1, lp.y, 0);
+                lightShader->uniform3f("light", lp.x, lp.y, 0);
                 lightShader->uniform3f("lightColour", light.colour.r, light.colour.g, light.colour.b);
                 lightShader->uniform1f("intensity", light.intensity);
                 GL_LOG("Uniform setting");
 
                 glDrawArrays(GL_TRIANGLE_FAN, 0, mesh.size());
+                GL_LOG("Draw call");
             });
 
             // Render objects over light

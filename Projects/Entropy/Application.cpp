@@ -59,6 +59,8 @@ namespace Entropy {
         glfwMakeContextCurrent(window);
         // glfwSwapInterval(0);
         printf("GLFW window initialized: %i, %i\n", width, height);
+
+        getScreen().size = {width, height};
     }
 
     BaseApplication::BaseApplication() {

@@ -131,7 +131,7 @@ namespace Entropy {
      * Mesh containing VBO
      */
     struct Mesh2D {
-        size_t rendererID = 0;
+        bool castsShadow = true;
 
         Ref<VertexBuffer> vertexBuffer;
         VertexArray       arrayBuffer;
@@ -155,6 +155,8 @@ namespace Entropy {
         void update() { updateBuffer(); }
 
       private:
+        size_t rendererID = 0;
+
         void generateBuffer() {
             arrayBuffer.bind();
 

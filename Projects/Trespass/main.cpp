@@ -55,7 +55,7 @@ class Trespass : public Entropy::BaseApplication {
     std::unique_ptr<Entropy::m_2dRenderer> renderer;
     std::unique_ptr<PhysicsEngine>         world;
 
-    entt::entity player = registry->create();
+    Entropy::Entity player = Entropy::Entity(registry);
 
     Entropy::Entity quad = Entropy::Entity(registry);
     Entropy::Entity light = Entropy::Entity(registry);
@@ -80,16 +80,16 @@ class Trespass : public Entropy::BaseApplication {
         world = make_unique<PhysicsEngine>(*renderer, getScreen(), *registry.get());
 
 
-        registry->emplace<Transform>(player, Transform({240, 100, 0}));
-        registry->emplace<PhysicsData>(player, PhysicsData(vec3(0), vec3(0), 5));
-        registry->emplace<AABBCollider>(player, AABBCollider({10, 10}));
-        registry->emplace<RenderData>(player);
+        player.emplace<Transform>(Transform({240, 100, 0}));
+        player.emplace<PhysicsData>(PhysicsData(vec3(0), vec3(0), 5));
+        player.emplace<AABBCollider>(AABBCollider({10, 10}));
+        Builder::renderData(player);
 
         quad.emplace<AABBCollider>(AABBCollider({10, 10}));
         quad.emplace<Transform>(Transform({320.0f, 280.0f, 0.0f}, 0.0f, {10, 10, 0}));
         Builder::renderData(quad, Rectangle());
 
-        light.emplace<Light>();
+        light.emplace<Light>(vec3(320,240,0));
 
         registry->emplace<Transform>(tri, Transform({320.0f, 240.0f, 0.0f}, 0.0f, {320, 240, 0}));
         registry->emplace<RenderData>(tri, RenderData(Rectangle().Vertices)).setTexture("floor.png");
@@ -129,22 +129,22 @@ class Trespass : public Entropy::BaseApplication {
         glClear(GL_COLOR_BUFFER_BIT);
 
         state = glfwGetKey(window, GLFW_KEY_W);
-        if (state == GLFW_PRESS) { registry->get<PhysicsData>(player).velocity.y += 40; }
+        if (state == GLFW_PRESS) { player.get<PhysicsData>().velocity.y += 40; }
         state = glfwGetKey(window, GLFW_KEY_S);
-        if (state == GLFW_PRESS) { registry->get<PhysicsData>(player).velocity.y += -40; }
+        if (state == GLFW_PRESS) { player.get<PhysicsData>().velocity.y += -40; }
         state = glfwGetKey(window, GLFW_KEY_A);
-        if (state == GLFW_PRESS) { registry->get<PhysicsData>(player).velocity.x += -40; }
+        if (state == GLFW_PRESS) { player.get<PhysicsData>().velocity.x += -40; }
         state = glfwGetKey(window, GLFW_KEY_D);
-        if (state == GLFW_PRESS) { registry->get<PhysicsData>(player).velocity.x += 40; }
+        if (state == GLFW_PRESS) { player.get<PhysicsData>().velocity.x += 40; }
 
-        registry->get<Transform>(player).rotation =
-            glm::degrees(atan2((mouse_position.y - registry->get<Transform>(player).position.y),
-                               (mouse_position.x - registry->get<Transform>(player).position.x)) *
+        player.get<Transform>().rotation =
+            glm::degrees(atan2((mouse_position.y - player.get<Transform>().position.y),
+                               (mouse_position.x - player.get<Transform>().position.x)) *
                          -1) *
                 -1 +
             45;
 
-        registry->get<Transform>(player).compute();
+        player.get<Transform>().compute();
 
         renderer->render(tri);
         // for (size_t i = 0; i < 1000; i++)

@@ -41,7 +41,7 @@ enum Coordinates { x, y, z };
     #ifdef NDEBUG
         #define GL_LOG(LOCATION)           \
             if (auto error = glGetError()) \
-            std::cout << "OpenGL error " << error << " at " << LOCATION << " " << __LINE__ << std::endl
+            std::cout << "OpenGL error " << error << " at " << LOCATION << " Line: " << __LINE__ << " Function: " << __FUNCTION__ << std::endl
     #else
         #define GL_LOG(LOCATION) \
             do {                 \

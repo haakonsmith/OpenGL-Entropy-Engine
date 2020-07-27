@@ -11,6 +11,8 @@ namespace Entropy {
     Texture::Texture(std::string p) : path(std::string(App::texureAssetPath) + "/" + p) {
         int width, height, channels;
         stbi_set_flip_vertically_on_load(true);
+        // 32 bit loading
+        // float* image = stbi_loadf(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
         unsigned char* image = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
 
         if (image == nullptr)  // Error check
@@ -28,7 +30,9 @@ namespace Entropy {
         setPoorFiltering();
 
         // Give the image to OpenGL
-        upload(width, height, image);
+        upload(width, height, image, m_8bits);
+
+        stbi_image_free(image);
     }
 
     GLuint Texture::createBlank() {
@@ -42,8 +46,18 @@ namespace Entropy {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     }
 
-    void Texture::upload(int width, int height, const void* data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    void Texture::texParameter(GLenum pname, GLint param) { glTexParameteri(GL_TEXTURE_2D, pname, param); }
+
+    void Texture::upload(int width, int height, const void* data, BitDepth bitDepth) {
+        switch (bitDepth) {
+            case m_32bits:
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, data);
+                break;
+            case m_8bits:
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+                break;
+
+        }
     }
 
 }  // namespace Entropy

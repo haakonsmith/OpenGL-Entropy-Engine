@@ -21,12 +21,17 @@ namespace Entropy {
         }
 
       public:
+        enum BitDepth {
+            m_8bits, m_32bits
+        };
+
         GLenum textureSlot = GL_TEXTURE0;
 
         static GLuint loadTexture(std::string path);
         static GLuint createBlank();
         static void setPoorFiltering();
-        void upload(int width, int height, const void *data);
+        void upload(int width, int height, const void *data, BitDepth bitDepth);
+        void texParameter(GLenum pname, GLint param);
         inline GLuint getID() { return obj_; }
 
         Texture(std::string p);
