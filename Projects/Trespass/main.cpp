@@ -21,11 +21,11 @@
 #define PI 3.1415926535897932384626433832795028841971693993
 
 #ifdef __APPLE__
-#include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
+    #include <OpenGL/gl3.h>
+    #include <OpenGL/gl3ext.h>
 
 #else
-#include <GL/glew.h>
+    #include <GL/glew.h>
 #endif
 
 // Include GLM
@@ -52,14 +52,22 @@ using namespace std;
 bool done = false;
 
 class Trespass : public Entropy::BaseApplication {
-    Entropy::m_2dRenderer* renderer;
-    std::unique_ptr<PhysicsEngine> world;
+    std::unique_ptr<Entropy::m_2dRenderer> renderer;
+    std::unique_ptr<PhysicsEngine>         world;
 
-    entt::entity player = registry.create();
+    entt::entity player = registry->create();
 
-    entt::entity tri = registry.create();
+    Entropy::Entity quad = Entropy::Entity(registry);
+    Entropy::Entity light = Entropy::Entity(registry);
 
-    int state;
+    entt::entity tri = registry->create();
+
+    entt::entity topWall    = registry->create();
+    entt::entity bottomWall = registry->create();
+    entt::entity leftWall   = registry->create();
+    entt::entity rightWall  = registry->create();
+
+    int    state;
     double previousFrameTime;
 
     dvec2 mouse_position;
@@ -68,16 +76,38 @@ class Trespass : public Entropy::BaseApplication {
     void init() override {
         glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
-        renderer = new Entropy::m_2dRenderer(getScreen(), registry);
+        renderer = make_unique<Entropy::m_2dRenderer>(getScreen(), *registry.get());
+        world = make_unique<PhysicsEngine>(*renderer, getScreen(), *registry.get());
 
-        world = make_unique<PhysicsEngine>(*renderer, getScreen(), registry);
 
-        registry.emplace<Transform>(player, Transform({240, 100, 0}));
-        registry.emplace<PhysicsData>(player, PhysicsData(vec3(0), vec3(0), 5));
-        registry.emplace<RenderData>(player);
+        registry->emplace<Transform>(player, Transform({240, 100, 0}));
+        registry->emplace<PhysicsData>(player, PhysicsData(vec3(0), vec3(0), 5));
+        registry->emplace<AABBCollider>(player, AABBCollider({10, 10}));
+        registry->emplace<RenderData>(player);
 
-        registry.emplace<Transform>(tri, Transform({320.0f, 240.0f, 0.0f}, 0.0f, {320, 240, 0}));
-        registry.emplace<RenderData>(tri, RenderData(Rectangle().Vertices)).setTexture("floor.png");
+        quad.emplace<AABBCollider>(AABBCollider({10, 10}));
+        quad.emplace<Transform>(Transform({320.0f, 280.0f, 0.0f}, 0.0f, {10, 10, 0}));
+        Builder::renderData(quad, Rectangle());
+
+        light.emplace<Light>();
+
+        registry->emplace<Transform>(tri, Transform({320.0f, 240.0f, 0.0f}, 0.0f, {320, 240, 0}));
+        registry->emplace<RenderData>(tri, RenderData(Rectangle().Vertices)).setTexture("floor.png");
+
+        //////////////////////////////
+        //////////// Walls //////////
+        ////////////////////////////
+        registry->emplace<AABBCollider>(leftWall, AABBCollider({20, 240}));
+        registry->emplace<Transform>(leftWall, Transform({-20.0f, 240.0f, 0.0f}, 0.0f, {0, 0, 0}));
+
+        registry->emplace<AABBCollider>(topWall, AABBCollider({320, 20}));
+        registry->emplace<Transform>(topWall, Transform({320.0f, 500.0f, 0.0f}, 0.0f, {0, 0, 0}));
+
+        registry->emplace<AABBCollider>(rightWall, AABBCollider({20, 240}));
+        registry->emplace<Transform>(rightWall, Transform({660.0f, 240.0f, 0.0f}, 0.0f, {0, 0, 0}));
+
+        registry->emplace<AABBCollider>(bottomWall, AABBCollider({320, 20}));
+        registry->emplace<Transform>(bottomWall, Transform({320.0f, -20.0f, 0.0f}, 0.0f, {0, 0, 0}));
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
@@ -85,39 +115,36 @@ class Trespass : public Entropy::BaseApplication {
     void loop() override {
         // LOG("FPS: " << App::profiler.fps);
         PROFILE_FUNCTION();
+        App::profiler.newFrame();
 
         previousFrameTime = glfwGetTime();
 
         glfwSetTime(0);
 
-        world->timeStep(previousFrameTime);
-        // App::profiler.newFrame();
-        // {
-
         glfwGetCursorPos(window, &mouse_position.x, &mouse_position.y);
         mouse_position.y = (mouse_position.y - 480) * -1;
         glfwSetTime(0);
-        // renderer->beginLayer("scene");
+        renderer->beginLayer("scene");
 
         glClear(GL_COLOR_BUFFER_BIT);
 
         state = glfwGetKey(window, GLFW_KEY_W);
-        if (state == GLFW_PRESS) { registry.get<PhysicsData>(player).velocity.y += 40; }
+        if (state == GLFW_PRESS) { registry->get<PhysicsData>(player).velocity.y += 40; }
         state = glfwGetKey(window, GLFW_KEY_S);
-        if (state == GLFW_PRESS) { registry.get<PhysicsData>(player).velocity.y += -40; }
+        if (state == GLFW_PRESS) { registry->get<PhysicsData>(player).velocity.y += -40; }
         state = glfwGetKey(window, GLFW_KEY_A);
-        if (state == GLFW_PRESS) { registry.get<PhysicsData>(player).velocity.x += -40; }
+        if (state == GLFW_PRESS) { registry->get<PhysicsData>(player).velocity.x += -40; }
         state = glfwGetKey(window, GLFW_KEY_D);
-        if (state == GLFW_PRESS) { registry.get<PhysicsData>(player).velocity.x += 40; }
+        if (state == GLFW_PRESS) { registry->get<PhysicsData>(player).velocity.x += 40; }
 
-        registry.get<Transform>(player).rotation =
-            glm::degrees(atan2((mouse_position.y - registry.get<Transform>(player).position.y),
-                               (mouse_position.x - registry.get<Transform>(player).position.x)) *
+        registry->get<Transform>(player).rotation =
+            glm::degrees(atan2((mouse_position.y - registry->get<Transform>(player).position.y),
+                               (mouse_position.x - registry->get<Transform>(player).position.x)) *
                          -1) *
                 -1 +
             45;
 
-        registry.get<Transform>(player).compute();
+        registry->get<Transform>(player).compute();
 
         renderer->render(tri);
         // for (size_t i = 0; i < 1000; i++)
@@ -130,17 +157,19 @@ class Trespass : public Entropy::BaseApplication {
         // }
 
         renderer->render(player);
+        renderer->render(quad);
+        world->timeStep(previousFrameTime);
 
-        // renderer->endLayer();
-        // renderer->beginLayer("light");
-        // renderer->renderLights();
-        // renderer->endLayer();
+        renderer->endLayer();
+        renderer->beginLayer("light");
+        renderer->renderLights();
+        renderer->endLayer();
 
-        // renderer->blendLayers("light", "scene", renderer->mergeShader);
+        renderer->blendLayers("light", "scene", renderer->mergeShader);
         PROFILE_CALL(glfwSwapBuffers(window));
         glfwPollEvents();
-        // }
-        // App::profiler.endFrame();
+
+        App::profiler.endFrame();
     }
 
     Trespass() : Entropy::BaseApplication() {
@@ -154,7 +183,7 @@ class Trespass : public Entropy::BaseApplication {
         // delete player;
         // delete tri;
         // delete world;
-        delete renderer;
+        // delete renderer;
     }
 };
 

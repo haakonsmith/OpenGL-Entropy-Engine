@@ -8,7 +8,7 @@ void Player::update() {
         // bullets[i]->setPosition(bullets[i]->getPosition());
 
         if (bullets[i]->shouldDie) {
-            renderer->removeLight(bullets[i]->light.get());
+            // renderer->removeLight(bullets[i]->light.get());
             world->removeObject(bullets[i].get());
             bullets.erase(bullets.begin() + i);
         }
@@ -73,7 +73,7 @@ void Player::shootBullet() {
     bullet->collider.boundingBox.height = 10;
 
     world->addObject(bullet.get());
-    renderer->addLight(bullet->light.get());
+    // renderer->addLight(bullet->light.get());
 
     bullets.push_back(bullet);
 }

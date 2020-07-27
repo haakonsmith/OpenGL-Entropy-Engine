@@ -24,10 +24,11 @@ workspace "Premake"
         symbols "On"
 		buildoptions {"-Wdeprecated-declarations"}
 		-- , "-ftime-report"
-	
-	-- We now only set settings for Release
-	filter { "configurations:Release" }
+        
+        -- We now only set settings for Release
+    filter { "configurations:Release" }
 		-- Release should be optimized
+        symbols "On"
 		optimize "On"
 	
 	-- Reset the filter for other settings

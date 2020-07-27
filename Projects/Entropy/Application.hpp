@@ -29,8 +29,10 @@ namespace Entropy {
 
         void initWindow(unsigned int SCREEN_WIDTH, unsigned int SCREEN_HEIGHT);
 
+        // entt::registry real_registry;
+
       public:
-        entt::registry registry;
+        std::shared_ptr<entt::registry> registry = std::shared_ptr<entt::registry>(new entt::registry());
 
         static void glfwError(int id, const char *description) { std::cout << description << std::endl; }
 

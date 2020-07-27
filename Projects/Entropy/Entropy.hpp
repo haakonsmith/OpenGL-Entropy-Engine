@@ -14,6 +14,8 @@
 #define GL_SILENCE_DEPRECATION
 
 #include "Components/RenderData.hpp"
+#include "Components/Components.hpp"
+#include "Components/Entity.hpp"
 
 #include "Application.hpp"
 #include "Profiler.hpp"

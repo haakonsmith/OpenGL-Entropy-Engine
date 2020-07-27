@@ -22,6 +22,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "../Components/RenderData.hpp"
+#include "../Components/Entity.hpp"
 #else
 #error "2d renderer included twice"
 #endif
@@ -101,6 +102,7 @@ namespace Entropy {
         }
 
         void blendLayers(string layer1, string layer2, shared_ptr<Shader> layerMergeShader) {
+            clear();
             compositeTextures(frameBuffers.at(layer1).texture, frameBuffers.at(layer2).texture, layerMergeShader);
         }
 
@@ -128,6 +130,7 @@ namespace Entropy {
         void renderQuad(vec3 position, float width, float height, bool hollow = false, vec3 color = vec3(1, 0, 0));
 
         void render(entt::entity entity);
+        void render(Entity entity);
 
         /**
          * Draw line between two world space points

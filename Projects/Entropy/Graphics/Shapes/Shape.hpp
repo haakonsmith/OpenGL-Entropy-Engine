@@ -46,10 +46,4 @@ namespace Entropy {
         }
     };
 
-    struct BoundingBox {
-        float width, height;
-
-        BoundingBox() : width(10), height(10) {}
-    };
-
 }  // namespace Entropy

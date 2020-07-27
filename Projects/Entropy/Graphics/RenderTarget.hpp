@@ -2,15 +2,15 @@
  * Copyright 2020, Haakon Smith.
  */
 
-#include "Texture.hpp"
 #include "../Screen.hpp"
+#include "Texture.hpp"
 
 #pragma once
 namespace Entropy {
 
     struct RenderTarget {
-        GLuint frameBuffer;
-        Texture texture;
+        GLuint        frameBuffer;
+        Texture       texture;
         const Screen& screen;
 
         RenderTarget(const Screen& _screen) : screen(_screen) {
@@ -28,7 +28,7 @@ namespace Entropy {
             texture.bind();
 
             // Give an empty image to OpenGL ( the last NULL )
-            texture.upload(screen.sizeX * 2, screen.sizeY * 2, NULL);
+            texture.upload(screen.sizeX, screen.sizeY, NULL);
 
             // Poor filtering. Needed !
             texture.setPoorFiltering();
@@ -49,15 +49,15 @@ namespace Entropy {
 
         static void unbind(const Screen& screen) {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glViewport(0, 0, screen.sizeX * 2, screen.sizeY * 2);
+            glViewport(0, 0, screen.sizeX * 4, screen.sizeY * 4);
         }
 
         inline void bind() {
             // Render to our framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-            glViewport(0, 0, screen.sizeX * 2, screen.sizeY * 2);  // Render on the whole framebuffer,
-                                                                   // complete from the lower left corner
-                                                                   // to the upper right
+            glViewport(0, 0, screen.sizeX, screen.sizeY);  // Render on the whole framebuffer,
+                                                           // complete from the lower left corner
+                                                           // to the upper right
         }
     };
 }  // namespace Entropy

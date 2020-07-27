@@ -5,9 +5,10 @@
 #include <string>
 #include <vector>
 
-#include "../Components/Transform.hpp"
+#include "../Components/Components.hpp"
+// #include "../Components/Transform.hpp"
 #include "../Mixins/Geometry.hpp"
-#include "../Mixins/Transform.hpp"
+// #include "../Mixins/Transform.hpp"
 #include "../Shared.hpp"
 #include "AtribLayout.hpp"
 #include "Shader.hpp"

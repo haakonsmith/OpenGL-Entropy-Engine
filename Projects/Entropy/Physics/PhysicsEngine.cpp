@@ -30,6 +30,8 @@ namespace Entropy {
         }
     }
 
+    void PhysicsEngine::preventIntersection(entt::entity entityA, entt::entity entityB) {}
+
     void PhysicsEngine::timeStep(float timeStep) {
         PROFILE_FUNCTION();
         // const int collisionPrecision = 1000;
@@ -62,7 +64,9 @@ namespace Entropy {
         //     }
         // }
 
-        registry.group<Transform, PhysicsData>().each([timeStep](auto entity, auto &pos, auto &data) {
+        auto colliderGroup = registry.group<Transform, AABBCollider>();
+
+        registry.group<Transform, PhysicsData>().each([=](auto entity, auto &pos, auto &data) {
             data.velocity += data.acceleration * timeStep;
 
             data.velocity = data.velocity - data.velocity * (data.friction * timeStep);
@@ -70,6 +74,31 @@ namespace Entropy {
             // if (distance(data.velocity, vec3(0)) < 1)
             //     data.velocity = vec3(0);
 
+            if (registry.has<AABBCollider>(entity)) {
+                auto colliderA = registry.get<AABBCollider>(entity);
+                auto transA = pos;
+
+                colliderGroup.each([&](auto entityB, auto &transB, auto &colliderB) {
+                    if (entity != entityB) {
+                        if (colliderA.getIntersection(transA, colliderB, transB)) {
+                            auto manifold = colliderA.getCollisionManifold(transA, colliderB, transB);
+                            // vec3 cp = {manifold.contact_points[0].x, manifold.contact_points[0].y, 0};
+
+                            // renderer.renderLine(cp,
+                            //                     cp + vec3(manifold.n.x, manifold.n.y, 0) *
+                            //                     std::max(manifold.depths[0], manifold.depths[1]));
+
+                            // renderer.renderCircle(cp, 2);
+
+                            if (sign(data.velocity.x) == manifold.n.x) data.velocity.x = 0;
+                            if (sign(data.velocity.y) == manifold.n.y) data.velocity.y = 0;
+
+                            pos.position -=
+                                vec3(manifold.n.x, manifold.n.y, 1) * std::max(manifold.depths[0], manifold.depths[1]);
+                        }
+                    }
+                });
+            }
             pos.position = pos.position + data.velocity * timeStep;
         });
     }

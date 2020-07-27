@@ -6,6 +6,9 @@
 #include "../Graphics/Vertex.hpp"
 #include "../Graphics/VertexBuffer.hpp"
 
+#include "Entity.hpp"
+#include "Components.hpp"
+
 #pragma once
 
 namespace Entropy {
@@ -18,6 +21,14 @@ namespace Entropy {
         Ref<VertexBuffer> vertexBuffer;
 
         vector<struct Vertex> vertices;
+
+        static void build(Entropy::Entity entity) {
+            entity.emplace<Mesh2D>();
+            entity.emplace<Texture>("img_test.png");
+            entity.emplace<Ref<Shader>>(std::make_shared<Shader>("shaders/Builtin/default.vertexshader",
+                                              "shaders/Builtin/default.fragmentshader"));
+            
+        }
 
         RenderData() : arrayBuffer(), texture("img_test.png") {
             vertices.push_back(Vertex(-1.0f, -1.0f, 0.0f, 0, 0));

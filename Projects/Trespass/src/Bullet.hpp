@@ -1,7 +1,7 @@
 #include <iosfwd>
 
+#include "Components/Light.hpp"
 #include "Game/GameObject.hpp"
-#include "Graphics/Light.hpp"
 #include "Physics/CollisionData.hpp"
 
 #pragma once

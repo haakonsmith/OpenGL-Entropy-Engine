@@ -10,7 +10,7 @@
 #include <memory>
 
 #ifndef COORDINATES
-#define COORDINATES
+    #define COORDINATES
 
 enum Coordinates { x, y, z };
 
@@ -19,39 +19,42 @@ enum Coordinates { x, y, z };
 #include "Profiler.hpp"
 
 #ifndef ENTROPY_MACROS
-#define ENTROPY_MACROS
+    #define ENTROPY_MACROS
 
-#define PROFILE_CALL(CPP_CALL) \
-    { PROFILE_SCOPE(#CPP_CALL);CPP_CALL;}
+    #define PROFILE_CALL(CPP_CALL)    \
+        {                             \
+            PROFILE_SCOPE(#CPP_CALL); \
+            CPP_CALL;                 \
+        }
 
-#define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCTION__)
+    #define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCTION__)
 
-#ifdef PROFILE
-#define PROFILE_SCOPE(LOCATION) Entropy::Performance::Timer entropy_performance_timer(LOCATION)
+    #ifdef PROFILE
+        #define PROFILE_SCOPE(NAME) Entropy::Performance::Timer entropy_performance_timer(NAME)
 
-#else
-#define PROFILE_SCOPE(LOCATION) \
-    do {                \
-    } while (0)
-#endif
+    #else
+        #define PROFILE_SCOPE(NAME) \
+            do {                    \
+            } while (0)
+    #endif
 
-#ifdef NDEBUG
-#define GL_LOG(LOCATION)           \
-    if (auto error = glGetError()) \
-    std::cout << "OpenGL error " << error << " at " << LOCATION << " " << __LINE__ << std::endl
-#else
-#define GL_LOG(LOCATION) \
-    do {         \
-    } while (0)
-#endif
+    #ifdef NDEBUG
+        #define GL_LOG(LOCATION)           \
+            if (auto error = glGetError()) \
+            std::cout << "OpenGL error " << error << " at " << LOCATION << " " << __LINE__ << std::endl
+    #else
+        #define GL_LOG(LOCATION) \
+            do {                 \
+            } while (0)
+    #endif
 
-#ifdef NDEBUG
-#define LOG(MESSAGE) std::cout << MESSAGE << " at line:" << __LINE__ << std::endl
-#else
-#define LOG(MESSAGE) \
-    do {      \
-    } while (0)
-#endif
+    #ifdef NDEBUG
+        #define LOG(MESSAGE) std::cout << MESSAGE << " at line:" << __LINE__ << std::endl
+    #else
+        #define LOG(MESSAGE) \
+            do {             \
+            } while (0)
+    #endif
 #endif
 
 namespace Entropy {

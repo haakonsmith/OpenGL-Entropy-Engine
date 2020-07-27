@@ -55,8 +55,8 @@ TARGETDIR = ../Build/Bin/Trespass/Release
 TARGET = $(TARGETDIR)/play.app
 OBJDIR = ../Build/Obj/Trespass/Release
 DEFINES += -DPROFILE
-ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++17
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -g
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -g -std=c++17
 LIBS += ../Build/Bin/Entropy/Release/libEntropy.dylib -framework OpenGL -lglfw
 LDDEPS += ../Build/Bin/Entropy/Release/libEntropy.dylib
 ALL_LDFLAGS += $(LDFLAGS) -L../Libraries/GLFW/Lib -Wl,-rpath,'@loader_path/../../Entropy/Release' -m64

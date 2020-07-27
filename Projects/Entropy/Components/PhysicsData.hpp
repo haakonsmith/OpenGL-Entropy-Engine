@@ -1,5 +1,5 @@
 
-#include "Location.hpp"
+#include "Components.hpp"
 
 #pragma once
 
@@ -14,7 +14,7 @@ namespace Entropy {
         PhysicsData(vec3 _velocity, vec3 _acceleration, float _friction) : velocity(_velocity), acceleration(_acceleration), friction(_friction) {}
     };
 
-    struct PhysicsSimData : public Location {
+    struct PhysicsSimData : public Translation {
         enum { STATIC, ACTIVE };
 
         double friction = 1;

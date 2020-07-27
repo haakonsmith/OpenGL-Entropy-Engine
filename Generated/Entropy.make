@@ -55,8 +55,8 @@ TARGETDIR = ../Build/Bin/Entropy/Release
 TARGET = $(TARGETDIR)/libEntropy.dylib
 OBJDIR = ../Build/Obj/Entropy/Release
 DEFINES += -DPROFILE
-ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -std=c++17
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -g
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -g -std=c++17
 
 else
   $(error "invalid configuration $(config)")

@@ -11,6 +11,8 @@
 #include "Entt/single_include/entt/entt.hpp"
 #include "PhysicsObject.hpp"
 #include "glm/glm.hpp"
+#include "../Components/Components.hpp"
+
 
 #pragma once
 
@@ -36,6 +38,8 @@ namespace Entropy {
         void checkForCollision(PhysicsObject &obj, PhysicsObject &_obj, vec3 const &objPrePos);
 
         bool debug = false;
+
+        void preventIntersection(entt::entity entityA, entt::entity entityB);
 
         /**
          * list of objects

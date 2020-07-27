@@ -1,0 +1,4 @@
+namespace Entropy
+{
+    
+} // namespace Entropy

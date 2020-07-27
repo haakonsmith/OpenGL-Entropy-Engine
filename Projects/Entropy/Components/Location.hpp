@@ -1,18 +1,20 @@
 
-#include "glm/vec3.hpp"
 #include "glm/vec2.hpp"
+#include "glm/vec3.hpp"
 
-using glm::vec3;
 using glm::vec2;
+using glm::vec3;
 
 #pragma once
 
-
 namespace Entropy {
     struct Location {
-        vec3 position;
+        union {
+            vec2 position2D;
+            vec3 position;
+        };
 
-        Location(vec3 const& p) : position(p) {}
+        Location(const vec3 &p) : position(p) {}
         Location() : position(vec3(0)) {}
 
         inline void setPosition(const vec3 &v) { position = v; }
