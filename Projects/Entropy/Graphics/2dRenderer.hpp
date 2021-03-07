@@ -123,10 +123,6 @@ namespace Entropy {
          */
         void addRenderable(Renderable *_renderable);
 
-        float distToNearestPoint(vec3 point);
-        float distToNearestPoint(vec3 point, Renderable *renderable);
-        float distToNearestPoint(Renderable *_renderable);
-
         void renderQuad(vec3 position, float width, float height, bool hollow = false, vec3 color = vec3(1, 0, 0));
 
         void render(entt::entity entity);
@@ -139,16 +135,6 @@ namespace Entropy {
         void renderLine(const vec3 &p1, const vec3 &p2);
 
         GLuint loadTexture(std::string path);
-
-        /**
-         * Render a renderable without adding to the renderer.
-         */
-        void render(Renderable *obj);
-
-        /**
-         * Generate all buffers for a renderables.
-         */
-        void buffer(Renderable *_renderable);
 
         /**
          * Render all renderables in renderer.

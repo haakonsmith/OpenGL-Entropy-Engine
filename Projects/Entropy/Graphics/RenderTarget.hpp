@@ -28,7 +28,7 @@ namespace Entropy {
             texture.bind();
 
             // Give an empty image to OpenGL ( the last NULL )
-            texture.upload(screen.sizeX, screen.sizeY, NULL, Texture::m_32bits);
+            texture.upload(screen.sizeX, screen.sizeY, NULL, Texture::m_8bits);
 
             // Poor filtering. Needed !
             texture.setPoorFiltering();
@@ -50,7 +50,6 @@ namespace Entropy {
         static void unbind(const Screen& screen) {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glViewport(0, 0, screen.sizeX * 2, screen.sizeY * 2);
-            LOG(screen.sizeX);
         }
 
         inline void bind() {

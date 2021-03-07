@@ -57,95 +57,6 @@ namespace Entropy {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////// Math commands ///////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    GLuint m_2dRenderer::loadTexture(std::string path) {
-        int width, height, channels;
-        stbi_set_flip_vertically_on_load(true);
-        unsigned char *image = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
-
-        if (image == nullptr)  // Error check
-        {
-            cerr << "Error when loading texture from file: " + path << endl;
-        }
-
-        // Create one OpenGL texture
-        GLuint textureID;
-        glGenTextures(1, &textureID);
-
-        GL_LOG("finish buffer ");
-
-        // "Bind" the newly created texture : all future texture functions will
-        // modify this texture
-        glBindTexture(GL_TEXTURE_2D, textureID);
-
-        GL_LOG("finish buffer ");
-
-        // Give the image to OpenGL
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-
-        GL_LOG("finish buffer ");
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-        GL_LOG("finish buffer ");
-
-        // Return the ID of the texture we just created
-        return textureID;
-    }
-
-    float m_2dRenderer::distToNearestPoint(vec3 point) {
-        vector<float> distances;
-
-        distances.reserve(objects.size() * 3);
-
-        for (auto obj : objects) {
-            for (size_t i = 0; i < obj->Vertices.size(); i++) {
-                vec3 point2 = vec3(obj->getModelMatrix() * vec4(vec3(obj->Vertices[i].Position), 1));
-
-                distances.emplace_back(distance(point, point2));
-            }
-        }
-
-        return *min_element(distances.begin(), distances.end());
-    }
-
-    float m_2dRenderer::distToNearestPoint(vec3 point, Renderable *renderable) {
-        vector<float> distances;
-
-        distances.reserve(objects.size() * 3);
-
-        for (auto obj : objects) {
-            if (obj != renderable) {
-                for (size_t i = 0; i < obj->Vertices.size(); i++) {
-                    vec3 point2 = vec3(obj->getModelMatrix() * vec4(vec3(obj->Vertices[i].Position), 1));
-
-                    distances.emplace_back(distance(point, point2));
-                }
-            }
-        }
-
-        return *min_element(distances.begin(), distances.end());
-    }
-
-    float m_2dRenderer::distToNearestPoint(Renderable *_renderable) {
-        // float distances[_renderable->Vertices.size()/3];
-        vector<float> distances;
-
-        for (size_t i = 0; i < _renderable->Vertices.size(); i++) {
-            vec3 point = vec3(_renderable->getModelMatrix() * vec4(vec3(_renderable->Vertices[i].Position), 1));
-
-            // distances[i] = distToNearestPoint(point, _renderable);
-            distances.emplace_back(distToNearestPoint(point, _renderable));
-        }
-
-        // return *min_element(distances, distances + 3);
-        return *min_element(distances.begin(), distances.end());
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////// Render commands /////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -191,6 +102,10 @@ namespace Entropy {
 
     void m_2dRenderer::renderLine(const vec3 &p1, const vec3 &p2) {
         PROFILE_FUNCTION();
+
+        GLint current_vao;
+        glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &current_vao);
+
         vertexArray.bind();
         Vertex verts[] = {Vertex(screen.localSpace(p1)), Vertex(screen.localSpace(p2))};
 
@@ -202,6 +117,8 @@ namespace Entropy {
 
         glDrawArrays(GL_LINES, 0, 2);  // Starting from vertex 0; 3 Vertices total . 1 RightTriangle
         GL_LOG("draw arrays ");
+
+        glBindVertexArray(current_vao);
     }
 
     void m_2dRenderer::render(entt::entity entity) {
@@ -291,6 +208,8 @@ namespace Entropy {
         debugQuad->arrayBuffer.bind();
 
         glDrawArrays(hollow ? GL_LINE_LOOP : GL_TRIANGLES, 0, debugQuad->Vertices.size());
+
+        vertexArray.bind();
     }
 
     void m_2dRenderer::renderCircle(vec3 position, float radius, bool hollow) {
